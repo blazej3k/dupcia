@@ -1,5 +1,6 @@
-package blake.przewodnikturystyczny;
+package blake.przewodnikturystyczny.activity;
 
+import blake.przewodnikturystyczny.R;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
