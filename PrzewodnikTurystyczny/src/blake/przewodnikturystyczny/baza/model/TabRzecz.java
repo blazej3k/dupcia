@@ -2,8 +2,13 @@ package blake.przewodnikturystyczny.baza.model;
 
 import java.util.ArrayList;
 
-public class TabRzecz {
+import com.orm.SugarRecord;
+import com.orm.dsl.NotNull;
+import com.orm.dsl.Unique;
+
+public class TabRzecz extends SugarRecord {
 	// pojedyncze pola tabeli
+	@Unique@NotNull
 	private String nazwa;
 	private String dataPowstania;
 	private String rodzaj;
@@ -11,7 +16,9 @@ public class TabRzecz {
 	
 	// relacje 1-1
 	private TabBudynek budynek;
+	@NotNull
 	private TabBranza branza;
+	@NotNull
 	private TabOkres okres; // tej relacji brak w modelu, cza uzupelnic
 	
 	// relacje 1-wiele

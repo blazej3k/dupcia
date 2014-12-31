@@ -2,16 +2,24 @@ package blake.przewodnikturystyczny.baza.model;
 
 import java.util.ArrayList;
 
-public class TabPostac {
+import com.orm.SugarRecord;
+import com.orm.dsl.NotNull;
+import com.orm.dsl.Unique;
+
+public class TabPostac extends SugarRecord {
 	// pojedyncze pola tabeli
+	@Unique@NotNull
 	private String imie;
+	@Unique@NotNull
 	private String nazwisko;
 	private String rokUrodzenia;
 	private String rokSmierci;
 	private String opis;
 	
 	// relacje 1-1
+	@NotNull
 	private TabOkres okres;
+	@NotNull
 	private TabBranza branza;
 	private TabRod rod;
 	

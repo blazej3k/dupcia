@@ -2,15 +2,23 @@ package blake.przewodnikturystyczny.baza.model;
 
 import java.util.ArrayList;
 
-public class TabWydarzenie {
+import com.orm.SugarRecord;
+import com.orm.dsl.NotNull;
+import com.orm.dsl.Unique;
+
+public class TabWydarzenie extends SugarRecord {
 	// pojedyncze pola tabeli
+	@Unique@NotNull
 	private String nazwa;
+	@NotNull
 	private String dataPoczatek;
 	private String dataKoniec;
 	private String opis;
 	
 	// relacje 1-1
+	@NotNull
 	private TabOkres okres;
+	@NotNull
 	private TabBranza branza;
 	
 	// relacje 1-wiele

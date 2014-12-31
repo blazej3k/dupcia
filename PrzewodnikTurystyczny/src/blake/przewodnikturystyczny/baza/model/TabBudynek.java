@@ -2,14 +2,22 @@ package blake.przewodnikturystyczny.baza.model;
 
 import java.util.ArrayList;
 
-public class TabBudynek {
+import com.orm.SugarRecord;
+import com.orm.dsl.NotNull;
+import com.orm.dsl.Unique;
+
+public class TabBudynek extends SugarRecord {
 	// pojedyncze pola tabeli
+	@Unique@NotNull
 	private String nazwa;
+	@Unique@NotNull
+	private String adres;
 	private String projektant;
 	private String dataPowstania;
 	private String opis;
 
 	// relacje 1-1
+	@NotNull
 	private TabOkres okres;
 	private TabMiejsce miejsce;
 
@@ -104,6 +112,14 @@ public class TabBudynek {
 
 	public void setRody(ArrayList<TabRod> rody) {
 		this.rody = rody;
+	}
+
+	public String getAdres() {
+		return adres;
+	}
+
+	public void setAdres(String adres) {
+		this.adres = adres;
 	}
 
 }

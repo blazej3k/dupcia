@@ -1,5 +1,7 @@
 package blake.przewodnikturystyczny.activity;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -23,10 +25,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class Mapa extends Activity implements OnMapReadyCallback {
 
 	static final LatLng domyslnaPozycja = new LatLng(52.23, 21);  // pozycja Warszawy
-	static final int domysnyZoom = 12;
+	static final int domyslnyZoom = 12;
 	static final LatLng KIEL = new LatLng(53.551, 9.993);
 
 	private Context context;
+	
+	private List<LatLng> pozycje;
+	private List<String> opisy;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -68,19 +73,16 @@ public class Mapa extends Activity implements OnMapReadyCallback {
 
 	@Override
 	public void onMapReady(GoogleMap map) {
-	    map.addMarker(new MarkerOptions()
-        .position(domyslnaPozycja)
-        .title("Centrówka!"));
-
-	    domyslnaMapa(map);
+		
+		domyslnaMapa(map);
+	    dodajMarkery(map);
 	}
 	
 	private void domyslnaMapa(GoogleMap map) {
-		map.moveCamera(CameraUpdateFactory.newLatLngZoom(domyslnaPozycja, domysnyZoom));
+		map.moveCamera(CameraUpdateFactory.newLatLngZoom(domyslnaPozycja, domyslnyZoom));
 		map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-		map.getUiSettings().setCompassEnabled(true);
-		        
-        
+		map.getUiSettings().setRotateGesturesEnabled(false); // blokowanie obracania gestem
+
 /*        map:cameraTilt="30"
         map:cameraZoom="13"
         map:mapType="normal"
@@ -89,6 +91,12 @@ public class Mapa extends Activity implements OnMapReadyCallback {
         map:uiScrollGestures="false"
         map:uiTiltGestures="true"
         map:uiZoomControls="false"
-        map:uiZoomGestures="true" >*/
+        map:uiZoomGestures="true" > */
+	}
+	
+	private void dodajMarkery(GoogleMap map) {
+		map.addMarker(new MarkerOptions()
+		.position(domyslnaPozycja)
+		.title("Centrówka!"));
 	}
 }

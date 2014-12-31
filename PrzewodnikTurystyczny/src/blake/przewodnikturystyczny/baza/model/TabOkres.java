@@ -2,10 +2,17 @@ package blake.przewodnikturystyczny.baza.model;
 
 import java.util.ArrayList;
 
-public class TabOkres {
+import com.orm.SugarRecord;
+import com.orm.dsl.NotNull;
+import com.orm.dsl.Unique;
+
+public class TabOkres extends SugarRecord {
 	// pojedyncze pola tabeli
+	@Unique@NotNull
 	private String nazwa;
+	@Unique@NotNull
 	private String rokPoczatek;
+	@Unique@NotNull
 	private String rokKoniec;
 	private String opis;
 	
