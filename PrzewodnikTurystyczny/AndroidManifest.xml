@@ -8,6 +8,28 @@
         android:minSdkVersion="15"
         android:targetSdkVersion="21" />
 
+    <permission
+        android:name="blake.przewodnikturystyczny.permission.MAPS_RECEIVE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="blake.przewodnikturystyczny.permission.MAPS_RECEIVE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!--
+     The following two permissions are not required to use
+     Google Maps Android API v2, but are recommended. 
+     
+     Do pobierania lokalizacji
+    -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <!-- Uruchamia OpenGL ES version 2 do renderowania mapy -->
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -22,6 +44,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="blake.przewodnikturystyczny.activity.Mapa"
+            android:label="@string/title_activity_mapa" >
+        </activity>
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyCqj8oJ9k8iB9oVlZ18J9Qc148TXY7WUpI" />
     </application>
 
 </manifest>

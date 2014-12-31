@@ -2,19 +2,43 @@ package blake.przewodnikturystyczny.activity;
 
 import blake.przewodnikturystyczny.R;
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 
 public class MainActivity extends Activity {
 
+	public static final String DEBUG_TAG = "Przewodnik";
+	private Context context;
+	
+	private Button btn_mapa;
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        context = getApplicationContext();
+        
+        btn_mapa = (Button) findViewById(R.id.btn_mapa);
+        
+        initBtnOnClickListeners();
     }
 
+    
+	private void initBtnOnClickListeners() {
+		btn_mapa.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(context, Mapa.class);
+				startActivity(intent);
+			}
+		});	
+	}
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
