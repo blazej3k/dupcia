@@ -21,6 +21,11 @@ public class TabBranza extends SugarRecord {
 	
 	public TabBranza() { }
 
+	public TabBranza(String nazwa, String opis) {
+		this.nazwa = nazwa;
+		this.opis = opis;
+	}
+	
 	public TabBranza(String nazwa, String opis, ArrayList<TabMiejsce> miejsca,
 			ArrayList<TabWydarzenie> wydarzenia, ArrayList<TabRzecz> rzeczy,
 			ArrayList<TabPostac> postacie) {

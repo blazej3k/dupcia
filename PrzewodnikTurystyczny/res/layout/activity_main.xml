@@ -1,19 +1,88 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/LinearLayout1"
+    android:id="@+id/lay_duzy_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="blake.przewodnikturystyczny.MainActivity" >
+    android:orientation="vertical" >
 
-    <Button
-        android:id="@+id/btn_mapa"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/LinearLayout1"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/btn_mapa" />
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp"
+        tools:context="blake.przewodnikturystyczny.MainActivity" >
+
+        <Button
+            android:id="@+id/btn_mapa"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_mapa" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/LinearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        tools:context="blake.przewodnikturystyczny.MainActivity" >
+
+        <Button
+            android:id="@+id/btn_count_okresy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_count_okresy" />
+
+        <Button
+            android:id="@+id/btn_count_branze"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_count_branze" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/LinearLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        tools:context="blake.przewodnikturystyczny.MainActivity" >
+
+        <Button
+            android:id="@+id/btn_czysc_okresy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_czysc_okresy" />
+
+        <Button
+            android:id="@+id/btn_czysc_branze"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_czysc_branze" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/LinearLayout4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        tools:context="blake.przewodnikturystyczny.MainActivity" >
+
+        <Button
+            android:id="@+id/btn_pompeczka_okres"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pompeczka_okres" />
+
+        <Button
+            android:id="@+id/btn_pompeczka_branza"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pompeczka_branza" />
+    </LinearLayout>
 
 </LinearLayout>

@@ -6,5 +6,11 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_mapa">Mapa</string>
     <string name="btn_mapa">Mapa</string>
+    <string name="pompeczka_branza">Pompeczka - Branza</string>
+    <string name="pompeczka_okres">Pompeczka - Okres</string>
+    <string name="btn_count_okresy">Policz Okresy</string>
+    <string name="btn_count_branze">Policz Branże</string>
+    <string name="btn_czysc_okresy">Czyść Okresy</string>
+    <string name="btn_czysc_branze">Czyść Branże</string>
 
 </resources>
