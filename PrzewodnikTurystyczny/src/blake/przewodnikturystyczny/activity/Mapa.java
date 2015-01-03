@@ -4,7 +4,12 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -61,6 +66,7 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 	final int RQS_GooglePlayServices = 1;
 
 	private Context context;
+	private LocationManager serwis;
 	
 	private List<LatLng> pozycje;
 	private List<String> opisy;
@@ -69,6 +75,18 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		context = getApplicationContext();
+
+		serwis = (LocationManager) getSystemService(LOCATION_SERVICE);
+		boolean locationEnabled = serwis.isProviderEnabled(LocationManager.GPS_PROVIDER);
+		// sprawdzanie czy lokalizacja jest w³¹czona, gps (chyba tylko to sprawdza)
+		
+		if (!locationEnabled) {
+			Toast.makeText(context, "gpsa masz wy³¹czonego, idŸ se w³¹cz.", Toast.LENGTH_LONG);
+			//	Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+			//	startActivity(intent);
+			//  otwiera okno konfiguracji od zarz¹dzania lokalizacj¹
+		}
+
 		
 		setContentView(R.layout.activity_mapa);
 
@@ -77,34 +95,15 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 		MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
 		mapFragment.getMapAsync(this);
 		
-/*		try {
-			gmap = mapFragment.getMap(); // pobieranie mapy
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		if (gmap != null) { //dodaje markery na mapê, te ciuæki
-			Log.d(MainActivity.DEBUG_TAG, "gmap nie jest nullem");
-			
-			Marker mHamburg = gmap.addMarker(new MarkerOptions().position(
-					HAMBURG).title("Hamburg"));
-			Marker kiel = gmap.addMarker(new MarkerOptions()
-					.position(KIEL)
-					.title("Kiel")
-					.snippet("Kiel is cool")
-					.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_launcher)));
-			
-			gmap.moveCamera(CameraUpdateFactory.newLatLngZoom(HAMBURG, 15)); // przesuwa kamerê do markera, z zoomem 15
-			
-			// Zoom in, animating the camera.
-			gmap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
-		}*/
-		
 		
 	}
 
 	private void domyslnaMapa(GoogleMap map) {
-		map.moveCamera(CameraUpdateFactory.newLatLngZoom(domyslnaPozycja, domyslnyZoom));
+		Location ostatniaLokalizacja = pobierzOstatniaLokalizacje();
+		LatLng ostatniaLL = new LatLng(ostatniaLokalizacja.getLatitude(), ostatniaLokalizacja.getLongitude()); 
+		
+		map.moveCamera(CameraUpdateFactory.newLatLngZoom(ostatniaLL, domyslnyZoom));	// przenosi do ostatniej lokalizacji
+//		map.moveCamera(CameraUpdateFactory.newLatLngZoom(domyslnaPozycja, domyslnyZoom)); // przenosi do domyslnej lokalizacji
 		map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 		map.setMyLocationEnabled(true);
 		map.getUiSettings().setRotateGesturesEnabled(false); // blokowanie obracania gestem
@@ -128,11 +127,20 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 		Marker czwartyMarkerek = map.addMarker(new MarkerOptions().position(obok3).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_launcher)).title("Marker czwarty"));
 		
 		czwartyMarkerek.showInfoWindow();
-		
 	}
 
+	private Location pobierzOstatniaLokalizacje() {	// pobiera ostatni¹ znan¹ lokalizacjê
+		Criteria criteria = new Criteria();			// pozwala automatycznie wybrac lepszego 'providera' lokalizacji
+	    String provider = serwis.getBestProvider(criteria, false); // domyslnie to chyba ostatniego bierze, bo Criteria bez parametrów.
+	    Location lokalizacja = serwis.getLastKnownLocation(provider);
+	    
+	    Log.d(DEBUG_TAG, "Location_Provider: "+provider);
+	    
+	    return lokalizacja;
+	}
+	
 	@Override
-	public void onMapReady(GoogleMap map) {
+	public void onMapReady(GoogleMap map) {		
 		domyslnaMapa(map);
 	    dodajMarkery(map);
 	    
@@ -151,13 +159,15 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 		
 		szerokosc *= 100;	// mnozenie *100, zaokraglanie, dzielenie przez 100 = zaokraglanie do 2 miejsca po przecinku
 		dlugosc *= 100;
-		szerokosc = Math.round(pozycja.latitude) / 100;
-		dlugosc = Math.round(pozycja.longitude) / 100;
+		szerokosc = Math.round(szerokosc);
+		dlugosc = Math.round(dlugosc);
+		
+		Log.d(DEBUG_TAG, "onMapClick: szer.: "+szerokosc+" d³.: "+dlugosc);
 		
 		Toast.makeText(context, "onMapClick: szer.: "+pozycja.latitude+" d³.: "+dlugosc, 
 				Toast.LENGTH_LONG).show();
 		
-		Log.d(DEBUG_TAG, "onMapClick: szer. :");
+		
 		
 	}
 	@Override
