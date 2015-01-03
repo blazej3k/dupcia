@@ -13,18 +13,24 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
             android:adjustViewBounds="true"
-            android:src="@drawable/ic_launcher"/>
+            android:src="@drawable/ic_launcher"
+            android:contentDescription="@string/content_desc1"/>
+
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12dp"
-            android:textStyle="bold"/>
+            android:text="@string/demo_str"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
         <TextView
             android:id="@+id/snippet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="10dp"/>
+            android:text="@string/demo_str"
+            android:textSize="12sp" />
+
     </LinearLayout>
 
 </LinearLayout>

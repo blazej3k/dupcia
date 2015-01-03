@@ -4,6 +4,7 @@ import java.util.List;
 
 import blake.przewodnikturystyczny.R;
 import blake.przewodnikturystyczny.baza.PompeczkaBranzaOkres;
+import blake.przewodnikturystyczny.baza.PompeczkaRozne;
 import blake.przewodnikturystyczny.baza.model.TabBranza;
 import blake.przewodnikturystyczny.baza.model.TabOkres;
 import android.app.Activity;
@@ -25,6 +26,7 @@ public class MainActivity extends Activity {
 	private Button btn_mapa;
 	private Button btn_pompeczka_branza;
 	private Button btn_pompeczka_okres;
+	private Button btn_pompeczka_rozne;
 	private Button btn_count_okresy;
 	private Button btn_count_branze;
 	private Button btn_czysc_okresy;
@@ -41,6 +43,7 @@ public class MainActivity extends Activity {
         btn_mapa = (Button) findViewById(R.id.btn_mapa);
         btn_pompeczka_branza = (Button) findViewById(R.id.btn_pompeczka_branza);
         btn_pompeczka_okres = (Button) findViewById(R.id.btn_pompeczka_okres);
+        btn_pompeczka_rozne = (Button) findViewById(R.id.btn_pompeczka_rozne);
         btn_count_okresy = (Button) findViewById(R.id.btn_count_okresy);
         btn_count_branze = (Button) findViewById(R.id.btn_count_branze);
         btn_czysc_okresy = (Button) findViewById(R.id.btn_czysc_okresy);
@@ -70,6 +73,13 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				new PompeczkaBranzaOkres(true);
+			}
+		});
+		
+		btn_pompeczka_rozne.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				new PompeczkaRozne();
 			}
 		});
 		
@@ -125,7 +135,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
     	// TODO ogolnie to trzeba SugarContext.terminate() przeniesc do Application.onTerminate() - zgodnie z zaleceniem Sugara, albo do MainActivity.onPause
-    	// Wywalony bo po poprwce manifestu .init chyba nie jest potrzebny, wiêc to te¿ zakomentowane
+    	// Wywalony bo po poprawce manifestu .init chyba nie jest potrzebny, wiêc to te¿ zakomentowane
     	// SugarContext.terminate();
     	super.onDestroy();
     }

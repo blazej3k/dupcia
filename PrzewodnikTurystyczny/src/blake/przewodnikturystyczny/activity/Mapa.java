@@ -1,5 +1,6 @@
 package blake.przewodnikturystyczny.activity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
@@ -12,9 +13,12 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import blake.przewodnikturystyczny.R;
+import blake.przewodnikturystyczny.async.PobierzAdresAsync;
+import blake.przewodnikturystyczny.async.PobierzAdresAsync.AsyncListener;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -34,76 +38,88 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickListener, OnMapLongClickListener, OnInfoWindowClickListener {
+public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickListener, OnMapLongClickListener, OnInfoWindowClickListener, AsyncListener {
 
 	class MyInfoWindowAdapter implements InfoWindowAdapter {
 		private final View myContentsView;
-		
+
 		MyInfoWindowAdapter() {
-			myContentsView = getLayoutInflater().inflate(R.layout.custom_info_window_map, null);
+			myContentsView = getLayoutInflater().inflate(
+					R.layout.custom_info_window_map, null);
 		}
-		
+
 		@Override
 		public View getInfoContents(Marker marker) {
-			TextView tvTitle = ((TextView)myContentsView.findViewById(R.id.title));
-            tvTitle.setText(marker.getTitle());
-            TextView tvSnippet = ((TextView)myContentsView.findViewById(R.id.snippet));
-            tvSnippet.setText(marker.getSnippet());
-   
-            return myContentsView;
+			TextView tvTitle = ((TextView) myContentsView
+					.findViewById(R.id.title));
+			tvTitle.setText(marker.getTitle());
+			TextView tvSnippet = ((TextView) myContentsView
+					.findViewById(R.id.snippet));
+			tvSnippet.setText(marker.getSnippet());
+
+			return myContentsView;
 		}
 
 		@Override
 		public View getInfoWindow(Marker marker) {
-			// TODO Auto-generated method stub
+
 			return null;
 		}
 	}
-		
+
 	public static final String DEBUG_TAG = "Przewodnik";
-	static final LatLng domyslnaPozycja = new LatLng(52.23, 21);  // pozycja Warszawy
+	static final LatLng domyslnaPozycja = new LatLng(52.23, 21); // pozycja
+																	// Warszawy
 	static final int domyslnyZoom = 12;
 	final int RQS_GooglePlayServices = 1;
 
 	private Context context;
 	private LocationManager serwis;
-	
+
+	private TextView tv_adres;
+	private ProgressBar mActivityIndicator;
+
 	private List<LatLng> pozycje;
 	private List<String> opisy;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		context = getApplicationContext();
 
 		serwis = (LocationManager) getSystemService(LOCATION_SERVICE);
-		boolean locationEnabled = serwis.isProviderEnabled(LocationManager.GPS_PROVIDER);
+		boolean locationEnabled = serwis
+				.isProviderEnabled(LocationManager.GPS_PROVIDER);
 		// sprawdzanie czy lokalizacja jest w³¹czona, gps (chyba tylko to sprawdza)
-		
+
 		if (!locationEnabled) {
-			Toast.makeText(context, "gpsa masz wy³¹czonego, idŸ se w³¹cz.", Toast.LENGTH_LONG);
-			//	Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-			//	startActivity(intent);
-			//  otwiera okno konfiguracji od zarz¹dzania lokalizacj¹
+			Toast.makeText(context, "gpsa masz wy³¹czonego, idŸ se w³¹cz.",
+					Toast.LENGTH_LONG);
+			// Intent intent = new
+			// Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+			// startActivity(intent);
+			// otwiera okno konfiguracji od zarz¹dzania lokalizacj¹
 		}
 
-		
 		setContentView(R.layout.activity_mapa);
 
-		Toast.makeText(context, "Us³ugi GooglePlay dostêpne: "+GooglePlayServicesUtil.isGooglePlayServicesAvailable(context), Toast.LENGTH_LONG).show();
-		
-		MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+		tv_adres = (TextView) findViewById(R.id.tv_adres);
+		mActivityIndicator = (ProgressBar) findViewById(R.id.progress_adres);
+
+		Toast.makeText(
+				context, "Us³ugi GooglePlay dostêpne: "+GooglePlayServicesUtil.isGooglePlayServicesAvailable(context),Toast.LENGTH_LONG).show();
+		MapFragment mapFragment = (MapFragment) getFragmentManager()
+				.findFragmentById(R.id.map);
 		mapFragment.getMapAsync(this);
-		
-		
+
 	}
 
 	private void domyslnaMapa(GoogleMap map) {
 		Location ostatniaLokalizacja = pobierzOstatniaLokalizacje();
-		LatLng ostatniaLL = new LatLng(ostatniaLokalizacja.getLatitude(), ostatniaLokalizacja.getLongitude()); 
-		
-		map.moveCamera(CameraUpdateFactory.newLatLngZoom(ostatniaLL, domyslnyZoom));	// przenosi do ostatniej lokalizacji
-//		map.moveCamera(CameraUpdateFactory.newLatLngZoom(domyslnaPozycja, domyslnyZoom)); // przenosi do domyslnej lokalizacji
+		LatLng ostatniaLL = new LatLng(ostatniaLokalizacja.getLatitude(), ostatniaLokalizacja.getLongitude());
+
+		map.moveCamera(CameraUpdateFactory.newLatLngZoom(ostatniaLL, domyslnyZoom)); 			// przenosi do ostatniej lokalizacji
+		// map.moveCamera(CameraUpdateFactory.newLatLngZoom(domyslnaPozycja, domyslnyZoom)); 	// przenosi do domyslnej lokalizacji
 		map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 		map.setMyLocationEnabled(true);
 		map.getUiSettings().setRotateGesturesEnabled(false); // blokowanie obracania gestem
@@ -111,77 +127,108 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 		map.getUiSettings().setMapToolbarEnabled(false);
 		map.getUiSettings().setTiltGesturesEnabled(false);
 	}
-	
-	private void dodajMarkery(GoogleMap map) {
-		map.addMarker(new MarkerOptions()
-		.position(domyslnaPozycja)
-		.title("Centrówka!"))
-		.setSnippet("Du¿y opis rikitiki");
-		
+
+	private void dodajMarkery(GoogleMap map, List<LatLng> pozycjeLL) {
+		map.addMarker(
+				new MarkerOptions().position(domyslnaPozycja).title(
+						"Centrówka!")).setSnippet("Du¿y opis rikitiki");
+
 		LatLng obok = new LatLng(52, 21);
 		LatLng obok2 = new LatLng(52, 21.1);
 		LatLng obok3 = new LatLng(52, 21.2);
-		
-		Marker drugiMarkerek = map.addMarker(new MarkerOptions().title("Marker drugi").snippet("No i du¿y opis").position(obok));
-		Marker trzeciMarkerek = map.addMarker(new MarkerOptions().position(obok2).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-		Marker czwartyMarkerek = map.addMarker(new MarkerOptions().position(obok3).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_launcher)).title("Marker czwarty"));
-		
+
+		Marker drugiMarkerek = map
+				.addMarker(new MarkerOptions().title("Marker drugi")
+						.snippet("No i du¿y opis").position(obok));
+		Marker trzeciMarkerek = map.addMarker(new MarkerOptions().position(
+				obok2).icon(
+				BitmapDescriptorFactory
+						.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+		Marker czwartyMarkerek = map.addMarker(new MarkerOptions()
+				.position(obok3)
+				.icon(BitmapDescriptorFactory
+						.fromResource(R.drawable.ic_launcher))
+				.title("Marker czwarty"));
+
 		czwartyMarkerek.showInfoWindow();
 	}
 
-	private Location pobierzOstatniaLokalizacje() {	// pobiera ostatni¹ znan¹ lokalizacjê
-		Criteria criteria = new Criteria();			// pozwala automatycznie wybrac lepszego 'providera' lokalizacji
-	    String provider = serwis.getBestProvider(criteria, false); // domyslnie to chyba ostatniego bierze, bo Criteria bez parametrów.
-	    Location lokalizacja = serwis.getLastKnownLocation(provider);
-	    
-	    Log.d(DEBUG_TAG, "Location_Provider: "+provider);
-	    
-	    return lokalizacja;
-	}
-	
-	@Override
-	public void onMapReady(GoogleMap map) {		
-		domyslnaMapa(map);
-	    dodajMarkery(map);
-	    
-		map.setInfoWindowAdapter(new MyInfoWindowAdapter()); // ustawia customowy adapter do okienek informacyjnych - tych po klikniêciu w marker
-		// zdefiniowany jest w klasie wewnêtrznej, na górze tej klasy
+	private Location pobierzOstatniaLokalizacje() { // pobiera ostatni¹ znan¹
+													// lokalizacjê
+		Criteria criteria = new Criteria(); // pozwala automatycznie wybrac
+											// lepszego 'providera' lokalizacji
+		String provider = serwis.getBestProvider(criteria, false); // domyslnie to chyba ostatniego bierze, bo Criteria bez parametrów.
+		Location lokalizacja = serwis.getLastKnownLocation(provider);
 
+		Log.d(DEBUG_TAG, "Location_Provider: " + provider);
+
+		return lokalizacja;
+	}
+
+	private String pobierzAdres(LatLng pozycjaLL) {
+		String adres = "";
+		
+		Location pozycja = new Location("Test");
+		pozycja.setLatitude(pozycjaLL.latitude);
+		pozycja.setLongitude(pozycjaLL.longitude);
+		
+//        // Ensure that a Geocoder services is available
+//        if (Build.VERSION.SDK_INT >=
+//                Build.VERSION_CODES.GINGERBREAD
+//                            &&
+//                Geocoder.isPresent()) {
+//            // Show the activity indicator
+//            mActivityIndicator.setVisibility(View.VISIBLE);
+            /*
+             * Reverse geocoding is long-running and synchronous.
+             * Run it on a background thread.
+             * Pass the current location to the background task.
+             * When the task finishes,
+             * onPostExecute() displays the address.
+             */
+		
+            new PobierzAdresAsync(context, this).execute(pozycja);
+
+		return adres;
+	}
+
+	@Override
+	public void onMapReady(GoogleMap map) {
+		domyslnaMapa(map);
+		dodajMarkery(map, new ArrayList<LatLng>());
+
+		map.setInfoWindowAdapter(new MyInfoWindowAdapter()); // ustawia customowy adapter do okienek informacyjnych - tych po klikniêciu w marker
+															 // zdefiniowany jest w klasie wewnêtrznej, na górze tej klasy
 		map.setOnMapClickListener(this);
 		map.setOnMapLongClickListener(this);
 		map.setOnInfoWindowClickListener(this);
 	}
-	
+
 	@Override
 	public void onMapClick(LatLng pozycja) {
 		double szerokosc = pozycja.latitude;
 		double dlugosc = pozycja.longitude;
+
+		szerokosc *= 100; 	// mnozenie *100, zaokraglanie, dzielenie przez 100 =
+		dlugosc *= 100;		// zaokraglanie do 2 miejsca po przecinku
+		szerokosc = Math.round(szerokosc) / 100.0 ;
+		dlugosc = Math.round(dlugosc) / 100.0 ;
 		
-		szerokosc *= 100;	// mnozenie *100, zaokraglanie, dzielenie przez 100 = zaokraglanie do 2 miejsca po przecinku
-		dlugosc *= 100;
-		szerokosc = Math.round(szerokosc);
-		dlugosc = Math.round(dlugosc);
-		
-		Log.d(DEBUG_TAG, "onMapClick: szer.: "+szerokosc+" d³.: "+dlugosc);
-		
-		Toast.makeText(context, "onMapClick: szer.: "+pozycja.latitude+" d³.: "+dlugosc, 
-				Toast.LENGTH_LONG).show();
-		
-		
-		
+//		Log.d(DEBUG_TAG, "onMapClick: szer.: " + szerokosc + " d³.: " + dlugosc);
+		Toast.makeText(context,	"onMapClick: szer.: " + szerokosc + " d³.: " + dlugosc, Toast.LENGTH_LONG).show();
+
+		pobierzAdres(pozycja);
 	}
+
 	@Override
 	public void onMapLongClick(LatLng pozycja) {
-		Toast.makeText(context, 
-				pozycja.toString(), 
-				Toast.LENGTH_LONG).show();
+		Toast.makeText(context, pozycja.toString(), Toast.LENGTH_LONG).show();
 
 	}
-	
+
 	@Override
 	public void onInfoWindowClick(Marker marker) {
-		Toast.makeText(context, 
-				"Info Window clicked@" + marker.getId(), 
+		Toast.makeText(context, "Info Window clicked@" + marker.getId(),
 				Toast.LENGTH_SHORT).show();
 	}
 
@@ -189,18 +236,22 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 	protected void onResume() {
 		super.onResume();
 
-		int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
+		int resultCode = GooglePlayServicesUtil
+				.isGooglePlayServicesAvailable(getApplicationContext());
 
-		if (resultCode == ConnectionResult.SUCCESS){
-			Toast.makeText(context, 
-					"isGooglePlayServicesAvailable SUCCESS", 
-					Toast.LENGTH_LONG).show(); 
-		}else{
-			GooglePlayServicesUtil.getErrorDialog(resultCode, this, RQS_GooglePlayServices); 
+		if (resultCode == ConnectionResult.SUCCESS) {
+			Toast.makeText(context, "isGooglePlayServicesAvailable SUCCESS",
+					Toast.LENGTH_LONG).show();
+		} else {
+			GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+					RQS_GooglePlayServices);
 		}
 	}
 
+	@Override	// funkcja od naszego AsyncListenera - tutaj zwrócony bêdzie adres z PobierzAdresAsync
+	public void doStuff(String adres) {
+        mActivityIndicator.setVisibility(View.GONE); 	// wypierdziel progressbar
+        tv_adres.setText(adres);						// wyœwietl adres
+	}
 
-	
-	
 }

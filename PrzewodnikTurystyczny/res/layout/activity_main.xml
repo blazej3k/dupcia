@@ -3,6 +3,7 @@
     android:id="@+id/lay_duzy_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center_horizontal"
     android:orientation="vertical" >
 
     <LinearLayout
@@ -64,25 +65,22 @@
             android:text="@string/btn_czysc_branze" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/LinearLayout4"
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/btn_pompeczka_okres"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal"
-        tools:context="blake.przewodnikturystyczny.MainActivity" >
+        android:text="@string/pompeczka_okres" />
 
-        <Button
-            android:id="@+id/btn_pompeczka_okres"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/pompeczka_okres" />
+    <Button
+        android:id="@+id/btn_pompeczka_branza"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pompeczka_branza" />
 
-        <Button
-            android:id="@+id/btn_pompeczka_branza"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/pompeczka_branza" />
-    </LinearLayout>
+    <Button
+        android:id="@+id/btn_pompeczka_rozne"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pompeczka_rozne" />
 
 </LinearLayout>
