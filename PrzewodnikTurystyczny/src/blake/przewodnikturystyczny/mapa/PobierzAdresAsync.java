@@ -1,4 +1,4 @@
-package blake.przewodnikturystyczny.async;
+package blake.przewodnikturystyczny.mapa;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,25 +17,25 @@ import android.util.Log;
 public class PobierzAdresAsync extends AsyncTask<LatLng, Void, String> {
 
 	private Context context;
-	private AsyncListener listener;
+	private AsyncAdresListener listener;
 	
-	public PobierzAdresAsync(Context context, AsyncListener listener) {
+	public PobierzAdresAsync(Context context, AsyncAdresListener listener) {
 		this.context = context;
 		this.listener = listener;
 	}
 	
 	@Override
-	protected String doInBackground(LatLng... pozycje) {					// tu przez execute(pozycje) wchodzi lista pozycji, metoda jest napisana, ¿e zawsze wchodzi 1 pozycja
+	protected String doInBackground(LatLng... pozycje) {			// tu przez execute(pozycje) wchodzi lista pozycji, metoda jest napisana, ¿e zawsze wchodzi 1 pozycja
 		Geocoder geocoder = new Geocoder(context, Locale.getDefault());
-		LatLng pozycja = pozycje[0]; // wczytuje z parametru pozycjê
-		List<Address> adresy = null;   // lista na wyniki
+		LatLng pozycja = pozycje[0]; 								// wczytuje z parametru pozycjê
+		List<Address> adresy = null;   								// lista na wyniki
 		
 		try { // jeden adres
-			adresy = geocoder.getFromLocation(pozycja.latitude, pozycja.longitude, 1); // wspolrzedne i max ilosc zwroconych adresów. (chyba o dok³adnoœæ chodzi)
+			adresy = geocoder.getFromLocation(pozycja.latitude, pozycja.longitude, 1); // wspolrzedne i max. ilosc zwroconych adresów. (chyba o dok³adnoœæ chodzi)
 			
 		} 
 		catch (IOException e) {
-			Log.e(MainActivity.DEBUG_TAG,	"IO Exception in getFromLocation()");
+			Log.e(MainActivity.DEBUG_TAG, "IO Exception in getFromLocation() - masz neta?");
 			e.printStackTrace();
 			
 			return ("IO Exception: czy masz po³¹czenie z Internetem?");
@@ -69,11 +69,12 @@ public class PobierzAdresAsync extends AsyncTask<LatLng, Void, String> {
 	@Override
 	protected void onPostExecute(String adres) {
 		super.onPostExecute(adres);
-		listener.doStuff(adres);
+		listener.jestAdres(adres);
 	}
 	
-	public interface AsyncListener {		// interfejs, implementuj¹c go w Activity mo¿na wygodnie s³uchaæ, jak zadanie z tej klasy skoñczy siê wykonywaæ
-		public void doStuff(String adres);	// czyli daje siê ³atwo zwróciæ wynik do wywo³uj¹cej go Activity
+	public interface AsyncAdresListener {		// interfejs, implementuj¹c go w Activity mo¿na wygodnie s³uchaæ, jak zadanie z tej klasy skoñczy siê wykonywaæ
+		public void jestAdres(String adres);	// czyli daje siê ³atwo zwróciæ wynik do wywo³uj¹cej go Activity
+
 	}
 }
 

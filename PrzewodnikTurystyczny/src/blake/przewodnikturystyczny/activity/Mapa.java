@@ -2,43 +2,45 @@ package blake.przewodnikturystyczny.activity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import blake.przewodnikturystyczny.R;
-import blake.przewodnikturystyczny.async.PobierzAdresAsync;
-import blake.przewodnikturystyczny.async.PobierzAdresAsync.AsyncListener;
+import blake.przewodnikturystyczny.mapa.PobierzAdresAsync;
+import blake.przewodnikturystyczny.mapa.PobierzAdresAsync.AsyncAdresListener;
+import blake.przewodnikturystyczny.mapa.PobierzWspolrzedneAsync;
+import blake.przewodnikturystyczny.mapa.PobierzWspolrzedneAsync.AsyncWspolrzedneListener;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
-import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickListener, OnMapLongClickListener, OnInfoWindowClickListener, AsyncListener {
+public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickListener, OnMapLongClickListener, OnInfoWindowClickListener, AsyncAdresListener, AsyncWspolrzedneListener {
 
 	class MyInfoWindowAdapter implements InfoWindowAdapter {
 		private final View myContentsView;
@@ -52,9 +54,10 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 		public View getInfoContents(Marker marker) {
 			TextView tvTitle = ((TextView) myContentsView
 					.findViewById(R.id.title));
-			tvTitle.setText(marker.getTitle());
 			TextView tvSnippet = ((TextView) myContentsView
 					.findViewById(R.id.snippet));
+			
+			tvTitle.setText(marker.getTitle());
 			tvSnippet.setText(marker.getSnippet());
 
 			return myContentsView;
@@ -68,19 +71,23 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 	}
 
 	public static final String DEBUG_TAG = "Przewodnik";
-	static final LatLng domyslnaPozycja = new LatLng(52.23, 21); // pozycja
-																	// Warszawy
+	static final LatLng domyslnaPozycja = new LatLng(52.23, 21); // pozycja Warszawy
 	static final int domyslnyZoom = 12;
 	final int RQS_GooglePlayServices = 1;
 
 	private Context context;
 	private LocationManager serwis;
-
+	private GoogleMap map;
+	
 	private TextView tv_adres;
+	private TextView tv_lokalizacja;
+	private Button btn_znajdz;
+	private EditText et_podaj_adres;
 	private ProgressBar mActivityIndicator;
 
 	private List<LatLng> pozycje;
 	private List<String> opisy;
+	private Boolean ifZnajdz = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +111,9 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 		setContentView(R.layout.activity_mapa);
 
 		tv_adres = (TextView) findViewById(R.id.tv_adres);
+		tv_lokalizacja = (TextView) findViewById(R.id.tv_lokalizacja);
+		et_podaj_adres = (EditText) findViewById(R.id.et_podaj_adres);
+		btn_znajdz = (Button) findViewById(R.id.btn_znajdz);
 		mActivityIndicator = (ProgressBar) findViewById(R.id.progress_adres);
 
 		Toast.makeText(
@@ -112,6 +122,14 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 				.findFragmentById(R.id.map);
 		mapFragment.getMapAsync(this);
 
+		
+		btn_znajdz.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				pobierzWspolrzedne(et_podaj_adres.getText().toString());
+				ifZnajdz = true;
+			}
+		});	
 	}
 
 	private void domyslnaMapa(GoogleMap map) {
@@ -168,9 +186,9 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 	private String pobierzAdres(LatLng pozycjaLL) {
 		String adres = "";
 		
-		Location pozycja = new Location("Test");
-		pozycja.setLatitude(pozycjaLL.latitude);
-		pozycja.setLongitude(pozycjaLL.longitude);
+//		Location pozycja = new Location("Test");
+//		pozycja.setLatitude(pozycjaLL.latitude);
+//		pozycja.setLongitude(pozycjaLL.longitude);
 		
 //        // Ensure that a Geocoder services is available
 //        if (Build.VERSION.SDK_INT >=
@@ -187,13 +205,24 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
              * onPostExecute() displays the address.
              */
 		
-            new PobierzAdresAsync(context, this).execute(pozycja);
+		new PobierzAdresAsync(context, this).execute(pozycjaLL);
 
 		return adres;
 	}
+	
+	private void pobierzWspolrzedne(String adres) {
+		new PobierzWspolrzedneAsync(context, this).execute(adres);
+		
+	}
 
+	private void przesunMape(LatLng pozycjaLL) {
+		map.moveCamera(CameraUpdateFactory.newLatLngZoom(pozycjaLL, domyslnyZoom));
+	}
+	
 	@Override
 	public void onMapReady(GoogleMap map) {
+		this.map = map;
+		
 		domyslnaMapa(map);
 		dodajMarkery(map, new ArrayList<LatLng>());
 
@@ -248,10 +277,31 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 		}
 	}
 
-	@Override	// funkcja od naszego AsyncListenera - tutaj zwrócony bêdzie adres z PobierzAdresAsync
-	public void doStuff(String adres) {
+	@Override	// funkcja od naszego AsyncAdresListenera - tutaj zwrócony bêdzie adres z PobierzAdresAsync
+	public void jestAdres(String adres) {
         mActivityIndicator.setVisibility(View.GONE); 	// wypierdziel progressbar
         tv_adres.setText(adres);						// wyœwietl adres
+        
+        pobierzWspolrzedne(adres);							// dla celów testowych wywo³uje od razu pobieranie lokalizacji z pobranego adresu
+	}
+
+	@Override	// funkcja od naszego AsyncPozycjaListener - tutaj zwrócona bêdzie pozycja z PobierzLokalizacjeAsync
+	public void jestPozycja(String pozycja) {
+		LatLng pozycjaLL;
+		
+		if(Character.isDigit(pozycja.charAt(0))) { // sprawdza czy mamy wspó³rzêdne czy tekst b³êdu.
+			String[] pozycjaS;
+			pozycjaS = pozycja.split(",");
+			pozycjaLL = new LatLng(Double.parseDouble(pozycjaS[0]), Double.parseDouble(pozycjaS[1]));
+			tv_lokalizacja.setText(pozycjaLL.toString());
+
+			if(ifZnajdz) {			// jezeli byl klikniety przycisk Znajdz, to ustaw na false i przesun mape - zapobiega przesuwaniu do kliknietego miejsca
+				ifZnajdz = false;
+				przesunMape(pozycjaLL);
+			}
+//			Log.d(DEBUG_TAG, "Robie if z jestPozycja, nie else'a");
+		}
+		else tv_lokalizacja.setText(pozycja); // wyœwietl to co wróci³o, czyli w tym wypadku treœæ b³êdu.
 	}
 
 }

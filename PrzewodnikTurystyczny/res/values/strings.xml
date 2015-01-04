@@ -15,5 +15,7 @@
     <string name="btn_czysc_branze">Czyść Branże</string>
     <string name="demo_str">Test_Pindolino</string>
 	<string name="content_desc1">symbol obiektu</string>
+	<string name="et_podaj_adres">Wprowadź adres</string>
+	<string name="btn_znajdz">Znajdź</string>
     
 </resources>
