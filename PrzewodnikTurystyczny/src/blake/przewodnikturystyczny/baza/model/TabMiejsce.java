@@ -6,7 +6,7 @@ import com.orm.SugarRecord;
 import com.orm.dsl.NotNull;
 import com.orm.dsl.Unique;
 
-public class TabMiejsce extends SugarRecord {
+public class TabMiejsce extends SugarRecord implements IfMarkierable {
 	// pojedyncze pola tabeli
 	@Unique@NotNull
 	private String nazwa;
@@ -16,7 +16,7 @@ public class TabMiejsce extends SugarRecord {
 	@NotNull
 	private double latitude;
 	@NotNull
-	private double longtitude;
+	private double longitude;
 	@NotNull
 	private Boolean czyZespol;
 	
@@ -33,7 +33,9 @@ public class TabMiejsce extends SugarRecord {
 	
 	public TabMiejsce() { }
 	
-	public TabMiejsce(String nazwa, String dataPowstania, String adres, double latitude, double longtitude,
+	/* konstruktor w miejscu wspó³rzêdnych zawsze wstawia wartoœæ 0 - jakos symbol pustej, domyœlnej 
+	 * w³aœciwe dodawane s¹ oddzielnie */
+	public TabMiejsce(String nazwa, String dataPowstania, String adres, 
 			Boolean czyZespol, TabBudynek budynek, TabBranza branza,
 			ArrayList<TabWydarzenie> wydarzenia, ArrayList<TabRzecz> rzeczy,
 			ArrayList<TabPostac> postacie, ArrayList<TabRod> rody) {
@@ -41,8 +43,6 @@ public class TabMiejsce extends SugarRecord {
 		this.nazwa = nazwa;
 		this.dataPowstania = dataPowstania;
 		this.adres = adres;
-		this.latitude = latitude;
-		this.longtitude = longtitude;
 		this.czyZespol = czyZespol;
 		this.budynek = budynek;
 		this.branza = branza;
@@ -50,6 +50,9 @@ public class TabMiejsce extends SugarRecord {
 		this.rzeczy = rzeczy;
 		this.postacie = postacie;
 		this.rody = rody;
+		
+		this.latitude = 0;
+		this.longitude = 0;
 	}
 	
 	public String getNazwa() {
@@ -128,17 +131,17 @@ public class TabMiejsce extends SugarRecord {
 	}
 
 	/**
-	 * @return the longtitude
+	 * @return the longitude
 	 */
-	public double getLongtitude() {
-		return longtitude;
+	public double getLongitude() {
+		return longitude;
 	}
 
 	/**
-	 * @param longtitude the longtitude to set
+	 * @param longitude the longitude to set
 	 */
-	public void setLongtitude(double longtitude) {
-		this.longtitude = longtitude;
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
 	}
 	
 }

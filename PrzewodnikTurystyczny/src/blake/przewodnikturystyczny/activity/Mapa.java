@@ -2,24 +2,24 @@ package blake.przewodnikturystyczny.activity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import android.app.Activity;
 import android.content.Context;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import blake.przewodnikturystyczny.R;
+import blake.przewodnikturystyczny.mapa.ObslugaMapy;
 import blake.przewodnikturystyczny.mapa.PobierzAdresAsync;
 import blake.przewodnikturystyczny.mapa.PobierzAdresAsync.AsyncAdresListener;
 import blake.przewodnikturystyczny.mapa.PobierzWspolrzedneAsync;
@@ -49,23 +49,34 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 			myContentsView = getLayoutInflater().inflate(
 					R.layout.custom_info_window_map, null);
 		}
-
+		/* 
+		 * najpierw wywo³ywane jest getInfoWindow, w nim tworzymy ca³y widok, jeœli zwróci nulla,
+		 * to jest robione getInfoContents, s³u¿y jakby do samego modyfikowania treœci - wg dokumentacji Google Maps
+		 */
 		@Override
 		public View getInfoContents(Marker marker) {
 			TextView tvTitle = ((TextView) myContentsView
-					.findViewById(R.id.title));
+					.findViewById(R.id.wp_title));
 			TextView tvSnippet = ((TextView) myContentsView
-					.findViewById(R.id.snippet));
+					.findViewById(R.id.wp_snippet));
+			ImageView iv_icon = ((ImageView)myContentsView.findViewById(R.id.wp_icon));
+			   
 			
 			tvTitle.setText(marker.getTitle());
 			tvSnippet.setText(marker.getSnippet());
+			
+			if (marker.getAlpha() == ObslugaMapy.alphaBudynek)
+				iv_icon.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_camera));
+			else if (marker.getAlpha() == ObslugaMapy.alphaMiejsce)
+				iv_icon.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_gallery));
+			else
+				iv_icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_launcher));
 
 			return myContentsView;
 		}
 
 		@Override
 		public View getInfoWindow(Marker marker) {
-
 			return null;
 		}
 	}
@@ -78,6 +89,7 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 	private Context context;
 	private LocationManager serwis;
 	private GoogleMap map;
+	private ObslugaMapy obslugaMapy;
 	
 	private TextView tv_adres;
 	private TextView tv_lokalizacja;
@@ -85,8 +97,6 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 	private EditText et_podaj_adres;
 	private ProgressBar mActivityIndicator;
 
-	private List<LatLng> pozycje;
-	private List<String> opisy;
 	private Boolean ifZnajdz = false;
 
 	@Override
@@ -121,7 +131,6 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 		MapFragment mapFragment = (MapFragment) getFragmentManager()
 				.findFragmentById(R.id.map);
 		mapFragment.getMapAsync(this);
-
 		
 		btn_znajdz.setOnClickListener(new OnClickListener() {
 			@Override
@@ -160,26 +169,23 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 						.snippet("No i du¿y opis").position(obok));
 		Marker trzeciMarkerek = map.addMarker(new MarkerOptions().position(
 				obok2).icon(
-				BitmapDescriptorFactory
+						BitmapDescriptorFactory
 						.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
 		Marker czwartyMarkerek = map.addMarker(new MarkerOptions()
-				.position(obok3)
-				.icon(BitmapDescriptorFactory
-						.fromResource(R.drawable.ic_launcher))
+		.position(obok3)
+		.icon(BitmapDescriptorFactory
+				.fromResource(R.drawable.ic_launcher))
 				.title("Marker czwarty"));
 
 		czwartyMarkerek.showInfoWindow();
 	}
 
-	private Location pobierzOstatniaLokalizacje() { // pobiera ostatni¹ znan¹
-													// lokalizacjê
-		Criteria criteria = new Criteria(); // pozwala automatycznie wybrac
-											// lepszego 'providera' lokalizacji
-		String provider = serwis.getBestProvider(criteria, false); // domyslnie to chyba ostatniego bierze, bo Criteria bez parametrów.
+	private Location pobierzOstatniaLokalizacje() { // pobiera ostatni¹ znan¹ lokalizacjê
+		Criteria criteria = new Criteria(); // pozwala automatycznie wybrac lepszego 'providera' lokalizacji (gps, wifi, 'gdzies cos zapisane')
+		String provider = serwis.getBestProvider(criteria, false); // domyslnie to chyba ostatniego z dostêpnych bierze, bo Criteria bez parametrów.
 		Location lokalizacja = serwis.getLastKnownLocation(provider);
 
 		Log.d(DEBUG_TAG, "Location_Provider: " + provider);
-
 		return lokalizacja;
 	}
 
@@ -222,9 +228,10 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 	@Override
 	public void onMapReady(GoogleMap map) {
 		this.map = map;
-		
+		obslugaMapy = new ObslugaMapy(map);
 		domyslnaMapa(map);
-		dodajMarkery(map, new ArrayList<LatLng>());
+//		dodajMarkery(map, new ArrayList<LatLng>());
+		obslugaMapy.dodajMarkery(obslugaMapy.pobierzBudynki()); // pobiera budynki jako liste i wywoluje przeciazona metode do wyswietlania budynkow
 
 		map.setInfoWindowAdapter(new MyInfoWindowAdapter()); // ustawia customowy adapter do okienek informacyjnych - tych po klikniêciu w marker
 															 // zdefiniowany jest w klasie wewnêtrznej, na górze tej klasy

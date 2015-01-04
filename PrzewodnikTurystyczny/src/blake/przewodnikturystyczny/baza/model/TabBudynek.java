@@ -7,7 +7,7 @@ import com.orm.SugarRecord;
 import com.orm.dsl.NotNull;
 import com.orm.dsl.Unique;
 
-public class TabBudynek extends SugarRecord {
+public class TabBudynek extends SugarRecord implements IfMarkierable {
 	// pojedyncze pola tabeli
 	@Unique@NotNull
 	private String nazwa;
@@ -16,7 +16,7 @@ public class TabBudynek extends SugarRecord {
 	@NotNull
 	private double latitude;
 	@NotNull
-	private double longtitude;
+	private double longitude;
 	private String projektant;
 	private String dataPowstania;
 	private String opis;
@@ -33,7 +33,8 @@ public class TabBudynek extends SugarRecord {
 
 	public TabBudynek() { }
 	
-	/* konstruktor celowo nie posiada latitude i longtitude, bo beda sie pozniej dodawac same z adresu */
+	/* konstruktor w miejscu wspó³rzêdnych zawsze wstawia wartoœæ 0 - jakos symbol pustej, domyœlnej 
+	 * w³aœciwe dodawane s¹ oddzielnie */
 	
 	public TabBudynek(String nazwa, String adres, String projektant, String dataPowstania, String opis, TabOkres okres, TabMiejsce miejsce, ArrayList<TabRzecz> rzeczy, 
 			ArrayList<TabPostac> postacie, ArrayList<TabRod> rody) {
@@ -48,6 +49,9 @@ public class TabBudynek extends SugarRecord {
 		this.rzeczy = rzeczy;
 		this.postacie = postacie;
 		this.rody = rody;
+		
+		this.latitude = 0;
+		this.longitude = 0;
 	}
 
 	public String getNazwa() {
@@ -145,17 +149,17 @@ public class TabBudynek extends SugarRecord {
 	}
 
 	/**
-	 * @return the longtitude
+	 * @return the longitude
 	 */
-	public double getLongtitude() {
-		return longtitude;
+	public double getLongitude() {
+		return longitude;
 	}
 
 	/**
-	 * @param longtitude the longtitude to set
+	 * @param longitude the longitude to set
 	 */
-	public void setLongtitude(double longtitude) {
-		this.longtitude = longtitude;
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
 	}
 
 }
