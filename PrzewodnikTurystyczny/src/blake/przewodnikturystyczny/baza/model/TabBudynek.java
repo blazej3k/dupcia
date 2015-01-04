@@ -2,6 +2,7 @@ package blake.przewodnikturystyczny.baza.model;
 
 import java.util.ArrayList;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.orm.SugarRecord;
 import com.orm.dsl.NotNull;
 import com.orm.dsl.Unique;
@@ -12,6 +13,10 @@ public class TabBudynek extends SugarRecord {
 	private String nazwa;
 	@Unique@NotNull
 	private String adres;
+	@NotNull
+	private double latitude;
+	@NotNull
+	private double longtitude;
 	private String projektant;
 	private String dataPowstania;
 	private String opis;
@@ -28,10 +33,13 @@ public class TabBudynek extends SugarRecord {
 
 	public TabBudynek() { }
 	
-	public TabBudynek(String nazwa, String projektant, String dataPowstania, String opis, TabOkres okres, TabMiejsce miejsce, ArrayList<TabRzecz> rzeczy, 
+	/* konstruktor celowo nie posiada latitude i longtitude, bo beda sie pozniej dodawac same z adresu */
+	
+	public TabBudynek(String nazwa, String adres, String projektant, String dataPowstania, String opis, TabOkres okres, TabMiejsce miejsce, ArrayList<TabRzecz> rzeczy, 
 			ArrayList<TabPostac> postacie, ArrayList<TabRod> rody) {
 
 		this.nazwa = nazwa;
+		this.adres = adres; 
 		this.projektant = projektant;
 		this.dataPowstania = dataPowstania;
 		this.opis = opis;
@@ -120,6 +128,34 @@ public class TabBudynek extends SugarRecord {
 
 	public void setAdres(String adres) {
 		this.adres = adres;
+	}
+
+	/**
+	 * @return the latitude
+	 */
+	public double getLatitude() {
+		return latitude;
+	}
+
+	/**
+	 * @param latitude the latitude to set
+	 */
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+
+	/**
+	 * @return the longtitude
+	 */
+	public double getLongtitude() {
+		return longtitude;
+	}
+
+	/**
+	 * @param longtitude the longtitude to set
+	 */
+	public void setLongtitude(double longtitude) {
+		this.longtitude = longtitude;
 	}
 
 }

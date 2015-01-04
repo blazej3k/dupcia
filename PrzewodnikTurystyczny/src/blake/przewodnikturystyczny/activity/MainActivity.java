@@ -6,8 +6,11 @@ import blake.przewodnikturystyczny.R;
 import blake.przewodnikturystyczny.baza.PompeczkaBranzaOkres;
 import blake.przewodnikturystyczny.baza.PompeczkaRozne;
 import blake.przewodnikturystyczny.baza.model.TabBranza;
+import blake.przewodnikturystyczny.baza.model.TabBudynek;
 import blake.przewodnikturystyczny.baza.model.TabOkres;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,8 +30,8 @@ public class MainActivity extends Activity {
 	private Button btn_pompeczka_branza;
 	private Button btn_pompeczka_okres;
 	private Button btn_pompeczka_rozne;
-	private Button btn_count_okresy;
-	private Button btn_count_branze;
+	private Button btn_wolny;
+	private Button btn_count_all;
 	private Button btn_czysc_okresy;
 	private Button btn_czysc_branze;
 	
@@ -44,10 +47,10 @@ public class MainActivity extends Activity {
         btn_pompeczka_branza = (Button) findViewById(R.id.btn_pompeczka_branza);
         btn_pompeczka_okres = (Button) findViewById(R.id.btn_pompeczka_okres);
         btn_pompeczka_rozne = (Button) findViewById(R.id.btn_pompeczka_rozne);
-        btn_count_okresy = (Button) findViewById(R.id.btn_count_okresy);
-        btn_count_branze = (Button) findViewById(R.id.btn_count_branze);
+        btn_count_all = (Button) findViewById(R.id.btn_count_all);
         btn_czysc_okresy = (Button) findViewById(R.id.btn_czysc_okresy);
         btn_czysc_branze = (Button) findViewById(R.id.btn_czysc_branze);
+        btn_wolny = (Button) findViewById(R.id.btn_wolny);
         
         initBtnOnClickListeners();
     }
@@ -83,17 +86,18 @@ public class MainActivity extends Activity {
 			}
 		});
 		
-		btn_count_okresy.setOnClickListener(new OnClickListener() {
+		btn_wolny.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(context, "Liczba Okresów w bazie: "+TabOkres.count(TabOkres.class), Toast.LENGTH_SHORT).show();
+//				Toast.makeText(context, "Liczba Okresów w bazie: "+TabOkres.count(TabOkres.class), Toast.LENGTH_SHORT).show();
 			}
 		});	
 		
-		btn_count_branze.setOnClickListener(new OnClickListener() {
+		btn_count_all.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(context, "Liczba Bran¿ w bazie: "+TabBranza.count(TabBranza.class), Toast.LENGTH_SHORT).show();
+				showDialog(1);
+//				Toast.makeText(context, "Liczba Bran¿ w bazie: "+TabBranza.count(TabBranza.class), Toast.LENGTH_SHORT).show();
 			}
 		});	
 		
@@ -112,6 +116,18 @@ public class MainActivity extends Activity {
 		});	
 	}
 
+	@Override
+	protected Dialog onCreateDialog(int id) {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder.setTitle("Statystyka tabel.");
+        dialogBuilder.setMessage(
+        		"Bran¿a: "+TabBranza.count(TabBranza.class)+"\n"+
+        		"Okres: "+TabOkres.count(TabOkres.class)+"\n"+
+        		"Budynek: "+TabBudynek.count(TabBudynek.class)+"\n"
+        		);
+        return dialogBuilder.create();
+    }
+	
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

@@ -32,16 +32,10 @@
         tools:context="blake.przewodnikturystyczny.MainActivity" >
 
         <Button
-            android:id="@+id/btn_count_okresy"
+            android:id="@+id/btn_count_all"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/btn_count_okresy" />
-
-        <Button
-            android:id="@+id/btn_count_branze"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/btn_count_branze" />
+            android:text="@string/btn_count_all" />
     </LinearLayout>
 
     <LinearLayout
@@ -82,5 +76,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/pompeczka_rozne" />
+
+    <Button
+        android:id="@+id/btn_wolny"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/demo_str" />
 
 </LinearLayout>

@@ -13,6 +13,11 @@ public class TabMiejsce extends SugarRecord {
 	private String dataPowstania;
 	@Unique@NotNull
 	private String adres;
+	@NotNull
+	private double latitude;
+	@NotNull
+	private double longtitude;
+	@NotNull
 	private Boolean czyZespol;
 	
 	// relacje 1-1
@@ -28,7 +33,7 @@ public class TabMiejsce extends SugarRecord {
 	
 	public TabMiejsce() { }
 	
-	public TabMiejsce(String nazwa, String dataPowstania, String adres,
+	public TabMiejsce(String nazwa, String dataPowstania, String adres, double latitude, double longtitude,
 			Boolean czyZespol, TabBudynek budynek, TabBranza branza,
 			ArrayList<TabWydarzenie> wydarzenia, ArrayList<TabRzecz> rzeczy,
 			ArrayList<TabPostac> postacie, ArrayList<TabRod> rody) {
@@ -36,6 +41,8 @@ public class TabMiejsce extends SugarRecord {
 		this.nazwa = nazwa;
 		this.dataPowstania = dataPowstania;
 		this.adres = adres;
+		this.latitude = latitude;
+		this.longtitude = longtitude;
 		this.czyZespol = czyZespol;
 		this.budynek = budynek;
 		this.branza = branza;
@@ -104,6 +111,34 @@ public class TabMiejsce extends SugarRecord {
 	}
 	public void setRody(ArrayList<TabRod> rody) {
 		this.rody = rody;
+	}
+
+	/**
+	 * @return the latitude
+	 */
+	public double getLatitude() {
+		return latitude;
+	}
+
+	/**
+	 * @param latitude the latitude to set
+	 */
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+
+	/**
+	 * @return the longtitude
+	 */
+	public double getLongtitude() {
+		return longtitude;
+	}
+
+	/**
+	 * @param longtitude the longtitude to set
+	 */
+	public void setLongtitude(double longtitude) {
+		this.longtitude = longtitude;
 	}
 	
 }
