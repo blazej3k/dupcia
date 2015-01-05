@@ -1,14 +1,10 @@
 package blake.przewodnikturystyczny.baza.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
-import com.orm.SugarRecord;
-import com.orm.dsl.NotNull;
-import com.orm.dsl.Unique;
 
 @Table(name="Branza")
 public class TabBranza extends Model {

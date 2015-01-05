@@ -1,16 +1,11 @@
 package blake.przewodnikturystyczny.baza.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Column.ConflictAction;
 import com.activeandroid.annotation.Table;
-import com.google.android.gms.maps.model.LatLng;
-import com.orm.SugarRecord;
-import com.orm.dsl.NotNull;
-import com.orm.dsl.Unique;
 
 @Table(name = "Budynek")
 public class TabBudynek extends Model implements IfMarkierable {

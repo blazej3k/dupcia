@@ -12,9 +12,10 @@
     <string name="btn_count_all">Zlicz tabele</string>
     <string name="btn_czysc_okresy">Czyść Okresy</string>
     <string name="btn_czysc_branze">Czyść Branże</string>
+    <string name="btn_czysc_budynki">Czyść Budynki</string>
     <string name="demo_str">Test_Pindolino</string>
 	<string name="content_desc1">symbol obiektu</string>
 	<string name="et_podaj_adres">Wprowadź adres</string>
 	<string name="btn_znajdz">Znajdź</string>
-    
+	
 </resources>

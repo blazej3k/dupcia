@@ -33,7 +33,7 @@ public class MainActivity extends Activity {
 	private Button btn_pompeczka_branza;
 	private Button btn_pompeczka_okres;
 	private Button btn_pompeczka_rozne;
-	private Button btn_wolny;
+	private Button btn_czysc_budynki;
 	private Button btn_count_all;
 	private Button btn_czysc_okresy;
 	private Button btn_czysc_branze;
@@ -52,7 +52,7 @@ public class MainActivity extends Activity {
         btn_count_all = (Button) findViewById(R.id.btn_count_all);
         btn_czysc_okresy = (Button) findViewById(R.id.btn_czysc_okresy);
         btn_czysc_branze = (Button) findViewById(R.id.btn_czysc_branze);
-        btn_wolny = (Button) findViewById(R.id.btn_wolny);
+        btn_czysc_budynki = (Button) findViewById(R.id.btn_czysc_budynki);
         
         initBtnOnClickListeners();
     }
@@ -84,16 +84,9 @@ public class MainActivity extends Activity {
 		btn_pompeczka_rozne.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				new PompeczkaRozne();
+				new PompeczkaRozne(context);
 			}
 		});
-		
-		btn_wolny.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-//				Toast.makeText(context, "Liczba Okresów w bazie: "+TabOkres.count(TabOkres.class), Toast.LENGTH_SHORT).show();
-			}
-		});	
 		
 		btn_count_all.setOnClickListener(new OnClickListener() {
 			@Override
@@ -114,6 +107,13 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				new Delete().from(TabBranza.class).execute();
+			}
+		});	
+		
+		btn_czysc_budynki.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				new Delete().from(TabBudynek.class).execute();
 			}
 		});	
 	}

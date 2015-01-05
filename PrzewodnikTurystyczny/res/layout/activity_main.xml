@@ -57,6 +57,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/btn_czysc_branze" />
+
+        <Button
+            android:id="@+id/btn_czysc_budynki"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_czysc_budynki" />
+
     </LinearLayout>
 
     <Button
@@ -76,11 +83,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/pompeczka_rozne" />
-
-    <Button
-        android:id="@+id/btn_wolny"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/demo_str" />
 
 </LinearLayout>

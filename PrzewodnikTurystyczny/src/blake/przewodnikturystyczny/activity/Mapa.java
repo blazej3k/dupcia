@@ -155,31 +155,6 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 		map.getUiSettings().setTiltGesturesEnabled(false);
 	}
 
-	private void dodajMarkery(GoogleMap map, List<LatLng> pozycjeLL) {
-		map.addMarker(
-				new MarkerOptions().position(domyslnaPozycja).title(
-						"Centrówka!")).setSnippet("Du¿y opis rikitiki");
-
-		LatLng obok = new LatLng(52, 21);
-		LatLng obok2 = new LatLng(52, 21.1);
-		LatLng obok3 = new LatLng(52, 21.2);
-
-		Marker drugiMarkerek = map
-				.addMarker(new MarkerOptions().title("Marker drugi")
-						.snippet("No i du¿y opis").position(obok));
-		Marker trzeciMarkerek = map.addMarker(new MarkerOptions().position(
-				obok2).icon(
-						BitmapDescriptorFactory
-						.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-		Marker czwartyMarkerek = map.addMarker(new MarkerOptions()
-		.position(obok3)
-		.icon(BitmapDescriptorFactory
-				.fromResource(R.drawable.ic_launcher))
-				.title("Marker czwarty"));
-
-		czwartyMarkerek.showInfoWindow();
-	}
-
 	private Location pobierzOstatniaLokalizacje() { // pobiera ostatni¹ znan¹ lokalizacjê
 		Criteria criteria = new Criteria(); // pozwala automatycznie wybrac lepszego 'providera' lokalizacji (gps, wifi, 'gdzies cos zapisane')
 		String provider = serwis.getBestProvider(criteria, false); // domyslnie to chyba ostatniego z dostêpnych bierze, bo Criteria bez parametrów.
@@ -312,3 +287,31 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 	}
 
 }
+
+
+/*
+private void dodajMarkery(GoogleMap map, List<LatLng> pozycjeLL) {
+	map.addMarker(
+			new MarkerOptions().position(domyslnaPozycja).title(
+					"Centrówka!")).setSnippet("Du¿y opis rikitiki");
+
+	LatLng obok = new LatLng(52, 21);
+	LatLng obok2 = new LatLng(52, 21.1);
+	LatLng obok3 = new LatLng(52, 21.2);
+
+	Marker drugiMarkerek = map
+			.addMarker(new MarkerOptions().title("Marker drugi")
+					.snippet("No i du¿y opis").position(obok));
+	Marker trzeciMarkerek = map.addMarker(new MarkerOptions().position(
+			obok2).icon(
+					BitmapDescriptorFactory
+					.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+	Marker czwartyMarkerek = map.addMarker(new MarkerOptions()
+	.position(obok3)
+	.icon(BitmapDescriptorFactory
+			.fromResource(R.drawable.ic_launcher))
+			.title("Marker czwarty"));
+
+	czwartyMarkerek.showInfoWindow();
+}
+*/

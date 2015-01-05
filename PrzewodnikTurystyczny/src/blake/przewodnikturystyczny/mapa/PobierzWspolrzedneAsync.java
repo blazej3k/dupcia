@@ -77,7 +77,7 @@ public class PobierzWspolrzedneAsync extends AsyncTask<String, Void, String> {
 	}
 	
 	public interface AsyncWspolrzedneListener {			// interfejs, implementuj¹c go w Activity mo¿na wygodnie s³uchaæ, jak zadanie z tej klasy skoñczy siê wykonywaæ
-		public void jestPozycja(String pozycja);	// czyli daje siê ³atwo zwróciæ wynik do wywo³uj¹cej go Activity
+		public void jestPozycja(String pozycja);		// czyli daje siê ³atwo zwróciæ wynik do wywo³uj¹cej go Activity
 	}
 }
 

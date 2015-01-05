@@ -1,16 +1,16 @@
 package blake.przewodnikturystyczny.baza.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Column.ForeignKeyAction;
 import com.activeandroid.annotation.Table;
 
 @Table(name = "Okres")
 public class TabOkres extends Model {
 	// pojedyncze pola tabeli
-	@Column(name = "nazwa", unique=true, notNull=true)
+	@Column(name = "nazwa", unique=true, notNull=true, onDelete=ForeignKeyAction.RESTRICT)
 	private String nazwa;
 	@Column(name = "rokPoczatek", unique=true, notNull=true)
 	private String rokPoczatek;
