@@ -231,7 +231,7 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 		obslugaMapy = new ObslugaMapy(map);
 		domyslnaMapa(map);
 //		dodajMarkery(map, new ArrayList<LatLng>());
-		obslugaMapy.dodajMarkery(obslugaMapy.pobierzBudynki()); // pobiera budynki jako liste i wywoluje przeciazona metode do wyswietlania budynkow
+		obslugaMapy.dodajMarkery(obslugaMapy.pobierzBudynki()); // pobiera budynki jako liste i wywoluje generyczn¹ metode do wyswietlania budynkow
 
 		map.setInfoWindowAdapter(new MyInfoWindowAdapter()); // ustawia customowy adapter do okienek informacyjnych - tych po klikniêciu w marker
 															 // zdefiniowany jest w klasie wewnêtrznej, na górze tej klasy

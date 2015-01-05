@@ -1,58 +1,75 @@
 package blake.przewodnikturystyczny.baza.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Column.ConflictAction;
+import com.activeandroid.annotation.Table;
 import com.google.android.gms.maps.model.LatLng;
 import com.orm.SugarRecord;
 import com.orm.dsl.NotNull;
 import com.orm.dsl.Unique;
 
-public class TabBudynek extends SugarRecord implements IfMarkierable {
+@Table(name = "Budynek")
+public class TabBudynek extends Model implements IfMarkierable {
 	// pojedyncze pola tabeli
-	@Unique@NotNull
+	@Column(name = "nazwa", unique=true, notNull=true)
 	private String nazwa;
-	@Unique@NotNull
+	@Column(name = "adres", unique=true, notNull=true)
 	private String adres;
-	@NotNull
+	@Column(name = "latitude", notNull=true, onNullConflict=ConflictAction.REPLACE)
 	private double latitude;
-	@NotNull
+	@Column(name = "longitude", notNull=true)
 	private double longitude;
+	@Column(name = "projektant")
 	private String projektant;
+	@Column(name = "dataPowstania")
 	private String dataPowstania;
+	@Column(name = "opis")
 	private String opis;
 
 	// relacje 1-1
-	@NotNull
+	@Column(name = "Okres_ID", notNull=true)
 	private TabOkres okres;
+	@Column(name = "Miejsce_ID")
 	private TabMiejsce miejsce;
 
 	// relacje 1-wiele
-	private ArrayList<TabRzecz> rzeczy;
-	private ArrayList<TabPostac> postacie;
-	private ArrayList<TabRod> rody;
+    public List<TabRzecz> rzeczy() {
+        return getMany(TabRzecz.class, "Budynek_ID");
+    }
+    
+    public List<TabPostac> postacie() {
+        return getMany(TabPostac.class, "Budynek_ID");
+    }
+    
+    public List<TabRod> rody() {
+        return getMany(TabRod.class, "Budynek_ID");
+    }
 
-	public TabBudynek() { }
+	public TabBudynek() {
+		super();
+	}
 	
-	/* konstruktor w miejscu wspó³rzêdnych zawsze wstawia wartoœæ 0 - jakos symbol pustej, domyœlnej 
-	 * w³aœciwe dodawane s¹ oddzielnie */
-	
-	public TabBudynek(String nazwa, String adres, String projektant, String dataPowstania, String opis, TabOkres okres, TabMiejsce miejsce, ArrayList<TabRzecz> rzeczy, 
-			ArrayList<TabPostac> postacie, ArrayList<TabRod> rody) {
-
+	public TabBudynek(String nazwa, String adres, String projektant, String dataPowstania, String opis) {
+		super();
+		
 		this.nazwa = nazwa;
 		this.adres = adres; 
 		this.projektant = projektant;
 		this.dataPowstania = dataPowstania;
 		this.opis = opis;
-		this.okres = okres;
-		this.miejsce = miejsce;
-		this.rzeczy = rzeczy;
-		this.postacie = postacie;
-		this.rody = rody;
 		
 		this.latitude = 0;
 		this.longitude = 0;
 	}
+	
+	/* konstruktor w miejscu wspó³rzêdnych zawsze wstawia wartoœæ 0 - jakos symbol pustej, domyœlnej 
+	 * w³aœciwe dodawane s¹ oddzielnie */
+	
+
 
 	public String getNazwa() {
 		return nazwa;
@@ -100,30 +117,6 @@ public class TabBudynek extends SugarRecord implements IfMarkierable {
 
 	public void setMiejsce(TabMiejsce miejsce) {
 		this.miejsce = miejsce;
-	}
-
-	public ArrayList<TabRzecz> getRzeczy() {
-		return rzeczy;
-	}
-
-	public void setRzeczy(ArrayList<TabRzecz> rzeczy) {
-		this.rzeczy = rzeczy;
-	}
-
-	public ArrayList<TabPostac> getPostacie() {
-		return postacie;
-	}
-
-	public void setPostacie(ArrayList<TabPostac> postacie) {
-		this.postacie = postacie;
-	}
-
-	public ArrayList<TabRod> getRody() {
-		return rody;
-	}
-
-	public void setRody(ArrayList<TabRod> rody) {
-		this.rody = rody;
 	}
 
 	public String getAdres() {

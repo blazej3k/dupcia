@@ -1,55 +1,70 @@
 package blake.przewodnikturystyczny.baza.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import com.orm.SugarRecord;
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
 import com.orm.dsl.NotNull;
 import com.orm.dsl.Unique;
 
-public class TabMiejsce extends SugarRecord implements IfMarkierable {
+@Table(name="Miejsce")
+public class TabMiejsce extends Model implements IfMarkierable {
 	// pojedyncze pola tabeli
-	@Unique@NotNull
+	@Column(name="nazwa", unique=true, notNull=true)
 	private String nazwa;
-	private String dataPowstania;
-	@Unique@NotNull
+	@Column(name="adres", unique=true, notNull=true)
 	private String adres;
-	@NotNull
+	@Column(name="dataPowstania")
+	private String dataPowstania;
+	@Column(name="latitude", notNull=true)
 	private double latitude;
-	@NotNull
+	@Column(name="longitude", notNull=true)
 	private double longitude;
-	@NotNull
+	@Column(name="czyZespol", notNull=true)
 	private Boolean czyZespol;
 	
 	// relacje 1-1
+	@Column(name="Budynek_ID")
 	private TabBudynek budynek;
-	@NotNull
+	@Column(name="Branza_ID", notNull=true)
 	private TabBranza branza;
 	
 	// relacje 1-wiele
-	private ArrayList<TabWydarzenie> wydarzenia;
-	private ArrayList<TabRzecz> rzeczy;
-	private ArrayList<TabPostac> postacie;
-	private ArrayList<TabRod> rody;
+    public List<TabWydarzenie> wydarzenia() {
+        return getMany(TabWydarzenie.class, "Miejsce_ID");
+    }
+    
+    public List<TabRzecz> rzeczy() {
+        return getMany(TabRzecz.class, "Miejsce_ID");
+    }
+    
+    public List<TabPostac> postacie() {
+        return getMany(TabPostac.class, "Miejsce_ID");
+    }
+    
+    public List<TabRod> rody() {
+        return getMany(TabRod.class, "Miejsce_ID");
+    }
 	
-	public TabMiejsce() { }
+	public TabMiejsce() {
+		super();
+	}
 	
 	/* konstruktor w miejscu wspó³rzêdnych zawsze wstawia wartoœæ 0 - jakos symbol pustej, domyœlnej 
 	 * w³aœciwe dodawane s¹ oddzielnie */
 	public TabMiejsce(String nazwa, String dataPowstania, String adres, 
-			Boolean czyZespol, TabBudynek budynek, TabBranza branza,
-			ArrayList<TabWydarzenie> wydarzenia, ArrayList<TabRzecz> rzeczy,
-			ArrayList<TabPostac> postacie, ArrayList<TabRod> rody) {
+			Boolean czyZespol, TabBudynek budynek, TabBranza branza) {
 
+		super();
+		
 		this.nazwa = nazwa;
 		this.dataPowstania = dataPowstania;
 		this.adres = adres;
 		this.czyZespol = czyZespol;
 		this.budynek = budynek;
 		this.branza = branza;
-		this.wydarzenia = wydarzenia;
-		this.rzeczy = rzeczy;
-		this.postacie = postacie;
-		this.rody = rody;
 		
 		this.latitude = 0;
 		this.longitude = 0;
@@ -90,30 +105,6 @@ public class TabMiejsce extends SugarRecord implements IfMarkierable {
 	}
 	public void setBranza(TabBranza branza) {
 		this.branza = branza;
-	}
-	public ArrayList<TabWydarzenie> getWydarzenia() {
-		return wydarzenia;
-	}
-	public void setWydarzenia(ArrayList<TabWydarzenie> wydarzenia) {
-		this.wydarzenia = wydarzenia;
-	}
-	public ArrayList<TabRzecz> getRzeczy() {
-		return rzeczy;
-	}
-	public void setRzeczy(ArrayList<TabRzecz> rzeczy) {
-		this.rzeczy = rzeczy;
-	}
-	public ArrayList<TabPostac> getPostacie() {
-		return postacie;
-	}
-	public void setPostacie(ArrayList<TabPostac> postacie) {
-		this.postacie = postacie;
-	}
-	public ArrayList<TabRod> getRody() {
-		return rody;
-	}
-	public void setRody(ArrayList<TabRod> rody) {
-		this.rody = rody;
 	}
 
 	/**

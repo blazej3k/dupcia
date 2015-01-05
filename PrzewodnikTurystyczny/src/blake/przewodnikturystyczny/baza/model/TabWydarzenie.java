@@ -1,49 +1,62 @@
 package blake.przewodnikturystyczny.baza.model;
 
-import java.util.ArrayList;
+import java.util.List;
 
-import com.orm.SugarRecord;
-import com.orm.dsl.NotNull;
-import com.orm.dsl.Unique;
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
 
-public class TabWydarzenie extends SugarRecord {
+@Table(name="Wydarzenie")
+public class TabWydarzenie extends Model {
 	// pojedyncze pola tabeli
-	@Unique@NotNull
+	@Column(name="nazwa", unique=true, notNull=true)
 	private String nazwa;
-	@NotNull
+	@Column(name="dataPoczatek", notNull=true)
 	private String dataPoczatek;
+	@Column(name="dataKoniec")
 	private String dataKoniec;
+	@Column(name="opis")
 	private String opis;
 	
 	// relacje 1-1
-	@NotNull
+	@Column(name="Okres_ID", notNull=true)
 	private TabOkres okres;
-	@NotNull
+	@Column(name="Branza_ID", notNull=true)
 	private TabBranza branza;
 	
 	// relacje 1-wiele
-	private ArrayList<TabMiejsce> miejsca;
-	private ArrayList<TabRod> rody;
-	private ArrayList<TabPostac> postacie;
-	private ArrayList<TabRzecz> rzeczy;
+	public List<TabMiejsce> miejsca() {
+		return getMany(TabMiejsce.class, "Wydarzenie_ID");
+	}
+
+	public List<TabRod> rody() {
+		return getMany(TabRod.class, "Wydarzenie_ID");
+	}
 	
-	public TabWydarzenie() { }
+	public List<TabPostac> postacie() {
+		return getMany(TabPostac.class, "Wydarzenie_ID");
+	}
+	
+	public List<TabRzecz> rzeczy() {
+		return getMany(TabRzecz.class, "Wydarzenie_ID");
+	}
+
+	
+	public TabWydarzenie() {
+		super();
+	}
 
 	public TabWydarzenie(String nazwa, String dataPoczatek, String dataKoniec,
-			String opis, TabOkres okres, TabBranza branza,
-			ArrayList<TabMiejsce> miejsca, ArrayList<TabRod> rody,
-			ArrayList<TabPostac> postacie, ArrayList<TabRzecz> rzeczy) {
+			String opis, TabOkres okres, TabBranza branza) {
 
+		super();
+		
 		this.nazwa = nazwa;
 		this.dataPoczatek = dataPoczatek;
 		this.dataKoniec = dataKoniec;
 		this.opis = opis;
 		this.okres = okres;
 		this.branza = branza;
-		this.miejsca = miejsca;
-		this.rody = rody;
-		this.postacie = postacie;
-		this.rzeczy = rzeczy;
 	}
 
 	public String getNazwa() {
@@ -92,37 +105,5 @@ public class TabWydarzenie extends SugarRecord {
 
 	public void setBranza(TabBranza branza) {
 		this.branza = branza;
-	}
-
-	public ArrayList<TabMiejsce> getMiejsca() {
-		return miejsca;
-	}
-
-	public void setMiejsca(ArrayList<TabMiejsce> miejsca) {
-		this.miejsca = miejsca;
-	}
-
-	public ArrayList<TabRod> getRody() {
-		return rody;
-	}
-
-	public void setRody(ArrayList<TabRod> rody) {
-		this.rody = rody;
-	}
-
-	public ArrayList<TabPostac> getPostacie() {
-		return postacie;
-	}
-
-	public void setPostacie(ArrayList<TabPostac> postacie) {
-		this.postacie = postacie;
-	}
-
-	public ArrayList<TabRzecz> getRzeczy() {
-		return rzeczy;
-	}
-
-	public void setRzeczy(ArrayList<TabRzecz> rzeczy) {
-		this.rzeczy = rzeczy;
 	}
 }

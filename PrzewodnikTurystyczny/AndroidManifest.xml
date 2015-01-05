@@ -33,14 +33,25 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
-        android:label="a@string/app_name"
+        android:label="@string/app_name"
         android:theme="@style/AppTheme" 
         
-        android:name="com.orm.SugarApp" >  <!--Use this attribute verbatim-->
-        <meta-data android:name="DATABASE" android:value="przewodnik.db" />
-        <meta-data android:name="VERSION" android:value="1" />
-        <meta-data android:name="QUERY_LOG" android:value="true" />
-        <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="blake.przewodnikturystyczny.baza.model" />
+        android:name="com.activeandroid.app.Application" >  
+        <meta-data android:name="AA_DB_NAME" android:value="przewodnik.db" />
+        <meta-data android:name="AA_DB_VERSION" android:value="1" />
+        <meta-data
+            android:name="AA_MODELS"
+            android:value="
+            blake.przewodnikturystyczny.baza.model.TabBranza,
+            blake.przewodnikturystyczny.baza.model.TabBudynek,
+            blake.przewodnikturystyczny.baza.model.TabMiejsce,
+            blake.przewodnikturystyczny.baza.model.TabOkres,
+            blake.przewodnikturystyczny.baza.model.TabPostac,
+            blake.przewodnikturystyczny.baza.model.TabRod,
+            blake.przewodnikturystyczny.baza.model.TabRzecz,
+            blake.przewodnikturystyczny.baza.model.TabWydarzenie" />
+
+        <!-- Powyżej tagi ActiveAndroida -->
         <activity
             android:name=".activity.MainActivity"
             android:label="@string/app_name" >

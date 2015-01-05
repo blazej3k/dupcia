@@ -1,42 +1,60 @@
 package blake.przewodnikturystyczny.baza.model;
 
-import java.util.ArrayList;
+import java.util.List;
 
-import com.orm.SugarRecord;
-import com.orm.dsl.NotNull;
-import com.orm.dsl.Unique;
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
 
-public class TabPostac extends SugarRecord {
+@Table(name="Postac")
+public class TabPostac extends Model {
 	// pojedyncze pola tabeli
-	@Unique@NotNull
+	@Column(name="imie", unique=true, notNull=true)
 	private String imie;
-	@Unique@NotNull
+	@Column(name="nazwisko", unique=true, notNull=true)
 	private String nazwisko;
+	@Column(name="rokUrodzenia")
 	private String rokUrodzenia;
+	@Column(name="rokSmierci")
 	private String rokSmierci;
+	@Column(name="opis")
 	private String opis;
 	
 	// relacje 1-1
-	@NotNull
+	@Column(name="Okres_ID", notNull=true)
 	private TabOkres okres;
-	@NotNull
+	@Column(name="Branza_ID", notNull=true)
 	private TabBranza branza;
+	@Column(name="Rod_ID")
 	private TabRod rod;
 	
 	// relacje 1-wiele
-	private ArrayList<TabRzecz> rzeczy;
-	private ArrayList<TabWydarzenie> wydarzenia;
-	private ArrayList<TabBudynek> budynki;
-	private ArrayList<TabMiejsce> miejsca;
+    public List<TabRzecz> rzeczy() {
+        return getMany(TabRzecz.class, "Postac_ID");
+    }
+    
+    public List<TabWydarzenie> wydarzenia() {
+        return getMany(TabWydarzenie.class, "Postac_ID");
+    }
+    
+    public List<TabBudynek> budynki() {
+        return getMany(TabBudynek.class, "Postac_ID");
+    }
+    
+    public List<TabMiejsce> miejsca() {
+        return getMany(TabMiejsce.class, "Postac_ID");
+    }
 	
-	public TabPostac() { }
+	public TabPostac() {
+		super();
+	}
 
 	public TabPostac(String imie, String nazwisko, String rokUrodzenia,
-			String rokSmierci, String opis, TabOkres okres, TabBranza branza,
-			TabRod rod, ArrayList<TabRzecz> rzeczy,
-			ArrayList<TabWydarzenie> wydarzenia, ArrayList<TabBudynek> budynki,
-			ArrayList<TabMiejsce> miejsca) {
+			String rokSmierci, String opis, 
+			TabOkres okres, TabBranza branza, TabRod rod)  {
 
+		super();
+		
 		this.imie = imie;
 		this.nazwisko = nazwisko;
 		this.rokUrodzenia = rokUrodzenia;
@@ -45,10 +63,6 @@ public class TabPostac extends SugarRecord {
 		this.okres = okres;
 		this.branza = branza;
 		this.rod = rod;
-		this.rzeczy = rzeczy;
-		this.wydarzenia = wydarzenia;
-		this.budynki = budynki;
-		this.miejsca = miejsca;
 	}
 
 	public String getImie() {
@@ -113,37 +127,5 @@ public class TabPostac extends SugarRecord {
 
 	public void setRod(TabRod rod) {
 		this.rod = rod;
-	}
-
-	public ArrayList<TabRzecz> getRzeczy() {
-		return rzeczy;
-	}
-
-	public void setRzeczy(ArrayList<TabRzecz> rzeczy) {
-		this.rzeczy = rzeczy;
-	}
-
-	public ArrayList<TabWydarzenie> getWydarzenia() {
-		return wydarzenia;
-	}
-
-	public void setWydarzenia(ArrayList<TabWydarzenie> wydarzenia) {
-		this.wydarzenia = wydarzenia;
-	}
-
-	public ArrayList<TabBudynek> getBudynki() {
-		return budynki;
-	}
-
-	public void setBudynki(ArrayList<TabBudynek> budynki) {
-		this.budynki = budynki;
-	}
-
-	public ArrayList<TabMiejsce> getMiejsca() {
-		return miejsca;
-	}
-
-	public void setMiejsca(ArrayList<TabMiejsce> miejsca) {
-		this.miejsca = miejsca;
 	}
 }

@@ -20,8 +20,6 @@ public class PompeczkaBranzaOkres {
 	private void zrobOkresy() {
 		ArrayList<TabOkres> okresy = new ArrayList<TabOkres>();
 		
-		// TODO zrobiæ inicjowanie okresu za ka¿dym razem od nowa bo siê same 'ostatnie' wrzucaj¹ na listê.
-		
 		okres = new TabOkres();
 		okres.setNazwa("XIV-XV");
 		okres.setRokPoczatek("1301");
@@ -71,11 +69,13 @@ public class PompeczkaBranzaOkres {
 		okres.setOpis("Wiek XX - Warszawa w czasach wspó³czesnych. Od III Rzeczypospolitej.");
 		okresy.add(okres);
 		
-		for (TabOkres x: okresy)
+		for (TabOkres x: okresy) {
 			Log.d(MainActivity.DEBUG_TAG, x.getNazwa());
+			x.save();
+			//TODO zmieniæ na transakcjê - szybciej
+		}
 		
 		Log.d(MainActivity.DEBUG_TAG, "Na liœcie: "+okresy.size());
-		TabOkres.saveInTx(okresy);
 	}
 
 	private void zrobBranze() {

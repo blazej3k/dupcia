@@ -1,43 +1,52 @@
 package blake.przewodnikturystyczny.baza.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
 import com.orm.SugarRecord;
 import com.orm.dsl.NotNull;
 import com.orm.dsl.Unique;
 
-public class TabBranza extends SugarRecord {
+@Table(name="Branza")
+public class TabBranza extends Model {
 	// pojedyncze pola tabeli
 	
-	@Unique@NotNull
+	@Column(name="nazwa", unique=true, notNull=true)
 	private String nazwa;
+	@Column(name="opis")
 	private String opis;
 	
 	// relacje 1-wiele
-	private ArrayList<TabMiejsce> miejsca;
-	private ArrayList<TabWydarzenie> wydarzenia;
-	private ArrayList<TabRzecz> rzeczy;
-	private ArrayList<TabPostac> postacie;
+    public List<TabMiejsce> miejsca() {
+        return getMany(TabMiejsce.class, "Branza_ID");
+    }
+    
+    public List<TabWydarzenie> wydarzenia() {
+        return getMany(TabWydarzenie.class, "Branza_ID");
+    }
+    
+    public List<TabRzecz> rzeczy() {
+        return getMany(TabRzecz.class, "Branza_ID");
+    }
+    
+    public List<TabPostac> postacie() {
+        return getMany(TabPostac.class, "Branza_ID");
+    }
 	
-	public TabBranza() { }
+	public TabBranza() {
+		super();
+	}
 
 	public TabBranza(String nazwa, String opis) {
+		super();
+		
 		this.nazwa = nazwa;
 		this.opis = opis;
 	}
 	
-	public TabBranza(String nazwa, String opis, ArrayList<TabMiejsce> miejsca,
-			ArrayList<TabWydarzenie> wydarzenia, ArrayList<TabRzecz> rzeczy,
-			ArrayList<TabPostac> postacie) {
-		super();
-		this.nazwa = nazwa;
-		this.opis = opis;
-		this.miejsca = miejsca;
-		this.wydarzenia = wydarzenia;
-		this.rzeczy = rzeczy;
-		this.postacie = postacie;
-	}
-
 	public String getNazwa() {
 		return nazwa;
 	}
@@ -52,37 +61,5 @@ public class TabBranza extends SugarRecord {
 
 	public void setOpis(String opis) {
 		this.opis = opis;
-	}
-
-	public ArrayList<TabMiejsce> getMiejsca() {
-		return miejsca;
-	}
-
-	public void setMiejsca(ArrayList<TabMiejsce> miejsca) {
-		this.miejsca = miejsca;
-	}
-
-	public ArrayList<TabWydarzenie> getWydarzenia() {
-		return wydarzenia;
-	}
-
-	public void setWydarzenia(ArrayList<TabWydarzenie> wydarzenia) {
-		this.wydarzenia = wydarzenia;
-	}
-
-	public ArrayList<TabRzecz> getRzeczy() {
-		return rzeczy;
-	}
-
-	public void setRzeczy(ArrayList<TabRzecz> rzeczy) {
-		this.rzeczy = rzeczy;
-	}
-
-	public ArrayList<TabPostac> getPostacie() {
-		return postacie;
-	}
-
-	public void setPostacie(ArrayList<TabPostac> postacie) {
-		this.postacie = postacie;
 	}
 }

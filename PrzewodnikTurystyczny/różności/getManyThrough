@@ -1,0 +1,23 @@
+import java.util.List;
+
+import com.activeandroid.Model;
+import com.activeandroid.query.Select;
+
+public class BaseModel extends Model{
+	
+	protected <T extends Model> List<T> getManyThrough(Class<T> targetClass, Class<T> joinClass, String targetForeignKeyInJoin, String foreignKeyInJoin){
+		return new Select()
+		.from(targetClass)
+		.as("target_model")
+		.join(joinClass)
+		.as("join_model")
+		.on("join_model." + targetForeignKeyInJoin + " = " + "target_model.id")
+		.where(foreignKeyInJoin + " = ?", this.getId())
+		.execute();
+	}
+	
+}
+
+/* pozwala robiæ selekty na wiele do wielu */
+
+http://stackoverflow.com/questions/26207948/activeandroid-many-to-many-relationship - tutaj zajrzyj te¿

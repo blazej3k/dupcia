@@ -1,43 +1,59 @@
 package blake.przewodnikturystyczny.baza.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import com.orm.SugarRecord;
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
 import com.orm.dsl.NotNull;
 import com.orm.dsl.Unique;
 
-public class TabRod extends SugarRecord {
+@Table(name="Rod")
+public class TabRod extends Model {
 	// pojedyncze pola tabeli
-	@Unique@NotNull
+	@Column(name="nazwa", unique=true, notNull=true)
 	private String nazwa;
+	@Column(name="opis")
 	private String opis;
 	
 	// relacje 1-1
-	@NotNull
+	@Column(name="Okres_ID", notNull=true)
 	private TabOkres okres;
 	
 	// relacje 1-wiele
-	private ArrayList<TabMiejsce> miejsca;
-	private ArrayList<TabBudynek> budynek;
-	private ArrayList<TabWydarzenie> wydarzenia;
-	private ArrayList<TabRzecz> rzeczy;
-	private ArrayList<TabPostac> postacie;
-	
-	public TabRod() { }
+    public List<TabMiejsce> miejsca() {
+        return getMany(TabMiejsce.class, "Rod_ID");
+    }
+    
+    public List<TabBudynek> budynek() {
+        return getMany(TabBudynek.class, "Rod_ID");
+    }
+    
+    public List<TabWydarzenie> wydarzenia() {
+        return getMany(TabWydarzenie.class, "Rod_ID");
+    }
+    
+    public List<TabRzecz> rzeczy() {
+        return getMany(TabRzecz.class, "Rod_ID");
+    }
+    
+    public List<TabPostac> postacie() {
+        return getMany(TabPostac.class, "Rod_ID");
+    }
+    
+	public TabRod() {
+		super();
+	}
 
-	public TabRod(String nazwa, String opis, TabOkres okres,
-			ArrayList<TabMiejsce> miejsca, ArrayList<TabBudynek> budynek,
-			ArrayList<TabWydarzenie> wydarzenia, ArrayList<TabRzecz> rzeczy,
-			ArrayList<TabPostac> postacie) {
+	public TabRod(String nazwa, String opis, 
+			TabOkres okres) {
+		
+		super();
 
 		this.nazwa = nazwa;
 		this.opis = opis;
 		this.okres = okres;
-		this.miejsca = miejsca;
-		this.budynek = budynek;
-		this.wydarzenia = wydarzenia;
-		this.rzeczy = rzeczy;
-		this.postacie = postacie;
 	}
 
 	public String getNazwa() {
@@ -62,45 +78,5 @@ public class TabRod extends SugarRecord {
 
 	public void setOkres(TabOkres okres) {
 		this.okres = okres;
-	}
-
-	public ArrayList<TabMiejsce> getMiejsca() {
-		return miejsca;
-	}
-
-	public void setMiejsca(ArrayList<TabMiejsce> miejsca) {
-		this.miejsca = miejsca;
-	}
-
-	public ArrayList<TabBudynek> getBudynek() {
-		return budynek;
-	}
-
-	public void setBudynek(ArrayList<TabBudynek> budynek) {
-		this.budynek = budynek;
-	}
-
-	public ArrayList<TabWydarzenie> getWydarzenia() {
-		return wydarzenia;
-	}
-
-	public void setWydarzenia(ArrayList<TabWydarzenie> wydarzenia) {
-		this.wydarzenia = wydarzenia;
-	}
-
-	public ArrayList<TabRzecz> getRzeczy() {
-		return rzeczy;
-	}
-
-	public void setRzeczy(ArrayList<TabRzecz> rzeczy) {
-		this.rzeczy = rzeczy;
-	}
-
-	public ArrayList<TabPostac> getPostacie() {
-		return postacie;
-	}
-
-	public void setPostacie(ArrayList<TabPostac> postacie) {
-		this.postacie = postacie;
 	}
 }

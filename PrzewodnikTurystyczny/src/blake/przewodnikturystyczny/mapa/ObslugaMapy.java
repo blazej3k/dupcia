@@ -1,14 +1,13 @@
 package blake.przewodnikturystyczny.mapa;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.util.Log;
-import blake.przewodnikturystyczny.R;
 import blake.przewodnikturystyczny.baza.model.IfMarkierable;
 import blake.przewodnikturystyczny.baza.model.TabBudynek;
 import blake.przewodnikturystyczny.baza.model.TabMiejsce;
 
+import com.activeandroid.query.Select;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -85,11 +84,11 @@ public class ObslugaMapy {
 	
 	public List<TabBudynek> pobierzBudynki() {
 		// TODO zrzuciæ do Async
-		return TabBudynek.listAll(TabBudynek.class);
+		return new Select().all().from(TabBudynek.class).execute(); 
 	}
 	
 	public List<TabMiejsce> pobierzMiejsca() {
 		// TODO zrzuciæ do Async
-		return TabMiejsce.listAll(TabMiejsce.class);
+		return new Select().all().from(TabMiejsce.class).execute(); 
 	}
 }

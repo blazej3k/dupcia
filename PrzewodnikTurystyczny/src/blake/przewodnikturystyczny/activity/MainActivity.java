@@ -2,6 +2,9 @@ package blake.przewodnikturystyczny.activity;
 
 import java.util.List;
 
+import com.activeandroid.query.Delete;
+import com.activeandroid.query.Select;
+
 import blake.przewodnikturystyczny.R;
 import blake.przewodnikturystyczny.baza.PompeczkaBranzaOkres;
 import blake.przewodnikturystyczny.baza.PompeczkaRozne;
@@ -41,7 +44,6 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         context = getApplicationContext();
-//        SugarContext.init(context);	// inicjalizacja Sugara - orma od bazy danych
         
         btn_mapa = (Button) findViewById(R.id.btn_mapa);
         btn_pompeczka_branza = (Button) findViewById(R.id.btn_pompeczka_branza);
@@ -104,14 +106,14 @@ public class MainActivity extends Activity {
 		btn_czysc_okresy.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				TabOkres.deleteAll(TabOkres.class);
+				new Delete().from(TabOkres.class).execute();
 			}
 		});
 		
 		btn_czysc_branze.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				TabOkres.deleteAll(TabBranza.class);
+				new Delete().from(TabBranza.class).execute();
 			}
 		});	
 	}
@@ -121,9 +123,12 @@ public class MainActivity extends Activity {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder.setTitle("Statystyka tabel.");
         dialogBuilder.setMessage(
-        		"Bran¿a: "+TabBranza.count(TabBranza.class)+"\n"+
-        		"Okres: "+TabOkres.count(TabOkres.class)+"\n"+
-        		"Budynek: "+TabBudynek.count(TabBudynek.class)+"\n"
+        		"Okres: " + new Select().from(TabOkres.class).count()+"\n"+
+        		"Budynek: " + new Select().from(TabBudynek.class).count()+"\n"+
+        		"Bran¿a: " + new Select().from(TabBranza.class).count()+"\n"
+//        		"Bran¿a: "+TabBranza.count(TabBranza.class)+"\n"+
+//        		"Okres: "+TabOkres.count(TabOkres.class)+"\n"+
+//        		"Budynek: "+TabBudynek.count(TabBudynek.class)+"\n"
         		);
         return dialogBuilder.create();
     }

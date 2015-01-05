@@ -1,39 +1,60 @@
 package blake.przewodnikturystyczny.baza.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import com.orm.SugarRecord;
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
 import com.orm.dsl.NotNull;
 import com.orm.dsl.Unique;
 
-public class TabRzecz extends SugarRecord {
+@Table(name="Rzecz")
+public class TabRzecz extends Model {
 	// pojedyncze pola tabeli
-	@Unique@NotNull
+	@Column(name="nazwa", unique=true, notNull=true)
 	private String nazwa;
+	@Column(name="dataPowstania")
 	private String dataPowstania;
+	@Column(name="rodzaj")
 	private String rodzaj;
+	@Column(name="opis")
 	private String opis;
 	
 	// relacje 1-1
+	@Column(name="Budynek_ID")
 	private TabBudynek budynek;
-	@NotNull
+	@Column(name="Branza_ID", notNull=true)
 	private TabBranza branza;
-	@NotNull
+	@Column(name="Okres_ID", notNull=true)
 	private TabOkres okres; // tej relacji brak w modelu, cza uzupelnic
 	
 	// relacje 1-wiele
-	private ArrayList<TabWydarzenie> wydarzenia; // wg modelu tu powinno byc 1-1, ale uwazam ze tak jest lepiej
-	private ArrayList<TabMiejsce> miejsca;
-	private ArrayList<TabRod> rody; // tu tez niby 1-1
-	private ArrayList<TabPostac> postacie; // tu rowniez, dziwne.
+    public List<TabWydarzenie> wydarzenia() { 			// wg modelu tu powinno byc 1-1, ale uwazam ze tak jest lepiej
+        return getMany(TabWydarzenie.class, "Rzecz_ID");
+    }
+    
+    public List<TabMiejsce> miejsca() {
+        return getMany(TabMiejsce.class, "Rzecz_ID");
+    }
+    
+    public List<TabRod> rody() {						// tu tez niby 1-1
+        return getMany(TabRod.class, "Rzecz_ID");
+    }
+    
+    public List<TabPostac> postacie() {					// tu rowniez, dziwne.
+        return getMany(TabPostac.class, "Rzecz_ID");
+    }
 	
-	public TabRzecz() { }
+	public TabRzecz() {
+		super();
+	}
 
 	public TabRzecz(String nazwa, String dataPowstania, String rodzaj,
-			String opis, TabBudynek budynek, TabBranza branza, TabOkres okres,
-			ArrayList<TabWydarzenie> wydarzenia, ArrayList<TabMiejsce> miejsca,
-			ArrayList<TabRod> rody, ArrayList<TabPostac> postacie) {
+			String opis, TabBudynek budynek, TabBranza branza, TabOkres okres) {
 
+		super();
+		
 		this.nazwa = nazwa;
 		this.dataPowstania = dataPowstania;
 		this.rodzaj = rodzaj;
@@ -41,10 +62,6 @@ public class TabRzecz extends SugarRecord {
 		this.budynek = budynek;
 		this.branza = branza;
 		this.okres = okres;
-		this.wydarzenia = wydarzenia;
-		this.miejsca = miejsca;
-		this.rody = rody;
-		this.postacie = postacie;
 	}
 
 	public String getNazwa() {
@@ -101,37 +118,5 @@ public class TabRzecz extends SugarRecord {
 
 	public void setOkres(TabOkres okres) {
 		this.okres = okres;
-	}
-
-	public ArrayList<TabWydarzenie> getWydarzenia() {
-		return wydarzenia;
-	}
-
-	public void setWydarzenia(ArrayList<TabWydarzenie> wydarzenia) {
-		this.wydarzenia = wydarzenia;
-	}
-
-	public ArrayList<TabMiejsce> getMiejsca() {
-		return miejsca;
-	}
-
-	public void setMiejsca(ArrayList<TabMiejsce> miejsca) {
-		this.miejsca = miejsca;
-	}
-
-	public ArrayList<TabRod> getRody() {
-		return rody;
-	}
-
-	public void setRody(ArrayList<TabRod> rody) {
-		this.rody = rody;
-	}
-
-	public ArrayList<TabPostac> getPostacie() {
-		return postacie;
-	}
-
-	public void setPostacie(ArrayList<TabPostac> postacie) {
-		this.postacie = postacie;
 	}
 }
