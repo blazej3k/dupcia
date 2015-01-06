@@ -147,8 +147,8 @@ public class PompeczkaRozne {
 				"Park na warszawskiej Woli - nazwany tak¿e od sztucznie usypanego tam wzniesienia Górk¹ Moczyd³owsk¹ - na terenie osiedla Ko³o, pomiêdzy ulicami: Deotymy, Górczewsk¹, Prymasa Tysi¹clecia i Czorsztyñsk¹.");
 		miejsce.setOkres(okres);
 		miejsce.setBranza(branza);
-		miejsce.setLatitude(52.142400);
-		miejsce.setLongitude(20.570719);
+		miejsce.setLatitude(52.23999999);
+		miejsce.setLongitude(20.951997);
 		listaDoDodania.add(miejsce);							// dodaj do listy - zapis do bazy na koñcu
 		
 	

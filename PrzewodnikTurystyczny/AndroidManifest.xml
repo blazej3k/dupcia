@@ -49,7 +49,8 @@
             blake.przewodnikturystyczny.baza.model.TabPostac,
             blake.przewodnikturystyczny.baza.model.TabRod,
             blake.przewodnikturystyczny.baza.model.TabRzecz,
-            blake.przewodnikturystyczny.baza.model.TabWydarzenie" />
+            blake.przewodnikturystyczny.baza.model.TabWydarzenie,
+            blake.przewodnikturystyczny.baza.model.TabMiejsceWydarzenie" />
 
         <!-- Powyżej tagi ActiveAndroida -->
         <activity
