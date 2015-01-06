@@ -72,7 +72,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/btn_czysc_budynki" />
-        
+
         <Button
             android:id="@+id/btn_czysc_wsio"
             android:layout_width="wrap_content"
@@ -80,23 +80,45 @@
             android:text="@string/btn_czysc_wsio" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btn_pompeczka_okres"
+    <LinearLayout
+        android:id="@+id/lin_lay5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/pompeczka_okres" />
+        android:baselineAligned="false"
+        android:gravity="center" >
 
-    <Button
-        android:id="@+id/btn_pompeczka_branza"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/pompeczka_branza" />
+        <Button
+            android:id="@+id/btn_pompeczka_okres"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pompeczka_okres" />
 
-    <Button
-        android:id="@+id/btn_pompeczka_rozne"
+        <Button
+            android:id="@+id/btn_pompeczka_branza"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pompeczka_branza" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lin_lay6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/pompeczka_rozne" />
+        android:baselineAligned="false"
+        android:gravity="center" >
+
+        <Button
+            android:id="@+id/btn_pompeczka_budynki"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pompeczka_budynki" />
+        
+        <Button
+            android:id="@+id/btn_pompeczka_miejsca"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pompeczka_miejsca" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/btn_namierz_budynki"

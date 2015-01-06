@@ -5,6 +5,7 @@ import java.util.List;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Select;
 
 @Table(name="Miejsce")
 public class TabMiejsce extends Model implements IfMarkierable {
@@ -15,6 +16,10 @@ public class TabMiejsce extends Model implements IfMarkierable {
 	private String adres;
 	@Column(name="dataPowstania")
 	private String dataPowstania;
+	@Column(name="projektant")
+	private String projektant;
+	@Column(name="opis")
+	private String opis;
 	@Column(name="latitude", notNull=true)
 	private double latitude;
 	@Column(name="longitude", notNull=true)
@@ -23,6 +28,8 @@ public class TabMiejsce extends Model implements IfMarkierable {
 	private Boolean czyZespol;
 	
 	// relacje 1-1
+	@Column(name="Okres_ID")
+	private TabOkres okres;
 	@Column(name="Budynek_ID")
 	private TabBudynek budynek;
 	@Column(name="Branza_ID", notNull=true)
@@ -49,17 +56,32 @@ public class TabMiejsce extends Model implements IfMarkierable {
 		super();
 	}
 	
+	public TabMiejsce(String nazwa, String adres, Boolean czyZespol, String dataPowstania, String projektant, String opis) {
+		this.nazwa = nazwa;
+		this.adres = adres;
+		this.czyZespol = czyZespol;
+		this.dataPowstania = dataPowstania;
+		this.projektant = projektant;
+		this.opis = opis;
+		
+		this.latitude = 0;
+		this.longitude = 0;
+	}
+	
 	/* konstruktor w miejscu wspó³rzêdnych zawsze wstawia wartoœæ 0 - jakos symbol pustej, domyœlnej 
 	 * w³aœciwe dodawane s¹ oddzielnie */
-	public TabMiejsce(String nazwa, String dataPowstania, String adres, 
-			Boolean czyZespol, TabBudynek budynek, TabBranza branza) {
+	public TabMiejsce(String nazwa, String adres, Boolean czyZespol, String dataPowstania, String projektant, String opis, 
+			TabOkres okres, TabBudynek budynek, TabBranza branza) {
 
 		super();
 		
 		this.nazwa = nazwa;
-		this.dataPowstania = dataPowstania;
 		this.adres = adres;
 		this.czyZespol = czyZespol;
+		this.dataPowstania = dataPowstania;
+		this.projektant = projektant;
+		this.opis = opis;
+		this.okres = okres;
 		this.budynek = budynek;
 		this.branza = branza;
 		
@@ -90,6 +112,12 @@ public class TabMiejsce extends Model implements IfMarkierable {
 	}
 	public void setCzyZespol(Boolean czyZespol) {
 		this.czyZespol = czyZespol;
+	}
+	public TabOkres getOkres() {
+		return okres;
+	}
+	public void setOkres(TabOkres okres) {
+		this.okres = okres;
 	}
 	public TabBudynek getBudynek() {
 		return budynek;

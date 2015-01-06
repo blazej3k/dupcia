@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
+import com.activeandroid.util.SQLiteUtils;
 
 import blake.przewodnikturystyczny.R;
 import blake.przewodnikturystyczny.baza.Namierzanie;
@@ -38,7 +39,8 @@ public class MainActivity extends Activity {
 	private Button btn_mapa;
 	private Button btn_pompeczka_branza;
 	private Button btn_pompeczka_okres;
-	private Button btn_pompeczka_rozne;
+	private Button btn_pompeczka_budynki;
+	private Button btn_pompeczka_miejsca;
 	private Button btn_czysc_budynki;
 	private Button btn_count_all;
 	private Button btn_czysc_okresy;
@@ -59,7 +61,8 @@ public class MainActivity extends Activity {
         btn_mapa = (Button) findViewById(R.id.btn_mapa);
         btn_pompeczka_branza = (Button) findViewById(R.id.btn_pompeczka_branza);
         btn_pompeczka_okres = (Button) findViewById(R.id.btn_pompeczka_okres);
-        btn_pompeczka_rozne = (Button) findViewById(R.id.btn_pompeczka_rozne);
+        btn_pompeczka_budynki = (Button) findViewById(R.id.btn_pompeczka_budynki);
+        btn_pompeczka_miejsca = (Button) findViewById(R.id.btn_pompeczka_miejsca);
         btn_count_all = (Button) findViewById(R.id.btn_count_all);
         btn_czysc_okresy = (Button) findViewById(R.id.btn_czysc_okresy);
         btn_czysc_branze = (Button) findViewById(R.id.btn_czysc_branze);
@@ -95,10 +98,17 @@ public class MainActivity extends Activity {
 			}
 		});
 		
-		btn_pompeczka_rozne.setOnClickListener(new OnClickListener() {
+		btn_pompeczka_budynki.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				new PompeczkaRozne();
+				new PompeczkaRozne(1);
+			}
+		});
+		
+		btn_pompeczka_miejsca.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				new PompeczkaRozne(2);
 			}
 		});
 		
@@ -148,14 +158,23 @@ public class MainActivity extends Activity {
 		btn_czysc_wsio.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				new Delete().from(TabBudynek.class).execute();
-				new Delete().from(TabMiejsce.class).execute();
-				new Delete().from(TabWydarzenie.class).execute();
-				new Delete().from(TabPostac.class).execute();
-				new Delete().from(TabRzecz.class).execute();
-				new Delete().from(TabRod.class).execute();
-				new Delete().from(TabBranza.class).execute();
-				new Delete().from(TabOkres.class).execute();
+				TabBudynek.truncate(TabBudynek.class);			// truncate ró¿ni siê od delete tym, ¿e czyœci tabelê (robi delete), ale te¿ resetuje jej ID
+				TabMiejsce.truncate(TabMiejsce.class);			// nowe pozycje z powrotem maj¹ id 1.
+				TabWydarzenie.truncate(TabWydarzenie.class);
+				TabPostac.truncate(TabPostac.class);
+				TabRzecz.truncate(TabRzecz.class);
+				TabRod.truncate(TabRod.class);
+				TabBranza.truncate(TabBranza.class);
+				TabOkres.truncate(TabOkres.class);
+				
+//				new Delete().from(TabBudynek.class).execute();
+//				new Delete().from(TabMiejsce.class).execute();
+//				new Delete().from(TabWydarzenie.class).execute();
+//				new Delete().from(TabPostac.class).execute();
+//				new Delete().from(TabRzecz.class).execute();
+//				new Delete().from(TabRod.class).execute();
+//				new Delete().from(TabBranza.class).execute();
+//				new Delete().from(TabOkres.class).execute();
 			}
 		});	
 	}
