@@ -8,7 +8,7 @@ import com.activeandroid.annotation.Column.ConflictAction;
 import com.activeandroid.annotation.Table;
 
 @Table(name = "Budynek")
-public class TabBudynek extends Model implements IfMarkierable {
+public class TabBudynek extends Model implements IfMarkierable, IfLocalizable {
 	// pojedyncze pola tabeli
 	@Column(name = "nazwa", unique=true, notNull=true)
 	private String nazwa;

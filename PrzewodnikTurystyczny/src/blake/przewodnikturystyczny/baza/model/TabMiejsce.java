@@ -5,10 +5,9 @@ import java.util.List;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
-import com.activeandroid.query.Select;
 
 @Table(name="Miejsce")
-public class TabMiejsce extends Model implements IfMarkierable {
+public class TabMiejsce extends Model implements IfMarkierable, IfLocalizable {
 	// pojedyncze pola tabeli
 	@Column(name="nazwa", unique=true, notNull=true)
 	private String nazwa;

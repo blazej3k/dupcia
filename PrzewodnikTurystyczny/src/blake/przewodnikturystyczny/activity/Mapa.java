@@ -1,8 +1,5 @@
 package blake.przewodnikturystyczny.activity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.Activity;
 import android.content.Context;
 import android.location.Criteria;
@@ -19,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import blake.przewodnikturystyczny.R;
+import blake.przewodnikturystyczny.baza.model.TabBudynek;
 import blake.przewodnikturystyczny.mapa.ObslugaMapy;
 import blake.przewodnikturystyczny.mapa.PobierzAdresAsync;
 import blake.przewodnikturystyczny.mapa.PobierzAdresAsync.AsyncAdresListener;
@@ -35,10 +33,8 @@ import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickListener, OnMapLongClickListener, OnInfoWindowClickListener, AsyncAdresListener, AsyncWspolrzedneListener {
 
@@ -192,8 +188,8 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 	}
 	
 	private void pobierzWspolrzedne(String adres) {
-		new PobierzWspolrzedneAsync(context, this).execute(adres);
-		
+//		new PobierzWspolrzedneAsync(context, this).execute(adres);
+		new PobierzWspolrzedneAsync<TabBudynek>(context, this, null, false).execute(adres);
 	}
 
 	private void przesunMape(LatLng pozycjaLL) {
@@ -205,8 +201,8 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 		this.map = map;
 		obslugaMapy = new ObslugaMapy(map);
 		domyslnaMapa(map);
-//		dodajMarkery(map, new ArrayList<LatLng>());
 		obslugaMapy.dodajMarkery(obslugaMapy.pobierzBudynki()); // pobiera budynki jako liste i wywoluje generyczn¹ metode do wyswietlania budynkow
+		obslugaMapy.dodajMarkery(obslugaMapy.pobierzMiejsca());
 
 		map.setInfoWindowAdapter(new MyInfoWindowAdapter()); // ustawia customowy adapter do okienek informacyjnych - tych po klikniêciu w marker
 															 // zdefiniowany jest w klasie wewnêtrznej, na górze tej klasy
