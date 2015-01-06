@@ -34,13 +34,12 @@ public class PobierzWspolrzedneAsync<T extends IfLocalizable> extends AsyncTask<
 		
 		if (czyObiekt)								// jesli !czyObiekt to listaObiektow jest nullem
 			this.listaObiektow = listaObiektow;
-		
 	}
 	
 	@Override
 	protected String doInBackground(String... adresy) {			// tedy wchodza zapytania z mapy, jako string o konkretny adres
 		String adres= "";
-		String wynik="";
+		String wynik= "";
 		
 		if(czyObiekt) {													// czyli czytaj z listy obiektów
 			String[] wspolrzedneSS;
@@ -81,6 +80,7 @@ public class PobierzWspolrzedneAsync<T extends IfLocalizable> extends AsyncTask<
 	private String lokalizujWspolrzedne(String adres) {
 		List<Address> pozycje;									// lista na wyniki, tak musi byc lista Address'ów, bo tak zwraca geokoder
 		Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+		adres += ", Warszawa";	// dopisuje do adresu dodatkowo slowo Warszawa, ¿eby Syrenki nie lokalizowa³ w Pu³tusku
 		
 		try { 	// jedna pozycja
 			Log.d(Mapa.DEBUG_TAG, "Geocoder dosta³ adres: "+adres);
