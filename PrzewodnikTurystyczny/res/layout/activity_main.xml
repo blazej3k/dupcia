@@ -57,13 +57,27 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/btn_czysc_branze" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/LinearLayout4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        tools:context="blake.przewodnikturystyczny.MainActivity" >
 
         <Button
             android:id="@+id/btn_czysc_budynki"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/btn_czysc_budynki" />
-
+        
+        <Button
+            android:id="@+id/btn_czysc_wsio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_czysc_wsio" />
     </LinearLayout>
 
     <Button
@@ -83,5 +97,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/pompeczka_rozne" />
+
+    <Button
+        android:id="@+id/btn_namierz_budynki"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_namierz_budynki" />
+
+    <Button
+        android:id="@+id/btn_namierz_miejsca"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_namierz_miejsca" />
 
 </LinearLayout>

@@ -17,5 +17,8 @@
 	<string name="content_desc1">symbol obiektu</string>
 	<string name="et_podaj_adres">Wprowadź adres</string>
 	<string name="btn_znajdz">Znajdź</string>
+	<string name="btn_namierz_budynki">Namierz Budynki</string>
+	<string name="btn_namierz_miejsca">Namierz Miejsca</string>
+	<string name="btn_czysc_wsio">Czyść Wsio</string>
 	
 </resources>

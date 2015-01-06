@@ -6,11 +6,17 @@ import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 
 import blake.przewodnikturystyczny.R;
+import blake.przewodnikturystyczny.baza.Namierzanie;
 import blake.przewodnikturystyczny.baza.PompeczkaBranzaOkres;
 import blake.przewodnikturystyczny.baza.PompeczkaRozne;
 import blake.przewodnikturystyczny.baza.model.TabBranza;
 import blake.przewodnikturystyczny.baza.model.TabBudynek;
+import blake.przewodnikturystyczny.baza.model.TabMiejsce;
 import blake.przewodnikturystyczny.baza.model.TabOkres;
+import blake.przewodnikturystyczny.baza.model.TabPostac;
+import blake.przewodnikturystyczny.baza.model.TabRod;
+import blake.przewodnikturystyczny.baza.model.TabRzecz;
+import blake.przewodnikturystyczny.baza.model.TabWydarzenie;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -37,6 +43,11 @@ public class MainActivity extends Activity {
 	private Button btn_count_all;
 	private Button btn_czysc_okresy;
 	private Button btn_czysc_branze;
+	private Button btn_czysc_wsio;
+	private Button btn_namierz_budynki;
+	private Button btn_namierz_miejsca;
+	
+	private Namierzanie namierzanie;
 	
 	
     @Override
@@ -53,6 +64,9 @@ public class MainActivity extends Activity {
         btn_czysc_okresy = (Button) findViewById(R.id.btn_czysc_okresy);
         btn_czysc_branze = (Button) findViewById(R.id.btn_czysc_branze);
         btn_czysc_budynki = (Button) findViewById(R.id.btn_czysc_budynki);
+        btn_namierz_budynki = (Button) findViewById(R.id.btn_namierz_budynki);
+        btn_namierz_miejsca = (Button) findViewById(R.id.btn_namierz_miejsca);
+        btn_czysc_wsio = (Button) findViewById(R.id.btn_czysc_wsio);
         
         initBtnOnClickListeners();
     }
@@ -84,7 +98,7 @@ public class MainActivity extends Activity {
 		btn_pompeczka_rozne.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				new PompeczkaRozne(context);
+				new PompeczkaRozne();
 			}
 		});
 		
@@ -116,6 +130,34 @@ public class MainActivity extends Activity {
 				new Delete().from(TabBudynek.class).execute();
 			}
 		});	
+		
+		btn_namierz_budynki.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				namierzanie = new Namierzanie(context, true);
+			}
+		});	
+		
+		btn_namierz_miejsca.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				namierzanie = new Namierzanie(context, false);
+			}
+		});	
+		
+		btn_czysc_wsio.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				new Delete().from(TabBudynek.class).execute();
+				new Delete().from(TabMiejsce.class).execute();
+				new Delete().from(TabWydarzenie.class).execute();
+				new Delete().from(TabPostac.class).execute();
+				new Delete().from(TabRzecz.class).execute();
+				new Delete().from(TabRod.class).execute();
+				new Delete().from(TabBranza.class).execute();
+				new Delete().from(TabOkres.class).execute();
+			}
+		});	
 	}
 
 	@Override
@@ -124,11 +166,13 @@ public class MainActivity extends Activity {
         dialogBuilder.setTitle("Statystyka tabel.");
         dialogBuilder.setMessage(
         		"Okres: " + new Select().from(TabOkres.class).count()+"\n"+
+        		"Bran¿a: " + new Select().from(TabBranza.class).count()+"\n"+
         		"Budynek: " + new Select().from(TabBudynek.class).count()+"\n"+
-        		"Bran¿a: " + new Select().from(TabBranza.class).count()+"\n"
-//        		"Bran¿a: "+TabBranza.count(TabBranza.class)+"\n"+
-//        		"Okres: "+TabOkres.count(TabOkres.class)+"\n"+
-//        		"Budynek: "+TabBudynek.count(TabBudynek.class)+"\n"
+        		"Miejsce: " + new Select().from(TabMiejsce.class).count()+"\n"+
+        		"Wydarzenie: " + new Select().from(TabWydarzenie.class).count()+"\n"+
+        		"Postaæ: " + new Select().from(TabPostac.class).count()+"\n"+
+        		"Rzecz: " + new Select().from(TabRzecz.class).count()+"\n"+
+        		"Ród: " + new Select().from(TabRod.class).count()+"\n"
         		);
         return dialogBuilder.create();
     }
@@ -155,9 +199,6 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
-    	// TODO ogolnie to trzeba SugarContext.terminate() przeniesc do Application.onTerminate() - zgodnie z zaleceniem Sugara, albo do MainActivity.onPause
-    	// Wywalony bo po poprawce manifestu .init chyba nie jest potrzebny, wiêc to te¿ zakomentowane
-    	// SugarContext.terminate();
     	super.onDestroy();
     }
 }
