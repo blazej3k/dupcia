@@ -45,14 +45,14 @@
         tools:context="blake.przewodnikturystyczny.MainActivity" >
 
         <Button
-            android:id="@+id/btn_czysc_okresy"
+            android:id="@+id/btn_init"
             style="@style/button_brzydki"
-            android:text="@string/btn_czysc_okresy" />
+            android:text="@string/btn_init" />
 
-        <Button
-            android:id="@+id/btn_czysc_branze"
-            style="@style/button_brzydki"
-            android:text="@string/btn_czysc_branze" />
+    <Button
+        android:id="@+id/btn_select_all"
+        style="@style/button_brzydki"
+        android:text="@string/btn_select_all" />
     </LinearLayout>
 
     <LinearLayout
@@ -82,14 +82,11 @@
         android:gravity="center" >
 
         <Button
-            android:id="@+id/btn_pompeczka_okres"
+            android:id="@+id/pompeczka_okresbranza"
             style="@style/button_brzydki"
-            android:text="@string/pompeczka_okres" />
+            android:text="@string/pompeczka_okresbranza" />
 
-        <Button
-            android:id="@+id/btn_pompeczka_branza"
-            style="@style/button_brzydki"
-            android:text="@string/pompeczka_branza" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -122,10 +119,6 @@
             style="@style/button_brzydki"
             android:text="@string/pompeczka_wydarzenia" />
         
-        <Button
-            android:id="@+id/btn_pompeczka_x"
-            style="@style/button_brzydki"
-            android:text="@string/pompeczka_x" />
     </LinearLayout>
     
         <LinearLayout
@@ -156,9 +149,9 @@
         style="@style/button_brzydki"
         android:text="@string/btn_namierz_miejsca" />
     
-    <Button
-        android:id="@+id/btn_select_all"
-        style="@style/button_brzydki"
-        android:text="@string/btn_select_all" />
+	<Button
+	    android:id="@+id/btn_testuj"
+	    style="@style/button_brzydki"
+	    android:text="@string/btn_testuj" />
 
 </LinearLayout>

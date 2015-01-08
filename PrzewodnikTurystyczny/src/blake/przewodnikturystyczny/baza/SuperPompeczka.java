@@ -14,21 +14,30 @@ import blake.przewodnikturystyczny.baza.model.pomocniczy.TabMiejsceWydarzenie;
 
 import com.activeandroid.query.Select;
 
-public class PompeczkaRozne {
+public class SuperPompeczka {
 	
 	public static final String DEBUG_TAG = "Przewodnik";
 	
-	public PompeczkaRozne(int coPompowac) {
+	public SuperPompeczka(int coPompowac) {
 		
 		switch (coPompowac) {
 		case 1:
-			pompujBudynek();
+			pompujOkres();
 			break;
 		case 2:
-			pompujMiejsce();
+			pompujBranze();
 			break;
 		case 3:
+			pompujBudynek();
+			break;
+		case 4:
+			pompujMiejsce();
+			break;
+		case 5:
 			pompujWydarzenie();
+			break;
+		case 20:
+			pompujWszystko();
 			break;
 		case 51:
 			relacjeMiejsceWydarzenie();
@@ -40,6 +49,28 @@ public class PompeczkaRozne {
 			Log.d(DEBUG_TAG, "Nie bendem pompowa³ bo ni wim co!");
 		}
 		
+	}
+	
+	private void testuj() {
+		TabMiejsce miejsce = new Select().from(TabMiejsce.class).where("nazwa = \"Filtry Lindleya\"").executeSingle();
+
+		try {
+			List<TabWydarzenie> wydarzenia = miejsce.getWydarzenia();
+			if(wydarzenia != null)
+				for (TabWydarzenie x: wydarzenia) {
+					Log.d(DEBUG_TAG, "Iloœæ wydarzeñ w relacji: "+wydarzenia.size()+ ", Wydarzenie nazwa="+x.getNazwa());
+				}
+		} catch (SQLiteException e) { e.printStackTrace(); }
+	}
+	
+	private void pompujWszystko() {
+		pompujOkres();
+		pompujBranze();
+		pompujBudynek();
+		pompujMiejsce();
+		pompujWydarzenie();
+		
+		relacjeMiejsceWydarzenie();
 	}
 	
 	private void pompujBudynek() {	// zwraca -1 jeœli nie uda³o siê dodaæ! a id dodanego jeœli uda³o.
@@ -198,6 +229,92 @@ public class PompeczkaRozne {
 		}
 	}
 	
+	private void pompujOkres() {
+		long dodanyId=0;
+		TabOkres okres;
+		LinkedList<TabOkres> listaDoDodania = new LinkedList<TabOkres>();
+		
+		okres = new TabOkres();
+		okres.setNazwa("XIV-XV");
+		okres.setRokPoczatek("1301");
+		okres.setRokKoniec("1500");
+		okres.setOpis("Okres XIV - XV - w tym powstanie Warszawy.");
+		listaDoDodania.add(okres);
+		
+		okres = new TabOkres();
+		okres.setNazwa("XVI");
+		okres.setRokPoczatek("1501");
+		okres.setRokKoniec("1600");
+		okres.setOpis("Wiek XVI.");
+		listaDoDodania.add(okres);
+		
+		okres = new TabOkres();
+		okres.setNazwa("XVII");
+		okres.setRokPoczatek("1601");
+		okres.setRokKoniec("1700");
+		okres.setOpis("Wiek XVII.");
+		listaDoDodania.add(okres);
+		
+		okres = new TabOkres();
+		okres.setNazwa("XVIII");
+		okres.setRokPoczatek("1701");
+		okres.setRokKoniec("1800");
+		okres.setOpis("Wiek XVIII.");
+		listaDoDodania.add(okres);
+		
+		okres = new TabOkres();
+		okres.setNazwa("XIX");
+		okres.setRokPoczatek("1801");
+		okres.setRokKoniec("1900");
+		okres.setOpis("Wiek XIX.");
+		listaDoDodania.add(okres);
+		
+		okres = new TabOkres();
+		okres.setNazwa("XX");
+		okres.setRokPoczatek("1901");
+		okres.setRokKoniec("1989");
+		okres.setOpis("Wiek XX - Warszawa do koñca komunizmu.");
+		listaDoDodania.add(okres);
+		
+		okres = new TabOkres();
+		okres.setNazwa("XXpo");
+		okres.setRokPoczatek("1990");
+		okres.setRokKoniec("2015");
+		okres.setOpis("Wiek XX - Warszawa w czasach wspó³czesnych. Od III Rzeczypospolitej.");
+		listaDoDodania.add(okres);
+		
+		for (TabOkres x: listaDoDodania) {
+			// TODO mo¿na zamieniæ na transakcjê - bêdzie szybciej
+			dodanyId = x.save();
+			Log.d(DEBUG_TAG, "Okres dodany ID="+dodanyId+" nazwa="+x.getNazwa());	// zwraca -1 jeœli nie uda³o siê dodaæ! a id dodanego jeœli uda³o.
+		}
+	}
+
+	private void pompujBranze() {
+		long dodanyId=0;
+		TabBranza branza;
+		LinkedList<TabBranza> listaDoDodania = new LinkedList<TabBranza>();
+		
+		branza = new TabBranza("Miejsca", "Grupa zawieraj¹ca wszystkie znane aplikacji miejsca.");
+		listaDoDodania.add(branza);
+		
+		branza = new TabBranza("Wydarzenia", "Grupa zawieraj¹ca wszystkie znane aplikacji wydarzenia.");
+		listaDoDodania.add(branza);
+		
+		branza = new TabBranza("Rzeczy", "Grupa zawieraj¹ca wszystkie znane aplikacji rzeczy - przedmioty namacalne.");
+		listaDoDodania.add(branza);
+		
+		branza = new TabBranza("Postaæ", "Grupa zawieraj¹ca wszystkie znane aplikacji postacie.");
+		listaDoDodania.add(branza);
+		
+		for (TabBranza x: listaDoDodania) {
+			// TODO mo¿na zamieniæ na transakcjê - bêdzie szybciej
+			dodanyId = x.save();
+			Log.d(DEBUG_TAG, "Bran¿a dodana ID="+dodanyId+" nazwa="+x.getNazwa());	// zwraca -1 jeœli nie uda³o siê dodaæ! a id dodanego jeœli uda³o.
+		}
+		
+	}
+	
 	private void relacjeMiejsceWydarzenie() {
 		long dodanyId=0;
 		LinkedList<TabMiejsceWydarzenie> listaDoDodania = new LinkedList<TabMiejsceWydarzenie>();
@@ -217,17 +334,5 @@ public class PompeczkaRozne {
 			dodanyId = x.save();
 			Log.d(DEBUG_TAG, "Relacja dodana ID="+dodanyId+" Miejsce_ID="+x.getMiejsce_id()+" Wydarzenie_ID="+x.getWydarzenie_id());	// zwraca -1 jeœli nie uda³o siê dodaæ! a id dodanego jeœli uda³o.
 		}
-	}
-	
-	private void testuj() {
-		TabMiejsce miejsce = new Select().from(TabMiejsce.class).where("nazwa = \"Filtry Lindleya\"").executeSingle();
-
-		try {
-			List<TabWydarzenie> wydarzenia = miejsce.getWydarzenia();
-			if(wydarzenia != null)
-				for (TabWydarzenie x: wydarzenia) {
-					Log.d(DEBUG_TAG, "Iloœæ wydarzeñ w relacji: "+wydarzenia.size()+ ", Wydarzenie nazwa="+x.getNazwa());
-				}
-		} catch (SQLiteException e) { e.printStackTrace(); }
 	}
 }

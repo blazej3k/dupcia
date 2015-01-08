@@ -6,12 +6,10 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_mapa">Mapa</string>
     <string name="btn_mapa">Mapa</string>
-    <string name="pompeczka_branza">Pompeczka - Branza</string>
-    <string name="pompeczka_okres">Pompeczka - Okres</string>
+    <string name="pompeczka_okresbranza">Pompeczka - OkresBranza</string>
     <string name="pompeczka_budynki">Pompeczka - Budynki</string>
     <string name="pompeczka_miejsca">Pompeczka - Miejsca</string>
     <string name="pompeczka_wydarzenia">Pompeczka - Wydarzenia</string>
-    <string name="pompeczka_x">Pompeczka - X</string>
     <string name="btn_relacje_miej_wyd">Rel - MiejWyd</string>
     <string name="btn_relacje_x">Relacje - X</string>
     <string name="btn_count_all">Zlicz tabele</string>
@@ -26,5 +24,7 @@
 	<string name="btn_namierz_budynki">Namierz Budynki</string>
 	<string name="btn_namierz_miejsca">Namierz Miejsca</string>
 	<string name="btn_select_all">Select All</string>
+	<string name="btn_init">Inicjuj bazę</string>
+	<string name="btn_testuj">Testuj</string>
 	
 </resources>
