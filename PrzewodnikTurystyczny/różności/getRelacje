@@ -1,0 +1,23 @@
+	protected <T extends Model> List<T> getRelacje(Class<T> targetClass, Class<? extends Model> joinClass, String targetForeignKeyInJoin, String foreignKeyInJoin){
+		return new Select()
+		.from(targetClass)
+		.as("target_model")
+		.join(joinClass)
+		.as("join_model")
+		.on("join_model." + targetForeignKeyInJoin + " = " + "target_model.id")
+		.where(foreignKeyInJoin + " = ?", this.getId())
+		.execute();
+	}
+	
+	ta klasa powyzej zostala dodana do ActivAndroida
+	
+	SQLiteUtils
+    			.rawQuery(TabWydarzenie.class,
+    					"select * from Wydarzenie" + " " +
+    					"inner join MiejsceWydarzenie" + " " +
+    					"on MiejsceWydarzenie.Wydarzenie_ID = Wydarzenie.id" + " " +
+    					"where MiejsceWydarzenie.Miejsce_ID = ?"
+    					, idS);
+    					
+    					tak te¿ mo¿na.
+    			idS to String[] = { this.getId } 
