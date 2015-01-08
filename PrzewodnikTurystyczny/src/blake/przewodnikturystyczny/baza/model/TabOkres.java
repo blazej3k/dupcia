@@ -8,7 +8,7 @@ import com.activeandroid.annotation.Column.ForeignKeyAction;
 import com.activeandroid.annotation.Table;
 
 @Table(name = "Okres")
-public class TabOkres extends Model {
+public class TabOkres extends Model implements IfSelectable {
 	// pojedyncze pola tabeli
 	@Column(name = "nazwa", unique=true, notNull=true, onDelete=ForeignKeyAction.RESTRICT)
 	private String nazwa;

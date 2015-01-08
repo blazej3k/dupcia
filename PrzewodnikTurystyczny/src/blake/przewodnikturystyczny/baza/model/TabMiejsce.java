@@ -2,12 +2,15 @@ package blake.przewodnikturystyczny.baza.model;
 
 import java.util.List;
 
+import blake.przewodnikturystyczny.baza.model.pomocniczy.TabMiejsceRzecz;
+import blake.przewodnikturystyczny.baza.model.pomocniczy.TabMiejsceWydarzenie;
+
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
 @Table(name="Miejsce")
-public class TabMiejsce extends Model implements IfMarkierable, IfLocalizable {
+public class TabMiejsce extends Model implements IfMarkierable, IfLocalizable, IfSelectable {
 	// pojedyncze pola tabeli
 	@Column(name="nazwa", unique=true, notNull=true)
 	private String nazwa;
@@ -35,14 +38,6 @@ public class TabMiejsce extends Model implements IfMarkierable, IfLocalizable {
 	private TabBranza branza;
 	
 	// relacje 1-wiele
-    public List<TabWydarzenie> wydarzenia() {
-        return getMany(TabWydarzenie.class, "Miejsce_ID");
-    }
-    
-    public List<TabRzecz> rzeczy() {
-        return getMany(TabRzecz.class, "Miejsce_ID");
-    }
-    
     public List<TabPostac> postacie() {
         return getMany(TabPostac.class, "Miejsce_ID");
     }
@@ -50,7 +45,15 @@ public class TabMiejsce extends Model implements IfMarkierable, IfLocalizable {
     public List<TabRod> rody() {
         return getMany(TabRod.class, "Miejsce_ID");
     }
-	
+
+	// relacje wiele-wiele
+    public List<TabWydarzenie> getWydarzenia() {
+    	return getRelacje(TabWydarzenie.class, TabMiejsceWydarzenie.class, "Wydarzenie_ID", "Miejsce_ID");
+    }
+    public List<TabRzecz> rzeczy() {
+    	return getRelacje(TabRzecz.class, TabMiejsceRzecz.class, "Wydarzenie_ID", "Miejsce_ID");
+    }
+    
 	public TabMiejsce() {
 		super();
 	}
@@ -158,5 +161,4 @@ public class TabMiejsce extends Model implements IfMarkierable, IfLocalizable {
 	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}
-	
 }

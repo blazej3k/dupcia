@@ -8,7 +8,7 @@ import com.activeandroid.annotation.Column.ConflictAction;
 import com.activeandroid.annotation.Table;
 
 @Table(name = "Budynek")
-public class TabBudynek extends Model implements IfMarkierable, IfLocalizable {
+public class TabBudynek extends Model implements IfMarkierable, IfLocalizable, IfSelectable {
 	// pojedyncze pola tabeli
 	@Column(name = "nazwa", unique=true, notNull=true)
 	private String nazwa;
@@ -149,5 +149,4 @@ public class TabBudynek extends Model implements IfMarkierable, IfLocalizable {
 	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}
-
 }

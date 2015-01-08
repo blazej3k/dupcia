@@ -2,12 +2,14 @@ package blake.przewodnikturystyczny.baza.model;
 
 import java.util.List;
 
+import blake.przewodnikturystyczny.baza.model.pomocniczy.TabMiejsceWydarzenie;
+
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
 @Table(name="Wydarzenie")
-public class TabWydarzenie extends Model {
+public class TabWydarzenie extends Model implements IfSelectable {
 	// pojedyncze pola tabeli
 	@Column(name="nazwa", unique=true, notNull=true)
 	private String nazwa;
@@ -25,9 +27,7 @@ public class TabWydarzenie extends Model {
 	private TabBranza branza;
 	
 	// relacje 1-wiele
-	public List<TabMiejsce> miejsca() {
-		return getMany(TabMiejsce.class, "Wydarzenie_ID");
-	}
+
 
 	public List<TabRod> rody() {
 		return getMany(TabRod.class, "Wydarzenie_ID");
@@ -41,6 +41,10 @@ public class TabWydarzenie extends Model {
 		return getMany(TabRzecz.class, "Wydarzenie_ID");
 	}
 
+	// relacje wiele-wiele
+	public List<TabMiejsce> getMiejsca() {
+		return getRelacje(TabMiejsce.class, TabMiejsceWydarzenie.class, "Miejsce_ID", "Wydarzenie_ID");
+	}
 	
 	public TabWydarzenie() {
 		super();

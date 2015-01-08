@@ -3,20 +3,20 @@ package blake.przewodnikturystyczny.baza;
 import java.util.LinkedList;
 import java.util.List;
 
+import android.database.sqlite.SQLiteException;
 import android.util.Log;
 import blake.przewodnikturystyczny.baza.model.TabBranza;
 import blake.przewodnikturystyczny.baza.model.TabBudynek;
 import blake.przewodnikturystyczny.baza.model.TabMiejsce;
 import blake.przewodnikturystyczny.baza.model.TabOkres;
+import blake.przewodnikturystyczny.baza.model.TabWydarzenie;
+import blake.przewodnikturystyczny.baza.model.pomocniczy.TabMiejsceWydarzenie;
 
 import com.activeandroid.query.Select;
 
 public class PompeczkaRozne {
 	
 	public static final String DEBUG_TAG = "Przewodnik";
-	
-	TabOkres okres;
-	TabBranza branza;
 	
 	public PompeczkaRozne(int coPompowac) {
 		
@@ -26,6 +26,15 @@ public class PompeczkaRozne {
 			break;
 		case 2:
 			pompujMiejsce();
+			break;
+		case 3:
+			pompujWydarzenie();
+			break;
+		case 51:
+			relacjeMiejsceWydarzenie();
+			break;
+		case 99:
+			testuj();
 			break;
 		default:
 			Log.d(DEBUG_TAG, "Nie bendem pompowa³ bo ni wim co!");
@@ -89,7 +98,7 @@ public class PompeczkaRozne {
 		for (TabBudynek x: listaDoDodania) {
 			// TODO mo¿na zamieniæ na transakcjê - bêdzie szybciej
 			dodanyId = x.save();
-			Log.d(DEBUG_TAG, "Budynek dodany ID="+dodanyId);	// zwraca -1 jeœli nie uda³o siê dodaæ! a id dodanego jeœli uda³o.
+			Log.d(DEBUG_TAG, "Budynek dodany ID="+dodanyId+" nazwa="+x.getNazwa());	// zwraca -1 jeœli nie uda³o siê dodaæ! a id dodanego jeœli uda³o.
 		}
 		
 		List<TabBudynek> budynki = new Select().from(TabBudynek.class).execute();		// weryfikacja
@@ -155,7 +164,7 @@ public class PompeczkaRozne {
 		for (TabMiejsce x: listaDoDodania) {
 			// TODO mo¿na zamieniæ na transakcjê - bêdzie szybciej
 			dodanyId = x.save();
-			Log.d(DEBUG_TAG, "Miejsce dodane ID="+dodanyId);	// zwraca -1 jeœli nie uda³o siê dodaæ! a id dodanego jeœli uda³o.
+			Log.d(DEBUG_TAG, "Miejsce dodane ID="+dodanyId+" nazwa="+x.getNazwa());	// zwraca -1 jeœli nie uda³o siê dodaæ! a id dodanego jeœli uda³o.
 		}
 		
 		List<TabMiejsce> miejsca = new Select().from(TabMiejsce.class).execute();
@@ -164,5 +173,61 @@ public class PompeczkaRozne {
 				"adres pierwszego to: "+miejsca.get(0).getAdres()+"\n"+
 				"okres pierwszego to: "+miejsca.get(0).getOkres().getNazwa()+"\n"+
 				"ID pierwszego to: "+miejsca.get(0).getId());
+	}
+	
+	private void pompujWydarzenie() {
+		long dodanyId=0;
+		TabWydarzenie wydarzenie;
+		LinkedList<TabWydarzenie> listaDoDodania = new LinkedList<TabWydarzenie>();
+		TabBranza branza = new Select().from(TabBranza.class).where("nazwa = ?", "Wydarzenia").executeSingle();
+		
+		TabOkres okres =  new Select().from(TabOkres.class).where("nazwa = ?", "XXpo").executeSingle();
+		wydarzenie = new TabWydarzenie("Budowa Ustro", "1945", "", "Pijani studenci wrócili z imprezy i zbudowali", okres, branza);
+		listaDoDodania.add(wydarzenie);
+		
+		wydarzenie = new TabWydarzenie("Poznanie ¯ony", "2014", "", "Tak wysz³o i by³o cudownie. I jest.", okres, branza);
+		listaDoDodania.add(wydarzenie);
+		
+		wydarzenie = new TabWydarzenie("Najazd Brudnych Twarzy", "2014", "", "Wszystko brudne, syf w kuchni i ³azience.", okres, branza);
+		listaDoDodania.add(wydarzenie);
+		
+		for (TabWydarzenie x: listaDoDodania) {
+			// TODO mo¿na zamieniæ na transakcjê - bêdzie szybciej
+			dodanyId = x.save();
+			Log.d(DEBUG_TAG, "Wydarzenie dodane ID="+dodanyId+" nazwa="+x.getNazwa());	// zwraca -1 jeœli nie uda³o siê dodaæ! a id dodanego jeœli uda³o.
+		}
+	}
+	
+	private void relacjeMiejsceWydarzenie() {
+		long dodanyId=0;
+		LinkedList<TabMiejsceWydarzenie> listaDoDodania = new LinkedList<TabMiejsceWydarzenie>();
+		TabMiejsceWydarzenie relacja;
+		
+		TabMiejsce miejsce = new Select().from(TabMiejsce.class).where("nazwa = \"Filtry Lindleya\"").executeSingle();
+		TabWydarzenie wydarzenie = new Select().from(TabWydarzenie.class).where("nazwa = \"Budowa Ustro\"").executeSingle();
+		TabWydarzenie wydarzenie2 = new Select().from(TabWydarzenie.class).where("nazwa = \"Poznanie ¯ony\"").executeSingle();
+		
+		relacja = new TabMiejsceWydarzenie(miejsce.getId(), wydarzenie.getId());
+		listaDoDodania.add(relacja);
+		relacja = new TabMiejsceWydarzenie(miejsce.getId(), wydarzenie2.getId());
+		listaDoDodania.add(relacja);
+
+		for (TabMiejsceWydarzenie x: listaDoDodania) {
+			// TODO mo¿na zamieniæ na transakcjê - bêdzie szybciej
+			dodanyId = x.save();
+			Log.d(DEBUG_TAG, "Relacja dodana ID="+dodanyId+" Miejsce_ID="+x.getMiejsce_id()+" Wydarzenie_ID="+x.getWydarzenie_id());	// zwraca -1 jeœli nie uda³o siê dodaæ! a id dodanego jeœli uda³o.
+		}
+	}
+	
+	private void testuj() {
+		TabMiejsce miejsce = new Select().from(TabMiejsce.class).where("nazwa = \"Filtry Lindleya\"").executeSingle();
+
+		try {
+			List<TabWydarzenie> wydarzenia = miejsce.getWydarzenia();
+			if(wydarzenia != null)
+				for (TabWydarzenie x: wydarzenia) {
+					Log.d(DEBUG_TAG, "Iloœæ wydarzeñ w relacji: "+wydarzenia.size()+ ", Wydarzenie nazwa="+x.getNazwa());
+				}
+		} catch (SQLiteException e) { e.printStackTrace(); }
 	}
 }

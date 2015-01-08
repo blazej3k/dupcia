@@ -7,7 +7,7 @@ import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
 @Table(name="Branza")
-public class TabBranza extends Model {
+public class TabBranza extends Model implements IfSelectable {
 	// pojedyncze pola tabeli
 	
 	@Column(name="nazwa", unique=true, notNull=true)

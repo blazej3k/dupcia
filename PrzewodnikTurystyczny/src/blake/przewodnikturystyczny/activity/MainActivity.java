@@ -1,23 +1,5 @@
 package blake.przewodnikturystyczny.activity;
 
-import java.util.List;
-
-import com.activeandroid.query.Delete;
-import com.activeandroid.query.Select;
-import com.activeandroid.util.SQLiteUtils;
-
-import blake.przewodnikturystyczny.R;
-import blake.przewodnikturystyczny.baza.Namierzanie;
-import blake.przewodnikturystyczny.baza.PompeczkaBranzaOkres;
-import blake.przewodnikturystyczny.baza.PompeczkaRozne;
-import blake.przewodnikturystyczny.baza.model.TabBranza;
-import blake.przewodnikturystyczny.baza.model.TabBudynek;
-import blake.przewodnikturystyczny.baza.model.TabMiejsce;
-import blake.przewodnikturystyczny.baza.model.TabOkres;
-import blake.przewodnikturystyczny.baza.model.TabPostac;
-import blake.przewodnikturystyczny.baza.model.TabRod;
-import blake.przewodnikturystyczny.baza.model.TabRzecz;
-import blake.przewodnikturystyczny.baza.model.TabWydarzenie;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -29,7 +11,23 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.Toast;
+import blake.przewodnikturystyczny.R;
+import blake.przewodnikturystyczny.baza.Namierzanie;
+import blake.przewodnikturystyczny.baza.ObslugaBazy;
+import blake.przewodnikturystyczny.baza.PompeczkaBranzaOkres;
+import blake.przewodnikturystyczny.baza.PompeczkaRozne;
+import blake.przewodnikturystyczny.baza.model.TabBranza;
+import blake.przewodnikturystyczny.baza.model.TabBudynek;
+import blake.przewodnikturystyczny.baza.model.TabMiejsce;
+import blake.przewodnikturystyczny.baza.model.TabOkres;
+import blake.przewodnikturystyczny.baza.model.TabPostac;
+import blake.przewodnikturystyczny.baza.model.TabRod;
+import blake.przewodnikturystyczny.baza.model.TabRzecz;
+import blake.przewodnikturystyczny.baza.model.TabWydarzenie;
+import blake.przewodnikturystyczny.baza.model.pomocniczy.TabMiejsceWydarzenie;
+
+import com.activeandroid.query.Delete;
+import com.activeandroid.query.Select;
 
 public class MainActivity extends Activity {
 
@@ -41,6 +39,10 @@ public class MainActivity extends Activity {
 	private Button btn_pompeczka_okres;
 	private Button btn_pompeczka_budynki;
 	private Button btn_pompeczka_miejsca;
+	private Button btn_pompeczka_wydarzenia;
+	private Button btn_pompeczka_x;
+	private Button btn_relacje_miej_wyd;
+	private Button btn_relacje_x;
 	private Button btn_czysc_budynki;
 	private Button btn_count_all;
 	private Button btn_czysc_okresy;
@@ -48,7 +50,9 @@ public class MainActivity extends Activity {
 	private Button btn_czysc_wsio;
 	private Button btn_namierz_budynki;
 	private Button btn_namierz_miejsca;
+	private Button btn_select_all;
 	
+	private ObslugaBazy obslugaBazy;
 	private Namierzanie namierzanie;
 	
 	
@@ -58,125 +62,109 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         context = getApplicationContext();
         
+        obslugaBazy = new ObslugaBazy();
+        
         btn_mapa = (Button) findViewById(R.id.btn_mapa);
         btn_pompeczka_branza = (Button) findViewById(R.id.btn_pompeczka_branza);
         btn_pompeczka_okres = (Button) findViewById(R.id.btn_pompeczka_okres);
         btn_pompeczka_budynki = (Button) findViewById(R.id.btn_pompeczka_budynki);
         btn_pompeczka_miejsca = (Button) findViewById(R.id.btn_pompeczka_miejsca);
+        btn_pompeczka_wydarzenia = (Button) findViewById(R.id.btn_pompeczka_wydarzenia);
+        btn_pompeczka_x = (Button) findViewById(R.id.btn_pompeczka_x);
+        btn_relacje_miej_wyd = (Button) findViewById(R.id.btn_relacje_miej_wyd); 
+        btn_relacje_x = (Button) findViewById(R.id.btn_relacje_x);
         btn_count_all = (Button) findViewById(R.id.btn_count_all);
         btn_czysc_okresy = (Button) findViewById(R.id.btn_czysc_okresy);
         btn_czysc_branze = (Button) findViewById(R.id.btn_czysc_branze);
         btn_czysc_budynki = (Button) findViewById(R.id.btn_czysc_budynki);
+        btn_czysc_wsio = (Button) findViewById(R.id.btn_czysc_wsio);
         btn_namierz_budynki = (Button) findViewById(R.id.btn_namierz_budynki);
         btn_namierz_miejsca = (Button) findViewById(R.id.btn_namierz_miejsca);
-        btn_czysc_wsio = (Button) findViewById(R.id.btn_czysc_wsio);
+        btn_select_all = (Button) findViewById(R.id.btn_select_all);
         
         initBtnOnClickListeners();
+        
     }
 
     
 	private void initBtnOnClickListeners() {
-		btn_mapa.setOnClickListener(new OnClickListener() {
+		OnClickListener onClickListener = new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(context, Mapa.class);
+				switch (v.getId()) {
+				case (R.id.btn_mapa):
+					Intent intent = new Intent(context, Mapa.class);
 				startActivity(intent);
+				break;
+				case (R.id.btn_pompeczka_branza):
+					new PompeczkaBranzaOkres(false);
+					break;
+				case (R.id.btn_pompeczka_okres):
+					new PompeczkaBranzaOkres(true);
+					break;
+				case (R.id.btn_pompeczka_budynki):
+					new PompeczkaRozne(1);
+					break;
+				case (R.id.btn_pompeczka_miejsca):
+					new PompeczkaRozne(2);
+					break;
+				case (R.id.btn_pompeczka_wydarzenia):
+					new PompeczkaRozne(3);
+					break;
+				case (R.id.btn_pompeczka_x):
+					new PompeczkaRozne(99);
+					break;
+				case (R.id.btn_relacje_miej_wyd):
+					new PompeczkaRozne(51);
+					break;
+				case (R.id.btn_relacje_x):
+					
+					break;
+				case (R.id.btn_count_all):
+					showDialog(1);
+					break;
+				case (R.id.btn_czysc_okresy):
+					new Delete().from(TabOkres.class).execute();
+					break;
+				case (R.id.btn_czysc_branze):
+					new Delete().from(TabBranza.class).execute();
+					break;
+				case (R.id.btn_czysc_budynki):
+					new Delete().from(TabBudynek.class).execute();
+					break;
+				case (R.id.btn_namierz_budynki):
+					namierzanie = new Namierzanie(context, true);
+					break;
+				case (R.id.btn_namierz_miejsca):
+					namierzanie = new Namierzanie(context, false);
+					break;
+				case (R.id.btn_select_all):
+					obslugaBazy.selectAll();
+					break;
+				case (R.id.btn_czysc_wsio):
+					obslugaBazy.truncateAll();
+					break;
+				}
 			}
-		});	
+		};
 		
-		btn_pompeczka_branza.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				new PompeczkaBranzaOkres(false);
-			}
-		});
-		
-		btn_pompeczka_okres.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				new PompeczkaBranzaOkres(true);
-			}
-		});
-		
-		btn_pompeczka_budynki.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				new PompeczkaRozne(1);
-			}
-		});
-		
-		btn_pompeczka_miejsca.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				new PompeczkaRozne(2);
-			}
-		});
-		
-		btn_count_all.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				showDialog(1);
-//				Toast.makeText(context, "Liczba Bran¿ w bazie: "+TabBranza.count(TabBranza.class), Toast.LENGTH_SHORT).show();
-			}
-		});	
-		
-		btn_czysc_okresy.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				new Delete().from(TabOkres.class).execute();
-			}
-		});
-		
-		btn_czysc_branze.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				new Delete().from(TabBranza.class).execute();
-			}
-		});	
-		
-		btn_czysc_budynki.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				new Delete().from(TabBudynek.class).execute();
-			}
-		});	
-		
-		btn_namierz_budynki.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				namierzanie = new Namierzanie(context, true);
-			}
-		});	
-		
-		btn_namierz_miejsca.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				namierzanie = new Namierzanie(context, false);
-			}
-		});	
-		
-		btn_czysc_wsio.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				TabBudynek.truncate(TabBudynek.class);			// truncate ró¿ni siê od delete tym, ¿e czyœci tabelê (robi delete), ale te¿ resetuje jej ID
-				TabMiejsce.truncate(TabMiejsce.class);			// nowe pozycje z powrotem maj¹ id 1.
-				TabWydarzenie.truncate(TabWydarzenie.class);
-				TabPostac.truncate(TabPostac.class);
-				TabRzecz.truncate(TabRzecz.class);
-				TabRod.truncate(TabRod.class);
-				TabBranza.truncate(TabBranza.class);
-				TabOkres.truncate(TabOkres.class);
-				
-//				new Delete().from(TabBudynek.class).execute();
-//				new Delete().from(TabMiejsce.class).execute();
-//				new Delete().from(TabWydarzenie.class).execute();
-//				new Delete().from(TabPostac.class).execute();
-//				new Delete().from(TabRzecz.class).execute();
-//				new Delete().from(TabRod.class).execute();
-//				new Delete().from(TabBranza.class).execute();
-//				new Delete().from(TabOkres.class).execute();
-			}
-		});	
+        btn_mapa.setOnClickListener(onClickListener);
+        btn_pompeczka_branza.setOnClickListener(onClickListener);
+        btn_pompeczka_okres.setOnClickListener(onClickListener);
+        btn_pompeczka_budynki.setOnClickListener(onClickListener);
+        btn_pompeczka_miejsca.setOnClickListener(onClickListener);
+        btn_pompeczka_wydarzenia.setOnClickListener(onClickListener);
+        btn_pompeczka_x.setOnClickListener(onClickListener);
+        btn_relacje_miej_wyd.setOnClickListener(onClickListener);
+        btn_relacje_x.setOnClickListener(onClickListener);
+        btn_count_all.setOnClickListener(onClickListener);
+        btn_czysc_okresy.setOnClickListener(onClickListener);
+        btn_czysc_branze.setOnClickListener(onClickListener);
+        btn_czysc_budynki.setOnClickListener(onClickListener);
+        btn_czysc_wsio.setOnClickListener(onClickListener);
+        btn_namierz_budynki.setOnClickListener(onClickListener);
+        btn_namierz_miejsca.setOnClickListener(onClickListener);
+        btn_select_all.setOnClickListener(onClickListener);
 	}
 
 	@Override
@@ -224,4 +212,118 @@ public class MainActivity extends Activity {
 
 
 
+/*btn_mapa.setOnClickListener(new OnClickListener() {
+	@Override
+	public void onClick(View v) {
+		Intent intent = new Intent(context, Mapa.class);
+		startActivity(intent);
+	}
+});	
 
+btn_pompeczka_branza.setOnClickListener(new OnClickListener() {
+	@Override
+	public void onClick(View v) {
+		new PompeczkaBranzaOkres(false);
+	}
+});
+
+btn_pompeczka_okres.setOnClickListener(new OnClickListener() {
+	@Override
+	public void onClick(View v) {
+		new PompeczkaBranzaOkres(true);
+	}
+});
+
+btn_pompeczka_budynki.setOnClickListener(new OnClickListener() {
+	@Override
+	public void onClick(View v) {
+		new PompeczkaRozne(1);
+	}
+});
+
+btn_pompeczka_miejsca.setOnClickListener(new OnClickListener() {
+	@Override
+	public void onClick(View v) {
+		new PompeczkaRozne(2);
+	}
+});
+
+btn_pompeczka_wydarzenia.setOnClickListener(new OnClickListener() {
+	@Override
+	public void onClick(View v) {
+		new PompeczkaRozne(3);
+	}
+});
+
+btn_pompeczka_x.setOnClickListener(new OnClickListener() {
+	@Override
+	public void onClick(View v) {
+		new PompeczkaRozne(99);
+	}
+});
+
+btn_count_all.setOnClickListener(new OnClickListener() {
+	@Override
+	public void onClick(View v) {
+		showDialog(1);
+//		Toast.makeText(context, "Liczba Bran¿ w bazie: "+TabBranza.count(TabBranza.class), Toast.LENGTH_SHORT).show();
+	}
+});	
+
+btn_czysc_okresy.setOnClickListener(new OnClickListener() {
+	@Override
+	public void onClick(View v) {
+		new Delete().from(TabOkres.class).execute();
+	}
+});
+
+btn_czysc_branze.setOnClickListener(new OnClickListener() {
+	@Override
+	public void onClick(View v) {
+		new Delete().from(TabBranza.class).execute();
+	}
+});	
+
+btn_czysc_budynki.setOnClickListener(new OnClickListener() {
+	@Override
+	public void onClick(View v) {
+		new Delete().from(TabBudynek.class).execute();
+	}
+});	
+
+btn_namierz_budynki.setOnClickListener(new OnClickListener() {
+	@Override
+	public void onClick(View v) {
+		namierzanie = new Namierzanie(context, true);
+	}
+});	
+
+btn_namierz_miejsca.setOnClickListener(new OnClickListener() {
+	@Override
+	public void onClick(View v) {
+		namierzanie = new Namierzanie(context, false);
+	}
+});	
+
+btn_czysc_wsio.setOnClickListener(new OnClickListener() {
+	@Override
+	public void onClick(View v) {
+		TabBudynek.truncate(TabBudynek.class);			// truncate ró¿ni siê od delete tym, ¿e czyœci tabelê (robi delete), ale te¿ resetuje jej ID
+		TabMiejsce.truncate(TabMiejsce.class);			// nowe pozycje z powrotem maj¹ id 1.
+		TabWydarzenie.truncate(TabWydarzenie.class);
+		TabPostac.truncate(TabPostac.class);
+		TabRzecz.truncate(TabRzecz.class);
+		TabRod.truncate(TabRod.class);
+		TabBranza.truncate(TabBranza.class);
+		TabOkres.truncate(TabOkres.class);
+		
+//		new Delete().from(TabBudynek.class).execute();
+//		new Delete().from(TabMiejsce.class).execute();
+//		new Delete().from(TabWydarzenie.class).execute();
+//		new Delete().from(TabPostac.class).execute();
+//		new Delete().from(TabRzecz.class).execute();
+//		new Delete().from(TabRod.class).execute();
+//		new Delete().from(TabBranza.class).execute();
+//		new Delete().from(TabOkres.class).execute();
+	}
+});	*/

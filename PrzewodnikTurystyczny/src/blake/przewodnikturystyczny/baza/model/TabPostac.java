@@ -7,12 +7,12 @@ import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
 @Table(name="Postac")
-public class TabPostac extends Model {
+public class TabPostac extends Model implements IfSelectable {
 	// pojedyncze pola tabeli
 	@Column(name="imie", unique=true, notNull=true)
 	private String imie;
-	@Column(name="nazwisko", unique=true, notNull=true)
-	private String nazwisko;
+	@Column(name="nazwa", unique=true, notNull=true)
+	private String nazwa;
 	@Column(name="rokUrodzenia")
 	private String rokUrodzenia;
 	@Column(name="rokSmierci")
@@ -49,14 +49,14 @@ public class TabPostac extends Model {
 		super();
 	}
 
-	public TabPostac(String imie, String nazwisko, String rokUrodzenia,
+	public TabPostac(String imie, String nazwa, String rokUrodzenia,
 			String rokSmierci, String opis, 
 			TabOkres okres, TabBranza branza, TabRod rod)  {
 
 		super();
 		
 		this.imie = imie;
-		this.nazwisko = nazwisko;
+		this.nazwa = nazwa;
 		this.rokUrodzenia = rokUrodzenia;
 		this.rokSmierci = rokSmierci;
 		this.opis = opis;
@@ -73,12 +73,12 @@ public class TabPostac extends Model {
 		this.imie = imie;
 	}
 
-	public String getNazwisko() {
-		return nazwisko;
+	public String getNazwa() {
+		return nazwa;
 	}
 
-	public void setNazwisko(String nazwisko) {
-		this.nazwisko = nazwisko;
+	public void setNazwa(String nazwa) {
+		this.nazwa = nazwa;
 	}
 
 	public String getRokUrodzenia() {

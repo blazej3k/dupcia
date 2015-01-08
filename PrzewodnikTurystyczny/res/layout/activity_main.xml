@@ -12,14 +12,13 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal"
-        android:paddingBottom="20dp"
-        android:paddingTop="20dp"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
         tools:context="blake.przewodnikturystyczny.MainActivity" >
 
         <Button
             android:id="@+id/btn_mapa"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/button_brzydki"
             android:text="@string/btn_mapa" />
     </LinearLayout>
 
@@ -33,8 +32,7 @@
 
         <Button
             android:id="@+id/btn_count_all"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/button_brzydki"
             android:text="@string/btn_count_all" />
     </LinearLayout>
 
@@ -48,14 +46,12 @@
 
         <Button
             android:id="@+id/btn_czysc_okresy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/button_brzydki"
             android:text="@string/btn_czysc_okresy" />
 
         <Button
             android:id="@+id/btn_czysc_branze"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/button_brzydki"
             android:text="@string/btn_czysc_branze" />
     </LinearLayout>
 
@@ -69,14 +65,12 @@
 
         <Button
             android:id="@+id/btn_czysc_budynki"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/button_brzydki"
             android:text="@string/btn_czysc_budynki" />
 
         <Button
             android:id="@+id/btn_czysc_wsio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/button_brzydki"
             android:text="@string/btn_czysc_wsio" />
     </LinearLayout>
 
@@ -89,14 +83,12 @@
 
         <Button
             android:id="@+id/btn_pompeczka_okres"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/button_brzydki"
             android:text="@string/pompeczka_okres" />
 
         <Button
             android:id="@+id/btn_pompeczka_branza"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/button_brzydki"
             android:text="@string/pompeczka_branza" />
     </LinearLayout>
 
@@ -109,27 +101,64 @@
 
         <Button
             android:id="@+id/btn_pompeczka_budynki"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/button_brzydki"
             android:text="@string/pompeczka_budynki" />
         
         <Button
             android:id="@+id/btn_pompeczka_miejsca"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/button_brzydki"
             android:text="@string/pompeczka_miejsca" />
+    </LinearLayout>
+    
+    <LinearLayout
+        android:id="@+id/lin_lay7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:gravity="center" >
+
+        <Button
+            android:id="@+id/btn_pompeczka_wydarzenia"
+            style="@style/button_brzydki"
+            android:text="@string/pompeczka_wydarzenia" />
+        
+        <Button
+            android:id="@+id/btn_pompeczka_x"
+            style="@style/button_brzydki"
+            android:text="@string/pompeczka_x" />
+    </LinearLayout>
+    
+        <LinearLayout
+        android:id="@+id/lin_lay8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:gravity="center" >
+
+        <Button
+            android:id="@+id/btn_relacje_miej_wyd"
+            style="@style/button_brzydki"
+            android:text="@string/btn_relacje_miej_wyd" />
+        
+        <Button
+            android:id="@+id/btn_relacje_x"
+            style="@style/button_brzydki"
+            android:text="@string/btn_relacje_x" />
     </LinearLayout>
 
     <Button
         android:id="@+id/btn_namierz_budynki"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/button_brzydki"
         android:text="@string/btn_namierz_budynki" />
 
     <Button
         android:id="@+id/btn_namierz_miejsca"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/button_brzydki"
         android:text="@string/btn_namierz_miejsca" />
+    
+    <Button
+        android:id="@+id/btn_select_all"
+        style="@style/button_brzydki"
+        android:text="@string/btn_select_all" />
 
 </LinearLayout>
