@@ -50,8 +50,8 @@ public class TabMiejsce extends Model implements IfMarkierable, IfLocalizable, I
     public List<TabWydarzenie> getWydarzenia() {
     	return getRelacje(TabWydarzenie.class, TabMiejsceWydarzenie.class, "Wydarzenie_ID", "Miejsce_ID");
     }
-    public List<TabRzecz> rzeczy() {
-    	return getRelacje(TabRzecz.class, TabMiejsceRzecz.class, "Wydarzenie_ID", "Miejsce_ID");
+    public List<TabRzecz> getRzeczy() {
+    	return getRelacje(TabRzecz.class, TabMiejsceRzecz.class, "Rzecz_ID", "Miejsce_ID");
     }
     
 	public TabMiejsce() {

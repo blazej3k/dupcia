@@ -37,7 +37,7 @@ public class MainActivity extends Activity {
 	private Button btn_pompeczka_budynki;
 	private Button btn_pompeczka_miejsca;
 	private Button btn_pompeczka_wydarzenia;
-	private Button btn_relacje_miej_wyd;
+	private Button btn_relacje;
 	private Button btn_relacje_x;
 	private Button btn_czysc_budynki;
 	private Button btn_count_all;
@@ -66,7 +66,7 @@ public class MainActivity extends Activity {
         btn_pompeczka_miejsca = (Button) findViewById(R.id.btn_pompeczka_miejsca);
         btn_pompeczka_wydarzenia = (Button) findViewById(R.id.btn_pompeczka_wydarzenia);
         
-        btn_relacje_miej_wyd = (Button) findViewById(R.id.btn_relacje_miej_wyd); 
+        btn_relacje = (Button) findViewById(R.id.btn_relacje); 
         btn_relacje_x = (Button) findViewById(R.id.btn_relacje_x);
         btn_count_all = (Button) findViewById(R.id.btn_count_all);
         btn_czysc_budynki = (Button) findViewById(R.id.btn_czysc_budynki);
@@ -107,7 +107,7 @@ public class MainActivity extends Activity {
 				case (R.id.btn_testuj):
 					new SuperPompeczka(99);
 					break;
-				case (R.id.btn_relacje_miej_wyd):
+				case (R.id.btn_relacje):
 					new SuperPompeczka(51);
 					break;
 				case (R.id.btn_relacje_x):
@@ -143,7 +143,7 @@ public class MainActivity extends Activity {
         btn_pompeczka_miejsca.setOnClickListener(onClickListener);
         btn_pompeczka_wydarzenia.setOnClickListener(onClickListener);
         btn_testuj.setOnClickListener(onClickListener);
-        btn_relacje_miej_wyd.setOnClickListener(onClickListener);
+        btn_relacje.setOnClickListener(onClickListener);
         btn_relacje_x.setOnClickListener(onClickListener);
         btn_count_all.setOnClickListener(onClickListener);
         btn_czysc_budynki.setOnClickListener(onClickListener);

@@ -129,9 +129,9 @@
         android:gravity="center" >
 
         <Button
-            android:id="@+id/btn_relacje_miej_wyd"
+            android:id="@+id/btn_relacje"
             style="@style/button_brzydki"
-            android:text="@string/btn_relacje_miej_wyd" />
+            android:text="@string/btn_relacje" />
         
         <Button
             android:id="@+id/btn_relacje_x"

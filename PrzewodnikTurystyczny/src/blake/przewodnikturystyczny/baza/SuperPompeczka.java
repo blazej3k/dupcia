@@ -40,7 +40,7 @@ public class SuperPompeczka {
 			pompujWszystko();
 			break;
 		case 51:
-			relacjeMiejsceWydarzenie();
+			relacje();
 			break;
 		case 99:
 			testuj();
@@ -52,14 +52,14 @@ public class SuperPompeczka {
 	}
 	
 	private void testuj() {
-		TabMiejsce miejsce = new Select().from(TabMiejsce.class).where("nazwa = \"Filtry Lindleya\"").executeSingle();
-
+		TabMiejsce miejsce = new Select().from(TabMiejsce.class).where("nazwa = ?", "Ustro").executeSingle();
+		
 		try {
 			List<TabWydarzenie> wydarzenia = miejsce.getWydarzenia();
-			if(wydarzenia != null)
-				for (TabWydarzenie x: wydarzenia) {
-					Log.d(DEBUG_TAG, "Iloœæ wydarzeñ w relacji: "+wydarzenia.size()+ ", Wydarzenie nazwa="+x.getNazwa());
-				}
+			System.out.println("Iloœæ relacji z Ustro: "+wydarzenia.size());	
+			for(TabWydarzenie x: wydarzenia) {
+				Log.d(DEBUG_TAG, "Wydarzenie w relacji z "+miejsce.getNazwa()+": "+x.getNazwa());
+			}
 		} catch (SQLiteException e) { e.printStackTrace(); }
 	}
 	
@@ -70,6 +70,11 @@ public class SuperPompeczka {
 		pompujMiejsce();
 		pompujWydarzenie();
 		
+		relacje();
+	}
+	
+	private void relacje() {
+		relacjeMiejsceBudynek();
 		relacjeMiejsceWydarzenie();
 	}
 	
@@ -191,6 +196,12 @@ public class SuperPompeczka {
 		miejsce.setLongitude(20.951997);
 		listaDoDodania.add(miejsce);							// dodaj do listy - zapis do bazy na koñcu
 		
+		okres =  new Select().from(TabOkres.class).where("rokPoczatek > ?", "1940").executeSingle(); 
+		miejsce = new TabMiejsce("Ustro", "Ksiêcia Janusza 39", false, "1945", "Pijany Student", "Dobry klimat, fajny gmach, jo³ jo³.");
+		miejsce.setOkres(okres);
+		miejsce.setBranza(branza);
+		listaDoDodania.add(miejsce);
+		
 	
 		for (TabMiejsce x: listaDoDodania) {
 			// TODO mo¿na zamieniæ na transakcjê - bêdzie szybciej
@@ -221,6 +232,22 @@ public class SuperPompeczka {
 		
 		wydarzenie = new TabWydarzenie("Najazd Brudnych Twarzy", "2014", "", "Wszystko brudne, syf w kuchni i ³azience.", okres, branza);
 		listaDoDodania.add(wydarzenie);
+		
+		wydarzenie = new TabWydarzenie("Zlecenie budowy", "1875", "", 
+				"Budowê zleci³ Sokrates Starynkiewicz (1820-1902), genera³ rosyjski, prezydent Warszawy (1875-1892) ju¿ w pierwszym roku swoich rz¹dów. W 1881 r. Starynkiewicz zatwierdzi³ projekt w Petersburgu i od tego roku do 1886 budowano pierwsz¹ sieæ wodoci¹gów i kanalizacji w Warszawie.", 
+				okres, branza);
+		listaDoDodania.add(wydarzenie);
+		
+		wydarzenie = new TabWydarzenie("Budowa stacji ozonowania poœredniego i filtrowania na wêglu aktywnym", "2008", "2010", 
+				"W latach 2008–2010 wybudowano stacjê ozonowania poœredniego i filtrowania na wêglu aktywnym. Znajduj¹ siê w niej 3 generatory ozonu i 18 komór filtrów wêglowych. Architektonicznie nawi¹zuje ona starszych obiektów stacji – materia³ budowlany (ceg³a klinkierowa, piaskowiec) i stylizacja ornamentów do dziewiêtnastowiecznych budowli stacji, a p³askorzeŸby do reliefów w stylu art deco z miêdzywojennej stacji filtrów pospiesznych. Stacja w wyniku konkursu otrzyma³a nazwê „Socrates”.", 
+				okres, branza);
+		listaDoDodania.add(wydarzenie);
+		
+		wydarzenie = new TabWydarzenie("Pomnik historii", "2012", "", 
+				"Ca³y kompleks, ³¹cznie z budynkami wybudowanymi dwa lata wczeœniej, zosta³ uznany za pomnik historii.", 
+				okres, branza);
+		listaDoDodania.add(wydarzenie);
+		
 		
 		for (TabWydarzenie x: listaDoDodania) {
 			// TODO mo¿na zamieniæ na transakcjê - bêdzie szybciej
@@ -312,7 +339,15 @@ public class SuperPompeczka {
 			dodanyId = x.save();
 			Log.d(DEBUG_TAG, "Bran¿a dodana ID="+dodanyId+" nazwa="+x.getNazwa());	// zwraca -1 jeœli nie uda³o siê dodaæ! a id dodanego jeœli uda³o.
 		}
+	}
+	
+	private void relacjeMiejsceBudynek() {
+		// sa to relacje 1-1 - zalozenie jest takie, ze miejsce moze sie skladac z wielu miejsc, a kazde miejsce to jeden budynek. wiec jesli miejsce to Aleje Ujazdowskie, to pomniki to beda miejsca zwiazane oraz budynki tez beda miejscami powiazanymi z miejscem
+		TabBudynek budynek = new Select().from(TabBudynek.class).where("nazwa = ?", "DS Ustronie").executeSingle();
+		TabMiejsce miejsce = new Select().from(TabMiejsce.class).where("nazwa = ?", "Ustro").executeSingle();
 		
+		budynek.setMiejsce(miejsce);
+		miejsce.setBudynek(budynek);
 	}
 	
 	private void relacjeMiejsceWydarzenie() {
@@ -320,15 +355,25 @@ public class SuperPompeczka {
 		LinkedList<TabMiejsceWydarzenie> listaDoDodania = new LinkedList<TabMiejsceWydarzenie>();
 		TabMiejsceWydarzenie relacja;
 		
-		TabMiejsce miejsce = new Select().from(TabMiejsce.class).where("nazwa = \"Filtry Lindleya\"").executeSingle();
-		TabWydarzenie wydarzenie = new Select().from(TabWydarzenie.class).where("nazwa = \"Budowa Ustro\"").executeSingle();
-		TabWydarzenie wydarzenie2 = new Select().from(TabWydarzenie.class).where("nazwa = \"Poznanie ¯ony\"").executeSingle();
+		TabMiejsce miejsce = new Select().from(TabMiejsce.class).where("nazwa = ?", "Ustro").executeSingle();
 		
-		relacja = new TabMiejsceWydarzenie(miejsce.getId(), wydarzenie.getId());
+		relacja = new TabMiejsceWydarzenie(miejsce.getId(), 1L);
 		listaDoDodania.add(relacja);
-		relacja = new TabMiejsceWydarzenie(miejsce.getId(), wydarzenie2.getId());
+		relacja = new TabMiejsceWydarzenie(miejsce.getId(), 2L);
+		listaDoDodania.add(relacja);
+		relacja = new TabMiejsceWydarzenie(miejsce.getId(), 3L);
 		listaDoDodania.add(relacja);
 
+		miejsce = new Select().from(TabMiejsce.class).where("nazwa = ?", "Filtry Lindleya").executeSingle();
+		relacja = new TabMiejsceWydarzenie(miejsce.getId(), 4L);
+		listaDoDodania.add(relacja);
+		
+		relacja = new TabMiejsceWydarzenie(miejsce.getId(), 5L);
+		listaDoDodania.add(relacja);
+		
+		relacja = new TabMiejsceWydarzenie(miejsce.getId(), 6L);
+		listaDoDodania.add(relacja);
+		
 		for (TabMiejsceWydarzenie x: listaDoDodania) {
 			// TODO mo¿na zamieniæ na transakcjê - bêdzie szybciej
 			dodanyId = x.save();
