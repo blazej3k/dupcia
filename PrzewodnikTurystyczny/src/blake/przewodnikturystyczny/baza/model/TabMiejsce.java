@@ -161,4 +161,20 @@ public class TabMiejsce extends Model implements IfMarkierable, IfLocalizable, I
 	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}
+
+	public String getProjektant() {
+		return projektant;
+	}
+
+	public void setProjektant(String projektant) {
+		this.projektant = projektant;
+	}
+
+	public String getOpis() {
+		return opis;
+	}
+
+	public void setOpis(String opis) {
+		this.opis = opis;
+	}
 }

@@ -1,5 +1,9 @@
 package blake.przewodnikturystyczny.activity;
 
+import java.util.List;
+import java.util.Set;
+import java.util.TreeMap;
+
 import android.app.Activity;
 import android.content.Context;
 import android.location.Criteria;
@@ -40,6 +44,7 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 
 	class MyInfoWindowAdapter implements InfoWindowAdapter {
 		private final View myContentsView;
+		Boolean czyBudynek;
 
 		MyInfoWindowAdapter() {
 			myContentsView = getLayoutInflater().inflate(
@@ -50,24 +55,32 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 		 * to jest robione getInfoContents, s³u¿y jakby do samego modyfikowania treœci - wg dokumentacji Google Maps
 		 */
 		@Override
-		public View getInfoContents(Marker marker) {
+		public View getInfoContents(Marker marker) {		// pobierane s¹ opisy wszystkich obiektów naraz, w dwóch oddzielnych listach. Mo¿na z³¹czyæ w jedn¹ funkcjê generyczn¹, bêdzie mniej sprawdzeñ, ale nie jest to konieczne - ró¿ne pola s¹ i by³oby to niewygodne
 			TextView tvTitle = ((TextView) myContentsView
 					.findViewById(R.id.wp_title));
 			TextView tvSnippet = ((TextView) myContentsView
 					.findViewById(R.id.wp_snippet));
 			ImageView iv_icon = ((ImageView)myContentsView.findViewById(R.id.wp_icon));
 			   
+			String snippet="";
 			
-			tvTitle.setText(marker.getTitle());
-			tvSnippet.setText(marker.getSnippet());
 			
-			if (marker.getAlpha() == ObslugaMapy.alphaBudynek)
+			if (opakowanieBudynek.containsKey(marker)) {
+				List<String> opis = opakowanieBudynek.get(marker);
+				snippet = opis.get(0);
 				iv_icon.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_camera));
-			else if (marker.getAlpha() == ObslugaMapy.alphaMiejsce)
+			}
+			else if (opakowanieMiejsce.containsKey(marker)) {
+				List<String> opis = opakowanieMiejsce.get(marker);
+				snippet = opis.get(0);
 				iv_icon.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_gallery));
+			}
 			else
 				iv_icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_launcher));
-
+			
+			tvTitle.setText(marker.getTitle());
+			tvSnippet.setText(snippet);
+			
 			return myContentsView;
 		}
 
@@ -86,6 +99,8 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 	private LocationManager serwis;
 	private GoogleMap map;
 	private ObslugaMapy obslugaMapy;
+	private TreeMap<Marker, List<String>> opakowanieBudynek; // opakowania - czyli paczki dodatkowych parametrów do Markerów (na potrzeby wyœwietlenia w InfoWindow)
+	private TreeMap<Marker, List<String>> opakowanieMiejsce;
 	
 	private TextView tv_adres;
 	private TextView tv_lokalizacja;
@@ -201,8 +216,8 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 		this.map = map;
 		obslugaMapy = new ObslugaMapy(map);
 		domyslnaMapa(map);
-		obslugaMapy.dodajMarkery(obslugaMapy.pobierzBudynki()); // pobiera budynki jako liste i wywoluje generyczn¹ metode do wyswietlania budynkow
-		obslugaMapy.dodajMarkery(obslugaMapy.pobierzMiejsca());
+		opakowanieBudynek = obslugaMapy.dodajMarkery(obslugaMapy.pobierzBudynki()); // pobiera budynki jako liste i wywoluje generyczn¹ metode do wyswietlania budynkow
+		opakowanieMiejsce = obslugaMapy.dodajMarkery(obslugaMapy.pobierzMiejsca());	// funkcja od razu zwraca opakowania - czyli paczki dodatkowych parametrów do Markerów (na potrzeby wyœwietlenia w InfoWindow)
 
 		map.setInfoWindowAdapter(new MyInfoWindowAdapter()); // ustawia customowy adapter do okienek informacyjnych - tych po klikniêciu w marker
 															 // zdefiniowany jest w klasie wewnêtrznej, na górze tej klasy
