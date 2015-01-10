@@ -26,5 +26,8 @@
 	<string name="btn_select_all">Select All</string>
 	<string name="btn_init">Inicjuj bazę</string>
 	<string name="btn_testuj">Testuj</string>
+	<string name="ab_czerwony">Czerwony</string>
+	<string name="ab_niebieski">Niebieski</string>
+	<string name="ab_zielony">Zielony</string>
 	
 </resources>

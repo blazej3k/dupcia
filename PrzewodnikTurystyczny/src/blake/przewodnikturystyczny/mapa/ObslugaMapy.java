@@ -116,9 +116,9 @@ public class ObslugaMapy {
 
 				dodatek = new LinkedList<String>();
 				dodatek.add(x.getAdres());
-				dodatek.add(x.getDataPowstania());
-				dodatek.add(x.getProjektant());
-				dodatek.add(x.getOpis());
+//				dodatek.add(x.getDataPowstania());
+//				dodatek.add(x.getProjektant());
+//				dodatek.add(x.getOpis());
 				
 				opakowanie.put(marker, dodatek);
 			}
@@ -135,9 +135,9 @@ public class ObslugaMapy {
 				
 				dodatek = new LinkedList<String>();
 				dodatek.add(x.getAdres());
-				dodatek.add(x.getDataPowstania());
-				dodatek.add(x.getProjektant());
-				dodatek.add(x.getOpis());
+//				dodatek.add(x.getDataPowstania());
+//				dodatek.add(x.getProjektant());
+//				dodatek.add(x.getOpis());
 
 				opakowanie.put(marker, dodatek);
 			}		

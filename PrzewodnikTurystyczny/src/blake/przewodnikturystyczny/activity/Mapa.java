@@ -1,16 +1,19 @@
 package blake.przewodnikturystyczny.activity;
 
 import java.util.List;
-import java.util.Set;
 import java.util.TreeMap;
 
 import android.app.Activity;
+import android.app.ApplicationErrorReport.AnrInfo;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -56,6 +59,8 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 		 */
 		@Override
 		public View getInfoContents(Marker marker) {		// pobierane s¹ opisy wszystkich obiektów naraz, w dwóch oddzielnych listach. Mo¿na z³¹czyæ w jedn¹ funkcjê generyczn¹, bêdzie mniej sprawdzeñ, ale nie jest to konieczne - ró¿ne pola s¹ i by³oby to niewygodne
+			currentMarker = marker;							// przypisuje marker, zeby mozna bylo jego info window chowac
+			
 			TextView tvTitle = ((TextView) myContentsView
 					.findViewById(R.id.wp_title));
 			TextView tvSnippet = ((TextView) myContentsView
@@ -63,8 +68,7 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 			ImageView iv_icon = ((ImageView)myContentsView.findViewById(R.id.wp_icon));
 			   
 			String snippet="";
-			
-			
+						
 			if (opakowanieBudynek.containsKey(marker)) {
 				List<String> opis = opakowanieBudynek.get(marker);
 				snippet = opis.get(0);
@@ -107,6 +111,7 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 	private Button btn_znajdz;
 	private EditText et_podaj_adres;
 	private ProgressBar mActivityIndicator;
+	private Marker currentMarker;
 
 	private Boolean ifZnajdz = false;
 
@@ -114,6 +119,7 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		context = getApplicationContext();
+		actionBar();
 
 		serwis = (LocationManager) getSystemService(LOCATION_SERVICE);
 		boolean locationEnabled = serwis
@@ -152,6 +158,56 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 		});	
 	}
 
+	@Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+    getMenuInflater().inflate(R.menu.action_bar, menu);
+    
+    return true;
+    }
+	
+	private void actionBar() {
+		getActionBar().setTitle("Obwarzanek");
+//		getActionBar().setDisplayHomeAsUpEnabled(true);		// i tak go nie uzywam bo bym musial Support ladowac
+		// to ta strzalka w lewo, przy ikonce aplikacji, taki 'Wstecz'
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		Toast.makeText(getApplicationContext(), "Naciœniêto: " + item.getTitle().toString(), Toast.LENGTH_SHORT).show();
+		
+		switch (item.getItemId()) {
+		case (R.id.ab_wstecz): {
+//	        Intent intent = new Intent(context, MainActivity.class);
+//	        startActivity(intent);
+			finish();		// niby nie polecany ale szybszy i jo³ jo³
+			break;
+		}
+		case (R.id.ab_dalej): {
+			
+			break;
+		}
+		case (R.id.ab_pokazukryj): {
+			if (currentMarker != null)
+				currentMarker.hideInfoWindow();
+			break;
+		}
+//		case (android.R.id.home):		// przecie nie uzywam i wylaczony
+//			// 	finish();
+//			return false;
+////			break;
+		default:
+			break;
+		}
+		
+		return super.onOptionsItemSelected(item);
+	}
+ 
+    @Override
+    public void onBackPressed() {
+    Toast.makeText(getApplicationContext(), "Naciœniêto przycisk wstecz", Toast.LENGTH_SHORT).show();
+    super.onBackPressed();
+    }
+	
 	private void domyslnaMapa(GoogleMap map) {
 		Location ostatniaLokalizacja = pobierzOstatniaLokalizacje();
 		LatLng ostatniaLL = new LatLng(ostatniaLokalizacja.getLatitude(), ostatniaLokalizacja.getLongitude());
@@ -296,7 +352,6 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 		}
 		else tv_lokalizacja.setText(pozycja); // wyœwietl to co wróci³o, czyli w tym wypadku treœæ b³êdu.
 	}
-
 }
 
 
