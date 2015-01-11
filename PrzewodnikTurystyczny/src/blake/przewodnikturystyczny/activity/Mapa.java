@@ -4,10 +4,9 @@ import java.util.List;
 import java.util.TreeMap;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
-import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -100,7 +99,6 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 	static final LatLng domyslnaPozycja = new LatLng(52.23, 21); // pozycja Warszawy
 	static final int domyslnyZoom = 12;
 	final int RQS_GooglePlayServices = 1;
-	private static final int DIALOG_ALERT = 10;
 
 	private Context context;
 	private LocationManager serwis;
@@ -180,9 +178,9 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 		
 		switch (item.getItemId()) {
 		case (R.id.ab_wstecz): {
-//	        Intent intent = new Intent(context, MainActivity.class);
-//	        startActivity(intent);
-			finish();		// niby nie polecany ale szybszy i jo³ jo³
+	        Intent intent = new Intent(context, MainActivity.class);
+	        startActivity(intent);
+//			finish();		// niby nie polecany ale szybszy i jo³ jo³
 			break;
 		}
 		case (R.id.ab_dalej): {
@@ -207,25 +205,10 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
  
     @Override
     public void onBackPressed() {
-    Toast.makeText(getApplicationContext(), "Naciœniêto przycisk wstecz", Toast.LENGTH_SHORT).show();
+    	Toast.makeText(getApplicationContext(), "Naciœniêto przycisk wstecz", Toast.LENGTH_SHORT).show();
     super.onBackPressed();
     }
 	
-    @Override
-    protected Dialog onCreateDialog(int id) {
-      switch (id) {
-        case DIALOG_ALERT:
-          Builder builder = new AlertDialog.Builder(this);
-          builder.setMessage("Dialog z Markera.");
-          builder.setCancelable(true);
-//          builder.setPositiveButton("I agree", new OkOnClickListener());
-//          builder.setNegativeButton("No, no", new CancelOnClickListener());
-          AlertDialog dialog = builder.create();
-          dialog.show();
-      }
-      return super.onCreateDialog(id);
-    }
-    
 	private void domyslnaMapa(GoogleMap map) {
 		Location ostatniaLokalizacja = pobierzOstatniaLokalizacje();
 		LatLng ostatniaLL = new LatLng(ostatniaLokalizacja.getLatitude(), ostatniaLokalizacja.getLongitude());
@@ -325,10 +308,22 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 	@Override
 	public void onInfoWindowClick(Marker marker) {
 		Toast.makeText(context, "Klikniêto: " + marker.getTitle(), Toast.LENGTH_SHORT).show();
-		
-		showDialog(DIALOG_ALERT);
+		showSzczegolyDialog(marker);
 	}
 
+    public void showSzczegolyDialog(Marker marker) {
+    	DialogFragment dialog;
+    	
+    	if (opakowanieBudynek.containsKey(marker))
+    		dialog = new DialogSzczegolyFragment(marker.getTitle(), true);
+    	else if (opakowanieMiejsce.containsKey(marker))
+    		dialog = new DialogSzczegolyFragment(marker.getTitle(), false);
+    	else
+    		dialog = new DialogFragment();
+        
+        dialog.show(getFragmentManager(), "DialogSzczegolyFragment");
+    }
+	
 	@Override
 	protected void onResume() {
 		super.onResume();

@@ -1,8 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
-    
+	style="@style/lay_dialog_szczegoly" >
 
+    <TextView
+        android:id="@+id/tv_dialog_nazwa"
+		style = "@style/tv_dialog_nazwa" />
+    
+    <View style = "@style/kreska_pozioma"/>
+
+    <TextView
+        android:id="@+id/tv_dialog_pole1"
+		style = "@style/tv_dialog_pola" />
+    
+    <TextView
+        android:id="@+id/tv_dialog_pole2"
+		style = "@style/tv_dialog_pola" />
+    
+    <TextView
+        android:id="@+id/tv_dialog_pole3"
+        style="@style/tv_dialog_pola" />
+    
+    <TextView
+        android:id="@+id/tv_dialog_pole4"
+		style = "@style/tv_dialog_pola" />
+    
+    <TextView
+        android:id="@+id/tv_dialog_pole5"
+		style = "@style/tv_dialog_pola" />
+    
+    <TextView
+        android:id="@+id/tv_dialog_opis"
+		style = "@style/tv_dialog_opis" />
+    
 </LinearLayout>

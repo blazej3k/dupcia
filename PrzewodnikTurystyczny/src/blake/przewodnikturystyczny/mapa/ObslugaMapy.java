@@ -89,10 +89,10 @@ public class ObslugaMapy {
 			tempMarker = map.addMarker((new MarkerOptions()
 			.position(pozycjaLL)
 			.title(x.getNazwa())
-			.alpha(czyBudynek ? alphaBudynek : alphaMiejsce )				// potrzebne do odró¿nienia przy wyœwietlaniu InfoWindow co jest wyœwietlane 
+//			.alpha(czyBudynek ? alphaBudynek : alphaMiejsce )				// potrzebne do odró¿nienia przy wyœwietlaniu InfoWindow co jest wyœwietlane 
 			.icon(czyBudynek ? colorBudynekMarker : colorMiejsceMarker)));	// kolor markera wybierany na podstawie zmiennej czyBudynek
-																			// szybszy jest ten sposob niz robienie TreeMap i wo¿enie Markera z map¹ z dodatkowymi atrybutami
-			listaMarker.add(tempMarker);
+//																			// szybszy jest ten sposob niz robienie TreeMap i wo¿enie Markera z map¹ z dodatkowymi atrybutami
+			listaMarker.add(tempMarker);									// TreeMap ju¿ jest.
 		}																	
 		
 		if(czyBudynek) {
