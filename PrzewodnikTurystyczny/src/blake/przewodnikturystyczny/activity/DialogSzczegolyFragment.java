@@ -1,15 +1,18 @@
 package blake.przewodnikturystyczny.activity;
 
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.TreeMap;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.DialogFragment;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.TextView;
 import blake.przewodnikturystyczny.R;
 import blake.przewodnikturystyczny.baza.model.IfMarkierable;
@@ -20,6 +23,17 @@ import com.activeandroid.query.Select;
 
 public class DialogSzczegolyFragment extends DialogFragment {
 	
+	private class TVComparator implements Comparator<TextView> {
+		@Override
+		public int compare(TextView m1, TextView m2) {
+			String title1 = m1.getText().toString();
+			String title2 = m2.getText().toString();
+			
+			return title1.compareTo(title2);		// tu u¿ycie standardowego komparatora do Stringów, jest bardzo dobry i skuteczny
+		}
+	}
+	
+	
 	public static final String DEBUG_TAG = "Przewodnik";
 	
 	private TextView tv_dialog_nazwa;
@@ -29,7 +43,14 @@ public class DialogSzczegolyFragment extends DialogFragment {
 	private TextView tv_dialog_pole4;
 	private TextView tv_dialog_pole5;
 	private TextView tv_dialog_opis;
-	private List<TextView> tvLista;
+	private TextView lbl_dialog_pole1;
+	private TextView lbl_dialog_pole2;
+	private TextView lbl_dialog_pole3;
+	private TextView lbl_dialog_pole4;
+	private TextView lbl_dialog_pole5;
+	private TextView lbl_dialog_opis;
+	
+	private TreeMap<TextView, TextView> zestawDane;
 	private Boolean czyBudynek;
 	private String nazwaObiektu;
 	
@@ -40,8 +61,8 @@ public class DialogSzczegolyFragment extends DialogFragment {
 	public DialogSzczegolyFragment(String nazwaObiektu, Boolean czyBudynek) {
 		this.czyBudynek = czyBudynek;
 		this.nazwaObiektu = nazwaObiektu;
-						
-		tvLista = new LinkedList<TextView>();
+		
+		zestawDane = new TreeMap<TextView, TextView>(new TVComparator());
 	}
 	
 	private void pobierzBudynek(String nazwa) {
@@ -70,48 +91,128 @@ public class DialogSzczegolyFragment extends DialogFragment {
 		tv_dialog_pole3.setText(obiekt.getDataPowstania());
 		tv_dialog_opis.setText(obiekt.getOpis());
 		
-		tvLista.add(tv_dialog_nazwa);
+		zestawDane.put(lbl_dialog_pole1, tv_dialog_pole1);
+		zestawDane.put(lbl_dialog_pole2, tv_dialog_pole2);
+		zestawDane.put(lbl_dialog_pole3, tv_dialog_pole3);
+		zestawDane.put(lbl_dialog_opis, tv_dialog_opis);
+		
+	/*	tvLista.add(tv_dialog_nazwa);
 		tvLista.add(tv_dialog_pole1);
 		tvLista.add(tv_dialog_pole2);
 		tvLista.add(tv_dialog_pole3);
 		tvLista.add(tv_dialog_opis);
 		
-		ustawWidocznosc(tvLista);
+		lblLista.add(lbl_dialog_pole1);
+		lblLista.add(lbl_dialog_pole2);
+		lblLista.add(lbl_dialog_pole3);
+		lblLista.add(lbl_dialog_opis);*/
+		
+		ustawWidocznosc();
 	}
 	
-	private void ustawWidocznosc(List<TextView> tvLista) {
-		for (TextView tv: tvLista) {
-				tv.setVisibility(View.VISIBLE);				// ustawia wszystkie jako widoczne, wtedy w zaleznosci od liczby pol (np Miejsce czy Budynek) bedzie sie inaczej formatowalo, ale tez jelsi w bazie dane pole puste, to nie bedzie przesuwac bo puste
+	private void ustawWidocznosc() {
+		for(TreeMap.Entry<TextView, TextView> entry : zestawDane.entrySet()) {
+			TextView lbl = entry.getKey();
+			TextView tv = entry.getValue();
+
+			if (!tv.getText().equals("")) {
+				tv.setVisibility(View.VISIBLE);
+				lbl.setVisibility(View.VISIBLE);
+			}
 		}
+		
+		
+		/*for (TextView tv: tvLista) {
+			if (!tv.getText().equals("")) {
+				tv.setVisibility(View.VISIBLE);				// ustawia wszystkie niepuste jako widoczne, zeby puste znikaly
+			}
+		}
+		*/	
 	}
 
-    @Override
-	public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.custom_dialog_szczegoly_obiektu, null);		// ma byæ null bo Google tak ka¿e
-        builder.setView(view);
-        
-        tv_dialog_nazwa = (TextView) view.findViewById(R.id.tv_dialog_nazwa);
-        tv_dialog_pole1 = (TextView) view.findViewById(R.id.tv_dialog_pole1);
-        tv_dialog_pole2 = (TextView) view.findViewById(R.id.tv_dialog_pole2);
-        tv_dialog_pole3 = (TextView) view.findViewById(R.id.tv_dialog_pole3);
-        tv_dialog_pole4 = (TextView) view.findViewById(R.id.tv_dialog_pole4);
-        tv_dialog_pole5 = (TextView) view.findViewById(R.id.tv_dialog_pole5);
-        tv_dialog_opis = (TextView) view.findViewById(R.id.tv_dialog_opis);
-        
-        if(czyBudynek)
+
+    
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		//      View view = inflater.inflate(R.layout.custom_dialog_szczegoly_obiektu, container);		// wczytuje layout z .xml-a, ma byæ null, Google tak ka¿e
+		View view = inflater.inflate(R.layout.custom_dialog_szczegoly_obiektu, null);
+
+		Rect displayRectangle = new Rect();
+		Window window = getActivity().getWindow();
+		window.getDecorView().getWindowVisibleDisplayFrame(displayRectangle);
+
+		view.setMinimumWidth((int)(displayRectangle.width() * 0.85f));
+		view.setMinimumHeight((int)(displayRectangle.height() * 0.6f));
+
+		tv_dialog_nazwa = (TextView) view.findViewById(R.id.tv_dialog_nazwa);
+		tv_dialog_pole1 = (TextView) view.findViewById(R.id.tv_dialog_pole1);
+		tv_dialog_pole2 = (TextView) view.findViewById(R.id.tv_dialog_pole2);
+		tv_dialog_pole3 = (TextView) view.findViewById(R.id.tv_dialog_pole3);
+		tv_dialog_pole4 = (TextView) view.findViewById(R.id.tv_dialog_pole4);
+		tv_dialog_pole5 = (TextView) view.findViewById(R.id.tv_dialog_pole5);
+		tv_dialog_opis = (TextView) view.findViewById(R.id.tv_dialog_opis);
+		lbl_dialog_pole1 = (TextView) view.findViewById(R.id.lbl_dialog_pole1);
+		lbl_dialog_pole2 = (TextView) view.findViewById(R.id.lbl_dialog_pole2);
+		lbl_dialog_pole3 = (TextView) view.findViewById(R.id.lbl_dialog_pole3);
+		lbl_dialog_pole4 = (TextView) view.findViewById(R.id.lbl_dialog_pole4);
+		lbl_dialog_pole5 = (TextView) view.findViewById(R.id.lbl_dialog_pole5);
+		lbl_dialog_opis = (TextView) view.findViewById(R.id.lbl_dialog_opis);
+
+		if(czyBudynek)
 			pobierzBudynek(nazwaObiektu);
 		else if(!czyBudynek)
 			pobierzMiejsce(nazwaObiektu);
-        
-        return builder.create();
+
+
+		return view;
 	}
-    
-    
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		setStyle(STYLE_NO_TITLE, 0);
+		super.onCreate(savedInstanceState);
+	}
+	
+	
+
 }
 
+/*    @Override
+public Dialog onCreateDialog(Bundle savedInstanceState) {
+    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+    LayoutInflater inflater = getActivity().getLayoutInflater();
+    View view = inflater.inflate(R.layout.custom_dialog_szczegoly_obiektu, null);		// ma byæ null bo Google tak ka¿e
+    
+    Rect displayRectangle = new Rect();
+    Window window = getActivity().getWindow();
+    window.getDecorView().getWindowVisibleDisplayFrame(displayRectangle);
 
+    view.setMinimumWidth((int)(displayRectangle.width() * 0.85f));
+    view.setMinimumHeight((int)(displayRectangle.height() * 0.5f));
+    
+    builder.setView(view);
+    
+    tv_dialog_nazwa = (TextView) view.findViewById(R.id.tv_dialog_nazwa);
+    tv_dialog_pole1 = (TextView) view.findViewById(R.id.tv_dialog_pole1);
+    tv_dialog_pole2 = (TextView) view.findViewById(R.id.tv_dialog_pole2);
+    tv_dialog_pole3 = (TextView) view.findViewById(R.id.tv_dialog_pole3);
+    tv_dialog_pole4 = (TextView) view.findViewById(R.id.tv_dialog_pole4);
+    tv_dialog_pole5 = (TextView) view.findViewById(R.id.tv_dialog_pole5);
+    tv_dialog_opis = (TextView) view.findViewById(R.id.tv_dialog_opis);
+    lbl_dialog_pole1 = (TextView) view.findViewById(R.id.lbl_dialog_pole1);
+    lbl_dialog_pole2 = (TextView) view.findViewById(R.id.lbl_dialog_pole2);
+    lbl_dialog_pole3 = (TextView) view.findViewById(R.id.lbl_dialog_pole3);
+    lbl_dialog_pole4 = (TextView) view.findViewById(R.id.lbl_dialog_pole4);
+    lbl_dialog_pole5 = (TextView) view.findViewById(R.id.lbl_dialog_pole5);
+    lbl_dialog_opis = (TextView) view.findViewById(R.id.lbl_dialog_opis);
+    
+    if(czyBudynek)
+		pobierzBudynek(nazwaObiektu);
+	else if(!czyBudynek)
+		pobierzMiejsce(nazwaObiektu);
+    
+    return builder.create();
+}*/
 
 
 /*

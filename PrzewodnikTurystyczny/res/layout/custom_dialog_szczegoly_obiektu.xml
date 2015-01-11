@@ -1,35 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	style="@style/lay_dialog_szczegoly" >
+    style="@style/lay_dialog_szczegoly" >
 
     <TextView
         android:id="@+id/tv_dialog_nazwa"
-		style = "@style/tv_dialog_nazwa" />
-    
-    <View style = "@style/kreska_pozioma"/>
+        style="@style/tv_dialog_nazwa" />
+
+    <View style="@style/kreska_pozioma" />
+
+    <LinearLayout
+        android:id="@+id/lay_duzy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:id="@+id/lay3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/lbl_dialog_pole1"
+                style="@style/lbl_dialog_pola"
+                android:text="@string/lbl_dialog_pole1" />
+
+            <TextView
+                android:id="@+id/lbl_dialog_pole2"
+                style="@style/lbl_dialog_pola"
+                android:text="@string/lbl_dialog_pole2" />
+
+            <TextView
+                android:id="@+id/lbl_dialog_pole3"
+                style="@style/lbl_dialog_pola"
+                android:text="@string/lbl_dialog_pole3" />
+
+            <TextView
+                android:id="@+id/lbl_dialog_pole4"
+                style="@style/lbl_dialog_pola"
+                android:text="@string/lbl_dialog_pole4" />
+
+            <TextView
+                android:id="@+id/lbl_dialog_pole5"
+                style="@style/lbl_dialog_pola"
+                android:text="@string/lbl_dialog_pole5" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lay2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/tv_dialog_pole1"
+                style="@style/tv_dialog_pola" />
+
+            <TextView
+                android:id="@+id/tv_dialog_pole2"
+                style="@style/tv_dialog_pola" />
+
+            <TextView
+                android:id="@+id/tv_dialog_pole3"
+                style="@style/tv_dialog_pola" />
+
+            <TextView
+                android:id="@+id/tv_dialog_pole4"
+                style="@style/tv_dialog_pola" />
+
+            <TextView
+                android:id="@+id/tv_dialog_pole5"
+                style="@style/tv_dialog_pola" />
+
+        </LinearLayout>
+    </LinearLayout>
 
     <TextView
-        android:id="@+id/tv_dialog_pole1"
-		style = "@style/tv_dialog_pola" />
-    
-    <TextView
-        android:id="@+id/tv_dialog_pole2"
-		style = "@style/tv_dialog_pola" />
-    
-    <TextView
-        android:id="@+id/tv_dialog_pole3"
-        style="@style/tv_dialog_pola" />
-    
-    <TextView
-        android:id="@+id/tv_dialog_pole4"
-		style = "@style/tv_dialog_pola" />
-    
-    <TextView
-        android:id="@+id/tv_dialog_pole5"
-		style = "@style/tv_dialog_pola" />
-    
+        android:id="@+id/lbl_dialog_opis"
+        style="@style/lbl_dialog_pola"
+        android:layout_marginTop="5dp"
+        android:text="@string/lbl_dialog_opis" />
+
     <TextView
         android:id="@+id/tv_dialog_opis"
-		style = "@style/tv_dialog_opis" />
-    
+        style="@style/tv_dialog_opis" />
+
 </LinearLayout>
