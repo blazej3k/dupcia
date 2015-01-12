@@ -85,4 +85,12 @@
         android:id="@+id/tv_dialog_opis"
         style="@style/tv_dialog_opis" />
 
+    <ExpandableListView
+        android:id="@+id/ex_lista_szczegoly"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.1"
+        android:paddingTop="10dp" >
+
+    </ExpandableListView>
 </LinearLayout>

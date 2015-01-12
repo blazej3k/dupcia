@@ -18,22 +18,23 @@
     <string name="btn_czysc_budynki">Czyść Budynki</string>
     <string name="btn_czysc_wsio">Czyść Wsio</string>
     <string name="demo_str">Test_Pindolino</string>
-	<string name="content_desc1">symbol obiektu</string>
-	<string name="et_podaj_adres">Wprowadź adres</string>
-	<string name="btn_znajdz">Znajdź</string>
-	<string name="btn_namierz_budynki">Namierz Budynki</string>
-	<string name="btn_namierz_miejsca">Namierz Miejsca</string>
-	<string name="btn_select_all">Select All</string>
-	<string name="btn_init">Inicjuj bazę</string>
-	<string name="btn_testuj">Testuj</string>
-	<string name="ab_czerwony">Czerwony</string>
-	<string name="ab_niebieski">Niebieski</string>
-	<string name="ab_zielony">Zielony</string>
-	<string name="lbl_dialog_pole1">Adres:</string>
-	<string name="lbl_dialog_pole2">Projektant:</string>
-	<string name="lbl_dialog_pole3">Data powstania:</string>
-	<string name="lbl_dialog_pole4">Pole:</string>
-	<string name="lbl_dialog_pole5">Pole:</string>
-	<string name="lbl_dialog_opis">Opis:</string>
-	
+    <string name="content_desc1">symbol obiektu</string>
+    <string name="et_podaj_adres">Wprowadź adres</string>
+    <string name="btn_znajdz">Znajdź</string>
+    <string name="btn_namierz_budynki">Namierz Budynki</string>
+    <string name="btn_namierz_miejsca">Namierz Miejsca</string>
+    <string name="btn_select_all">Select All</string>
+    <string name="btn_init">Inicjuj bazę</string>
+    <string name="btn_testuj">Testuj</string>
+    <string name="ab_czerwony">Czerwony</string>
+    <string name="ab_niebieski">Niebieski</string>
+    <string name="ab_zielony">Zielony</string>
+    <string name="lbl_dialog_pole1">Adres:</string>
+    <string name="lbl_dialog_pole2">Projektant:</string>
+    <string name="lbl_dialog_pole3">Data powstania:</string>
+    <string name="lbl_dialog_pole4">Pole:</string>
+    <string name="lbl_dialog_pole5">Pole:</string>
+    <string name="lbl_dialog_opis">Opis:</string>
+    <string name="title_activity_lista_exp">ListaExp</string>
+
 </resources>

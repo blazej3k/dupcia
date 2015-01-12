@@ -9,6 +9,7 @@ import blake.przewodnikturystyczny.baza.model.TabBranza;
 import blake.przewodnikturystyczny.baza.model.TabBudynek;
 import blake.przewodnikturystyczny.baza.model.TabMiejsce;
 import blake.przewodnikturystyczny.baza.model.TabOkres;
+import blake.przewodnikturystyczny.baza.model.TabRzecz;
 import blake.przewodnikturystyczny.baza.model.TabWydarzenie;
 import blake.przewodnikturystyczny.baza.model.pomocniczy.TabMiejsceWydarzenie;
 
@@ -250,6 +251,29 @@ public class SuperPompeczka {
 		
 		
 		for (TabWydarzenie x: listaDoDodania) {
+			// TODO mo¿na zamieniæ na transakcjê - bêdzie szybciej
+			dodanyId = x.save();
+			Log.d(DEBUG_TAG, "Wydarzenie dodane ID="+dodanyId+" nazwa="+x.getNazwa());	// zwraca -1 jeœli nie uda³o siê dodaæ! a id dodanego jeœli uda³o.
+		}
+	}
+	
+	private void pompujRzeczy() {
+		long dodanyId=0;
+		TabRzecz rzecz;
+		TabOkres okres;
+		TabBudynek budynek;
+		LinkedList<TabRzecz> listaDoDodania = new LinkedList<TabRzecz>();
+		TabBranza branza = new Select().from(TabBranza.class).where("nazwa = ?", "Rzeczy").executeSingle();
+		
+		
+		okres = new Select().from(TabOkres.class).where("rokPoczatek > ?", "1940").executeSingle(); 
+		budynek =  new Select().from(TabBudynek.class).where("nazwa = ?", "nazwa budynku").executeSingle();
+		rzecz = new TabRzecz("nazwa", "dataPowstania", "rodzaj", 
+				"opis", 
+				budynek, branza, okres);
+		listaDoDodania.add(rzecz);
+		
+		for (TabRzecz x: listaDoDodania) {
 			// TODO mo¿na zamieniæ na transakcjê - bêdzie szybciej
 			dodanyId = x.save();
 			Log.d(DEBUG_TAG, "Wydarzenie dodane ID="+dodanyId+" nazwa="+x.getNazwa());	// zwraca -1 jeœli nie uda³o siê dodaæ! a id dodanego jeœli uda³o.

@@ -1,7 +1,6 @@
 package blake.przewodnikturystyczny.activity;
 
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -9,15 +8,21 @@ import android.app.DialogFragment;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
 import blake.przewodnikturystyczny.R;
 import blake.przewodnikturystyczny.baza.model.IfMarkierable;
 import blake.przewodnikturystyczny.baza.model.TabBudynek;
 import blake.przewodnikturystyczny.baza.model.TabMiejsce;
+import blake.przewodnikturystyczny.baza.model.TabRzecz;
+import blake.przewodnikturystyczny.baza.model.TabWydarzenie;
+import blake.przewodnikturystyczny.model.ExListaAdapter;
+import blake.przewodnikturystyczny.model.ExListaGrupa;
 
 import com.activeandroid.query.Select;
 
@@ -33,26 +38,27 @@ public class DialogSzczegolyFragment extends DialogFragment {
 		}
 	}
 	
-	
 	public static final String DEBUG_TAG = "Przewodnik";
 	
 	private TextView tv_dialog_nazwa;
 	private TextView tv_dialog_pole1;
 	private TextView tv_dialog_pole2;
 	private TextView tv_dialog_pole3;
-	private TextView tv_dialog_pole4;
-	private TextView tv_dialog_pole5;
+//	private TextView tv_dialog_pole4;
+//	private TextView tv_dialog_pole5;
 	private TextView tv_dialog_opis;
 	private TextView lbl_dialog_pole1;
 	private TextView lbl_dialog_pole2;
 	private TextView lbl_dialog_pole3;
-	private TextView lbl_dialog_pole4;
-	private TextView lbl_dialog_pole5;
+//	private TextView lbl_dialog_pole4;
+//	private TextView lbl_dialog_pole5;
 	private TextView lbl_dialog_opis;
 	
-	private TreeMap<TextView, TextView> zestawDane;
+	
 	private Boolean czyBudynek;
 	private String nazwaObiektu;
+	private SparseArray<ExListaGrupa> grupyLista = new SparseArray<ExListaGrupa>();
+	private TreeMap<TextView, TextView> zestawDane = new TreeMap<TextView, TextView>(new TVComparator());
 	
 	public DialogSzczegolyFragment() {
 		// pusty konstruktor podobno wymagany, ale dziala i bez
@@ -61,25 +67,72 @@ public class DialogSzczegolyFragment extends DialogFragment {
 	public DialogSzczegolyFragment(String nazwaObiektu, Boolean czyBudynek) {
 		this.czyBudynek = czyBudynek;
 		this.nazwaObiektu = nazwaObiektu;
+	}
+	
+	private void wypelnijDialog() {
+		if(czyBudynek)
+			pobierzBudynek(nazwaObiektu);
+		else if(!czyBudynek)
+			pobierzMiejsce(nazwaObiektu);
 		
-		zestawDane = new TreeMap<TextView, TextView>(new TVComparator());
+		
+
+	}
+	
+	private void wypelnijListeBudynek(TabBudynek budynek) {
+		TabMiejsce
+	}
+	
+	private void wypelnijListeMiejsce(TabMiejsce miejsce) {				// mozna dopisac jeszcze relacje z postaciami
+		TabBudynek budynek = miejsce.getBudynek();
+		List<TabRzecz> rzeczy = miejsce.getRzeczy();
+		List<TabWydarzenie> wydarzenia = miejsce.getWydarzenia();
+		ExListaGrupa grupa;
+		int i=0;
+		
+		if (budynek != null) {
+			grupa = new ExListaGrupa("Budynek");
+			grupa.elementy.add(budynek.getNazwa());
+			grupyLista.append(i, grupa);
+			i++;
+		}
+
+		if(rzeczy != null && !rzeczy.isEmpty()) {
+			grupa = new ExListaGrupa("Rzeczy");
+
+			for (TabRzecz rzecz: rzeczy) 
+				grupa.elementy.add(rzecz.getNazwa());
+			grupyLista.append(i, grupa);
+			i++;
+		}
+		
+		if(wydarzenia != null && !wydarzenia.isEmpty()) {
+			grupa = new ExListaGrupa("Wydarzenia");
+
+			for (TabWydarzenie wydarzenie: wydarzenia) 
+				grupa.elementy.add(wydarzenie.getNazwa());
+			grupyLista.append(i, grupa);
+			i++;
+		}
 	}
 	
 	private void pobierzBudynek(String nazwa) {
 		Log.d(DEBUG_TAG, "Dialog: pobieram budynek "+nazwa);
 		TabBudynek budynek = new Select().from(TabBudynek.class).where("nazwa = ?", nazwa).executeSingle();
-				
-		ustawDialog(budynek);
+		
+		ustawPola(budynek);
+		wypelnijListeBudynek(budynek);
 	}
 	
 	private void pobierzMiejsce(String nazwa) {
 		Log.d(DEBUG_TAG, "Dialog: pobieram miejsce "+nazwa);
 		TabMiejsce miejsce = new Select().from(TabMiejsce.class).where("nazwa = ?", nazwa).executeSingle();
 		
-		ustawDialog(miejsce);
+		ustawPola(miejsce);
+		wypelnijListeMiejsce(miejsce);
 	}
 	
-	private <T extends IfMarkierable> void ustawDialog(T obiekt) {
+	private <T extends IfMarkierable> void ustawPola(T obiekt) {
 		if(obiekt == null)
 			Log.d(DEBUG_TAG, "jebany obiekt null");
 		else
@@ -96,17 +149,6 @@ public class DialogSzczegolyFragment extends DialogFragment {
 		zestawDane.put(lbl_dialog_pole3, tv_dialog_pole3);
 		zestawDane.put(lbl_dialog_opis, tv_dialog_opis);
 		
-	/*	tvLista.add(tv_dialog_nazwa);
-		tvLista.add(tv_dialog_pole1);
-		tvLista.add(tv_dialog_pole2);
-		tvLista.add(tv_dialog_pole3);
-		tvLista.add(tv_dialog_opis);
-		
-		lblLista.add(lbl_dialog_pole1);
-		lblLista.add(lbl_dialog_pole2);
-		lblLista.add(lbl_dialog_pole3);
-		lblLista.add(lbl_dialog_opis);*/
-		
 		ustawWidocznosc();
 	}
 	
@@ -120,14 +162,6 @@ public class DialogSzczegolyFragment extends DialogFragment {
 				lbl.setVisibility(View.VISIBLE);
 			}
 		}
-		
-		
-		/*for (TextView tv: tvLista) {
-			if (!tv.getText().equals("")) {
-				tv.setVisibility(View.VISIBLE);				// ustawia wszystkie niepuste jako widoczne, zeby puste znikaly
-			}
-		}
-		*/	
 	}
 
 
@@ -148,22 +182,21 @@ public class DialogSzczegolyFragment extends DialogFragment {
 		tv_dialog_pole1 = (TextView) view.findViewById(R.id.tv_dialog_pole1);
 		tv_dialog_pole2 = (TextView) view.findViewById(R.id.tv_dialog_pole2);
 		tv_dialog_pole3 = (TextView) view.findViewById(R.id.tv_dialog_pole3);
-		tv_dialog_pole4 = (TextView) view.findViewById(R.id.tv_dialog_pole4);
-		tv_dialog_pole5 = (TextView) view.findViewById(R.id.tv_dialog_pole5);
+//		tv_dialog_pole4 = (TextView) view.findViewById(R.id.tv_dialog_pole4);
+//		tv_dialog_pole5 = (TextView) view.findViewById(R.id.tv_dialog_pole5);
 		tv_dialog_opis = (TextView) view.findViewById(R.id.tv_dialog_opis);
 		lbl_dialog_pole1 = (TextView) view.findViewById(R.id.lbl_dialog_pole1);
 		lbl_dialog_pole2 = (TextView) view.findViewById(R.id.lbl_dialog_pole2);
 		lbl_dialog_pole3 = (TextView) view.findViewById(R.id.lbl_dialog_pole3);
-		lbl_dialog_pole4 = (TextView) view.findViewById(R.id.lbl_dialog_pole4);
-		lbl_dialog_pole5 = (TextView) view.findViewById(R.id.lbl_dialog_pole5);
+//		lbl_dialog_pole4 = (TextView) view.findViewById(R.id.lbl_dialog_pole4);
+//		lbl_dialog_pole5 = (TextView) view.findViewById(R.id.lbl_dialog_pole5);
 		lbl_dialog_opis = (TextView) view.findViewById(R.id.lbl_dialog_opis);
+		ExpandableListView expLista = (ExpandableListView) view.findViewById(R.id.ex_lista_szczegoly);
 
-		if(czyBudynek)
-			pobierzBudynek(nazwaObiektu);
-		else if(!czyBudynek)
-			pobierzMiejsce(nazwaObiektu);
-
-
+		wypelnijDialog();
+		ExListaAdapter adapter = new ExListaAdapter(this, grupyLista);
+		expLista.setAdapter(adapter);
+		
 		return view;
 	}
 
@@ -172,9 +205,6 @@ public class DialogSzczegolyFragment extends DialogFragment {
 		setStyle(STYLE_NO_TITLE, 0);
 		super.onCreate(savedInstanceState);
 	}
-	
-	
-
 }
 
 /*    @Override

@@ -89,7 +89,7 @@ public class MainActivity extends Activity {
 				switch (v.getId()) {
 				case (R.id.btn_mapa):
 					Intent intent = new Intent(context, Mapa.class);
-				startActivity(intent);
+					startActivity(intent);
 				break;
 				case (R.id.pompeczka_okresbranza):
 					new SuperPompeczka(1);
@@ -111,6 +111,8 @@ public class MainActivity extends Activity {
 					new SuperPompeczka(51);
 					break;
 				case (R.id.btn_relacje_x):
+//					Intent intent2 = new Intent(context, ListaExp.class);
+//					startActivity(intent2);
 					break;
 				case (R.id.btn_count_all):
 					showDialog(1);
