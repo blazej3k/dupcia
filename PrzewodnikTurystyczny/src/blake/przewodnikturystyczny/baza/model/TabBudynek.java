@@ -28,19 +28,21 @@ public class TabBudynek extends Model implements IfMarkierable, IfLocalizable, I
 	// relacje 1-1
 	@Column(name = "Okres_ID", notNull=true)
 	private TabOkres okres;
-	@Column(name = "Miejsce_ID")
-	private TabMiejsce miejsce;
 
 	// relacje 1-wiele
-    public List<TabRzecz> rzeczy() {
+	public List<TabMiejsce> getMiejsca() {
+		return getMany(TabMiejsce.class, "Budynek_ID");
+	}
+	
+    public List<TabRzecz> getRzeczy() {
         return getMany(TabRzecz.class, "Budynek_ID");
     }
     
-    public List<TabPostac> postacie() {
+    public List<TabPostac> getPostacie() {
         return getMany(TabPostac.class, "Budynek_ID");
     }
     
-    public List<TabRod> rody() {
+    public List<TabRod> getRody() {
         return getMany(TabRod.class, "Budynek_ID");
     }
 
@@ -104,14 +106,6 @@ public class TabBudynek extends Model implements IfMarkierable, IfLocalizable, I
 
 	public void setOkres(TabOkres okres) {
 		this.okres = okres;
-	}
-
-	public TabMiejsce getMiejsce() {
-		return miejsce;
-	}
-
-	public void setMiejsce(TabMiejsce miejsce) {
-		this.miejsce = miejsce;
 	}
 
 	public String getAdres() {

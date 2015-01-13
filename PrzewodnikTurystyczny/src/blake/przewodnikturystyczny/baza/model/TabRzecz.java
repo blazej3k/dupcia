@@ -2,6 +2,8 @@ package blake.przewodnikturystyczny.baza.model;
 
 import java.util.List;
 
+import blake.przewodnikturystyczny.baza.model.pomocniczy.TabMiejsceRzecz;
+
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
@@ -19,20 +21,20 @@ public class TabRzecz extends Model implements IfSelectable {
 	private String opis;
 	
 	// relacje 1-1
-	@Column(name="Budynek_ID")
-	private TabBudynek budynek;
+	@Column(name="Miejsce_ID")
+	private TabMiejsce miejsce;
 	@Column(name="Branza_ID", notNull=true)
 	private TabBranza branza;
 	@Column(name="Okres_ID", notNull=true)
 	private TabOkres okres; // tej relacji brak w modelu, cza uzupelnic
 	
 	// relacje 1-wiele
-    public List<TabWydarzenie> wydarzenia() { 			// wg modelu tu powinno byc 1-1, ale uwazam ze tak jest lepiej
+    public List<TabWydarzenie> wydarzenia() { 			
         return getMany(TabWydarzenie.class, "Rzecz_ID");
     }
     
-    public List<TabMiejsce> miejsca() {
-        return getMany(TabMiejsce.class, "Rzecz_ID");
+    public List<TabMiejsce> getMiejsca() {
+    	return getRelacje(TabMiejsce.class, TabMiejsceRzecz.class, "Rzecz_ID", "Miejsce_ID");
     }
     
     public List<TabRod> rody() {						// tu tez niby 1-1
@@ -48,7 +50,7 @@ public class TabRzecz extends Model implements IfSelectable {
 	}
 
 	public TabRzecz(String nazwa, String dataPowstania, String rodzaj,
-			String opis, TabBudynek budynek, TabBranza branza, TabOkres okres) {
+			String opis, TabBranza branza, TabOkres okres) {
 
 		super();
 		
@@ -56,7 +58,6 @@ public class TabRzecz extends Model implements IfSelectable {
 		this.dataPowstania = dataPowstania;
 		this.rodzaj = rodzaj;
 		this.opis = opis;
-		this.budynek = budynek;
 		this.branza = branza;
 		this.okres = okres;
 	}
@@ -93,12 +94,12 @@ public class TabRzecz extends Model implements IfSelectable {
 		this.opis = opis;
 	}
 
-	public TabBudynek getBudynek() {
-		return budynek;
+	public TabMiejsce getMiejsce() {
+		return miejsce;
 	}
 
-	public void setBudynek(TabBudynek budynek) {
-		this.budynek = budynek;
+	public void setMiejsce(TabMiejsce miejsce) {
+		this.miejsce = miejsce;
 	}
 
 	public TabBranza getBranza() {

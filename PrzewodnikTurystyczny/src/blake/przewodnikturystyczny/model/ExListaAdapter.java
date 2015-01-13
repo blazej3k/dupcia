@@ -1,24 +1,23 @@
 package blake.przewodnikturystyczny.model;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.app.DialogFragment;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 import blake.przewodnikturystyczny.R;
 
 public class ExListaAdapter extends BaseExpandableListAdapter {
 
-	private final SparseArray<ExListaGrupa> groups;
+	private List<ExListaGrupa> groups;
 	public LayoutInflater inflater;
 	public Activity activity;
 
-	public ExListaAdapter(DialogFragment act, SparseArray<ExListaGrupa> groups) {
+	public ExListaAdapter(DialogFragment act, List<ExListaGrupa> groups) {
 		activity = act.getActivity();
 		this.groups = groups;
 		inflater = activity.getLayoutInflater();
@@ -36,20 +35,15 @@ public class ExListaAdapter extends BaseExpandableListAdapter {
 
 	@Override
 	public View getChildView(int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-		final String children = (String) getChild(groupPosition, childPosition);
+		String children = (String) getChild(groupPosition, childPosition);
 		TextView text = null;
 		if (convertView == null) {
 			convertView = inflater.inflate(R.layout.cust_row_ex_lista, null);
 		}
+		convertView.setClickable(false);
 		text = (TextView) convertView.findViewById(R.id.textView1);
 		text.setText(children);
-		convertView.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Toast.makeText(activity, children,
-						Toast.LENGTH_SHORT).show();
-			}
-		});
+		
 		return convertView;
 	}
 
@@ -84,11 +78,11 @@ public class ExListaAdapter extends BaseExpandableListAdapter {
 	}
 
 	@Override
-	public View getGroupView(int groupPosition, boolean isExpanded,
-			View convertView, ViewGroup parent) {
+	public View getGroupView(int groupPosition, boolean isExpanded,	View convertView, ViewGroup parent) {
 		if (convertView == null) {
 			convertView = inflater.inflate(R.layout.cust_grouprow_ex_lista, null);
 		}
+		convertView.setClickable(false);
 		ExListaGrupa group = (ExListaGrupa) getGroup(groupPosition);
 		((TextView) convertView).setText(group.nazwa);
 		return convertView;
@@ -101,6 +95,6 @@ public class ExListaAdapter extends BaseExpandableListAdapter {
 
 	@Override
 	public boolean isChildSelectable(int groupPosition, int childPosition) {
-		return false;
+		return true;
 	}
 } 

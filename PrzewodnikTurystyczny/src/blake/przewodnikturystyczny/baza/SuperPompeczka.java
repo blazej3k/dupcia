@@ -18,6 +18,7 @@ import com.activeandroid.query.Select;
 public class SuperPompeczka {
 	
 	public static final String DEBUG_TAG = "Przewodnik";
+	public static final String RELACJA_TAG = "Relacja";
 	
 	public SuperPompeczka(int coPompowac) {
 		
@@ -53,14 +54,13 @@ public class SuperPompeczka {
 	}
 	
 	private void testuj() {
-		TabMiejsce miejsce = new Select().from(TabMiejsce.class).where("nazwa = ?", "Ustro").executeSingle();
+		TabMiejsce miejsce = new Select().from(TabMiejsce.class).where("nazwa = ?", "Muzeum Techniki i Przemys³u NOT").executeSingle();
 		
 		try {
-			List<TabWydarzenie> wydarzenia = miejsce.getWydarzenia();
-			System.out.println("Iloœæ relacji z Ustro: "+wydarzenia.size());	
-			for(TabWydarzenie x: wydarzenia) {
-				Log.d(DEBUG_TAG, "Wydarzenie w relacji z "+miejsce.getNazwa()+": "+x.getNazwa());
-			}
+			TabBudynek budynek = miejsce.getBudynek();
+
+			Log.d(DEBUG_TAG, "Miejsce: "+miejsce.getNazwa());
+			Log.d(DEBUG_TAG, " w relacji z budynkiem: "+budynek.getNazwa());
 		} catch (SQLiteException e) { e.printStackTrace(); }
 	}
 	
@@ -70,12 +70,13 @@ public class SuperPompeczka {
 		pompujBudynek();
 		pompujMiejsce();
 		pompujWydarzenie();
+		pompujRzeczy();
 		
 		relacje();
 	}
 	
 	private void relacje() {
-		relacjeMiejsceBudynek();
+		relacjeBudynekMiejsce();
 		relacjeMiejsceWydarzenie();
 	}
 	
@@ -152,6 +153,15 @@ public class SuperPompeczka {
 		TabMiejsce miejsce;
 		TabOkres okres;
 		TabBranza branza = new Select().from(TabBranza.class).where("nazwa = ?", "Miejsca").executeSingle();
+		
+		
+		
+		okres =  new Select().from(TabOkres.class).where("nazwa = ?", "XVII").executeSingle(); // znajdz okres dla budynku
+		miejsce = new TabMiejsce("Muzeum Techniki i Przemys³u NOT", "plac Defilad 1, Warszawa", false, "1955", "",
+				"Muzeum Techniki w nawi¹zaniu do tradycji Muzeum Techniki i Przemys³u organizuje wystawy sta³e i czasowe, gromadzi zbiory z zakresu historii techniki i jej rozwoju, a tak¿e zbiorów z wybranych dziedzin nauki.");
+		miejsce.setOkres(okres);
+		miejsce.setBranza(branza);
+		listaDoDodania.add(miejsce);							// dodaj do listy - zapis do bazy na koñcu
 		
 		okres =  new Select().from(TabOkres.class).where("nazwa = ?", "XVII").executeSingle(); // znajdz okres dla budynku
 		miejsce = new TabMiejsce("Centrum Olimpijskie im. Jana Paw³a II", "Wybrze¿e Gdyñskie 4", false, "27.05.2004", "Kulczyñski Architekt Sp. z o.o: Bogdan Kulczyñski,Pawe³ Py³ka, Rados³aw Sojka",
@@ -261,22 +271,88 @@ public class SuperPompeczka {
 		long dodanyId=0;
 		TabRzecz rzecz;
 		TabOkres okres;
-		TabBudynek budynek;
+		TabMiejsce miejsce;
 		LinkedList<TabRzecz> listaDoDodania = new LinkedList<TabRzecz>();
 		TabBranza branza = new Select().from(TabBranza.class).where("nazwa = ?", "Rzeczy").executeSingle();
 		
-		
-		okres = new Select().from(TabOkres.class).where("rokPoczatek > ?", "1940").executeSingle(); 
-		budynek =  new Select().from(TabBudynek.class).where("nazwa = ?", "nazwa budynku").executeSingle();
-		rzecz = new TabRzecz("nazwa", "dataPowstania", "rodzaj", 
-				"opis", 
-				budynek, branza, okres);
+
+		okres =  new Select().from(TabOkres.class).where("nazwa = ?", "XX").executeSingle();
+		miejsce =  new Select().from(TabMiejsce.class).where("nazwa = ?", "Muzeum Techniki i Przemys³u NOT").executeSingle();
+		rzecz = new TabRzecz("AKAT-1", "1958", "Komputer", 
+				"Pierwszy na œwiecie tranzystorowy analizator równañ ró¿niczkowych (komputer analogowy), konstrukcji Jacka Karpiñskiego, wykonany przez Instytut Automatyki Polskiej Akademii Nauk w 1958 r. Przeznaczony do rozwi¹zywania uk³adów równañ ró¿niczkowych i symulacji procesów.", 
+				branza, okres);
+		rzecz.setMiejsce(miejsce);
 		listaDoDodania.add(rzecz);
-		
+
+		okres =  new Select().from(TabOkres.class).where("nazwa = ?", "XXpo").executeSingle();
+		miejsce =  new Select().from(TabMiejsce.class).where("nazwa = ?", "Muzeum Techniki i Przemys³u NOT").executeSingle();
+		rzecz = new TabRzecz("Szklana Panienka", "XXI wiek", "Eksponat", 
+				"Model szklanej kobiety z widocznymi organami wewnêtrznymi. W trakcie pokazu s¹ one podœwietlane, a s³yszany przez uczestników komentarz wyjaœnia ich budowê i biologiczne funkcje.", 
+				branza, okres);
+		rzecz.setMiejsce(miejsce);
+		listaDoDodania.add(rzecz);
+
+		okres =  new Select().from(TabOkres.class).where("nazwa = ?", "XX").executeSingle();
+		miejsce =  new Select().from(TabMiejsce.class).where("nazwa = ?", "Muzeum Techniki i Przemys³u NOT").executeSingle();
+		rzecz = new TabRzecz("Marysia", "lata 30. XX wieku", "Pralka", 
+				"Pierwsza pralka mechaniczna polskiej konstrukcji: pochodz¹ca z lat 30-tych XX wieku.", 
+				branza, okres);
+		rzecz.setMiejsce(miejsce);
+		listaDoDodania.add(rzecz);
+
+		okres =  new Select().from(TabOkres.class).where("nazwa = ?", "XIX").executeSingle();
+		miejsce =  new Select().from(TabMiejsce.class).where("nazwa = ?", "Muzeum Techniki i Przemys³u NOT").executeSingle();
+		rzecz = new TabRzecz("Lotnia Tañskiego", "1895", "Szybowiec", 
+				"Pierwszy polskiej konstrukcji szybowiec zbudowany w 1895 roku przez wynalazcê oraz pioniera awiacji w Polsce Czes³awa Tañskiego. Od nazwy wynalazku wywodzi siê polska nazwa lotni, któr¹ stosuje siê do czasów obecnych na nazwanie konstrukcji tego typu.", 
+				branza, okres);
+		rzecz.setMiejsce(miejsce);
+		listaDoDodania.add(rzecz);
+
+		okres =  new Select().from(TabOkres.class).where("nazwa = ?", "XVIII").executeSingle();
+		miejsce =  new Select().from(TabMiejsce.class).where("nazwa = ?", "Pa³ac £azienkowski").executeSingle();
+		rzecz = new TabRzecz("Królewska Kolekcja Medali", "XVIII wiek", "Kolekcja", 
+				"Z³ote medale prezentowane w Pa³acu na Wyspie na wystawie „Z³oty poczet królów polskich” ze zbiorów Narodowego Muzeum Historii Ukrainy w Kijowie wybite zosta³y w koñcu XVIII wieku przez Mennicê Warszawsk¹. Stanis³aw August zleci³ ich projekt i wykonanie dwóm wybitnym medalierom – Janowi Filipowi Holzhäusserowi i Janowi Jakubowi Reichlowi – wed³ug portretów królów polskich pêdzla Marcello Bacciarellego.", 
+				branza, okres);
+		rzecz.setMiejsce(miejsce);
+		listaDoDodania.add(rzecz);
+
+		okres =  new Select().from(TabOkres.class).where("nazwa = ?", "XVIII").executeSingle();
+		miejsce =  new Select().from(TabMiejsce.class).where("nazwa = ?", "Pa³ac £azienkowski").executeSingle();
+		rzecz = new TabRzecz("La Frileuse - Alegoria Zimy", "XVIII wiek", "RzeŸba", 
+				"Replika autorska rzeŸby Jeana-Antoine Houdona, jednego z najwybitniejszych rzeŸbiarzy epoki neoklasycyzmu. Nale¿a³a do ulubionych rzêŸb Stanis³awa Augusta Poniatowskiego. Obecnie znajduje siê w Starej Pomarañczarni.", 
+				branza, okres);
+		rzecz.setMiejsce(miejsce);
+		listaDoDodania.add(rzecz);
+
+		okres =  new Select().from(TabOkres.class).where("nazwa = ?", "XX").executeSingle();
+		miejsce =  new Select().from(TabMiejsce.class).where("nazwa = ?", "Muzeum Historii ¯ydów Polskich").executeSingle();
+		rzecz = new TabRzecz("Szachy wykonane w ukryciu", "II wojna œwiatowa", "Szachy", 
+				"Pola wraz z mê¿em, Marcelim Najderem oraz oœmioma innymi osobami ukrywa³a siê, po likwidacji tamtejszego getta, w bunkrze w Ko³omyi. To w³aœnie wtedy Pola wyrzeŸbi³a z drewna kasztanowego szachy, które pos³u¿y³y do gry, zape³niaj¹c codziennoœæ ukrywaj¹cym siê. ", 
+				branza, okres);
+		rzecz.setMiejsce(miejsce);
+		listaDoDodania.add(rzecz);
+
+		okres =  new Select().from(TabOkres.class).where("nazwa = ?", "XX").executeSingle();
+		miejsce =  new Select().from(TabMiejsce.class).where("nazwa = ?", "Muzeum Historii ¯ydów Polskich").executeSingle();
+		rzecz = new TabRzecz("Papieroœnica Józefa Sigalina", "1949", "Papieroœnica", 
+				"Srebrna papieroœnica warszawskiego architekta i urbanisty Józefa Sigalina, jednego z autorów projektu trasy W-Z. Sigalin otrzyma³ papieroœnicê od Zygmunta Stêpiñskiego, bliskiego przyjaciela oraz jednego ze wspó³twórców trasy w dniu jej otwarcia." +
+						"	We wnêtrzu papieroœnicy widnieje wygrawerowany widok przedstawiaj¹cy Plac Zamkowy oraz tunel trasy W-Z, poni¿ej daty jej budowy: 15.4.47 – 22.7.49 i imiê ”Zygmunt”.", 
+						branza, okres);
+		rzecz.setMiejsce(miejsce);
+		listaDoDodania.add(rzecz);
+
+		okres =  new Select().from(TabOkres.class).where("nazwa = ?", "XXpo").executeSingle();
+		miejsce =  new Select().from(TabMiejsce.class).where("nazwa = ?", "Muzeum Historii ¯ydów Polskich").executeSingle();
+		rzecz = new TabRzecz("dyplom Sprawiedliwych wœród Narodów Œwiata Ireny Sendlerowej", "1965", "Dyplom", 
+				"W 1965 roku Irena Sendlerowa zosta³a uznana za jedn¹ ze Sprawiedliwych wœród Narodów Œwiata. Odznaczenie przyznawane jest przez instytut pamiêci Yad Vashem. Honorowy dyplom oraz medal na którym znajduje siê fragment z Talmudu: \"Kto ratuje jedno ¿ycie – ratuje ca³y œwiat\", mo¿e byæ wrêczany tym wszystkim, którzy nara¿aj¹c w³asne ¿ycie, nieœli pomoc ¯ydom podczas II wojny œwiatowej.", 
+				branza, okres);
+		rzecz.setMiejsce(miejsce);
+		listaDoDodania.add(rzecz);
+
 		for (TabRzecz x: listaDoDodania) {
 			// TODO mo¿na zamieniæ na transakcjê - bêdzie szybciej
 			dodanyId = x.save();
-			Log.d(DEBUG_TAG, "Wydarzenie dodane ID="+dodanyId+" nazwa="+x.getNazwa());	// zwraca -1 jeœli nie uda³o siê dodaæ! a id dodanego jeœli uda³o.
+			Log.d(DEBUG_TAG, "Rzecz dodana ID="+dodanyId+" nazwa="+x.getNazwa());	// zwraca -1 jeœli nie uda³o siê dodaæ! a id dodanego jeœli uda³o.
 		}
 	}
 	
@@ -365,13 +441,24 @@ public class SuperPompeczka {
 		}
 	}
 	
-	private void relacjeMiejsceBudynek() {
+	private void relacjeBudynekMiejsce() {
 		// sa to relacje 1-1 - zalozenie jest takie, ze miejsce moze sie skladac z wielu miejsc, a kazde miejsce to jeden budynek. wiec jesli miejsce to Aleje Ujazdowskie, to pomniki to beda miejsca zwiazane oraz budynki tez beda miejscami powiazanymi z miejscem
 		TabBudynek budynek = new Select().from(TabBudynek.class).where("nazwa = ?", "DS Ustronie").executeSingle();
 		TabMiejsce miejsce = new Select().from(TabMiejsce.class).where("nazwa = ?", "Ustro").executeSingle();
 		
-		budynek.setMiejsce(miejsce);
+		dodajRelacjeBudynekMiejsce(budynek, miejsce);
+	}
+	
+	private void dodajRelacjeBudynekMiejsce(TabBudynek budynek, TabMiejsce miejsce) {
+		long dodanyBId=0, dodanyMId=0;
+		
+//		budynek.setMiejsce(miejsce);
 		miejsce.setBudynek(budynek);
+		
+		dodanyBId=budynek.save();
+		dodanyMId=miejsce.save();
+		
+		Log.d(RELACJA_TAG, "Dodana relacja 1-1 budynek: "+dodanyBId+ " miejsce: "+dodanyMId);
 	}
 	
 	private void relacjeMiejsceWydarzenie() {
@@ -401,7 +488,7 @@ public class SuperPompeczka {
 		for (TabMiejsceWydarzenie x: listaDoDodania) {
 			// TODO mo¿na zamieniæ na transakcjê - bêdzie szybciej
 			dodanyId = x.save();
-			Log.d(DEBUG_TAG, "Relacja dodana ID="+dodanyId+" Miejsce_ID="+x.getMiejsce_id()+" Wydarzenie_ID="+x.getWydarzenie_id());	// zwraca -1 jeœli nie uda³o siê dodaæ! a id dodanego jeœli uda³o.
+			Log.d(RELACJA_TAG, "Relacja dodana ID="+dodanyId+" Miejsce_ID="+x.getMiejsce_id()+" Wydarzenie_ID="+x.getWydarzenie_id());	// zwraca -1 jeœli nie uda³o siê dodaæ! a id dodanego jeœli uda³o.
 		}
 	}
 }

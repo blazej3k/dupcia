@@ -32,7 +32,7 @@
     <string name="lbl_dialog_pole1">Adres:</string>
     <string name="lbl_dialog_pole2">Projektant:</string>
     <string name="lbl_dialog_pole3">Data powstania:</string>
-    <string name="lbl_dialog_pole4">Pole:</string>
+    <string name="lbl_dialog_pole4">Rodzaj: </string>
     <string name="lbl_dialog_pole5">Pole:</string>
     <string name="lbl_dialog_opis">Opis:</string>
     <string name="title_activity_lista_exp">ListaExp</string>

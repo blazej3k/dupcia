@@ -88,7 +88,11 @@ public class ObslugaBazy {
 	
 	public void truncateAll() {
 		for (Class<? extends Model> x: tabele) {
-			Model.truncate(x);
+			try {
+				Model.truncate(x);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		
 //		TabBudynek.truncate(TabBudynek.class);			// truncate ró¿ni siê od delete tym, ¿e czyœci tabelê (robi delete), ale te¿ resetuje jej ID

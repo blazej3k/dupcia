@@ -2,7 +2,6 @@ package blake.przewodnikturystyczny.baza.model;
 
 import java.util.List;
 
-import blake.przewodnikturystyczny.baza.model.pomocniczy.TabMiejsceRzecz;
 import blake.przewodnikturystyczny.baza.model.pomocniczy.TabMiejsceWydarzenie;
 
 import com.activeandroid.Model;
@@ -38,6 +37,10 @@ public class TabMiejsce extends Model implements IfMarkierable, IfLocalizable, I
 	private TabBranza branza;
 	
 	// relacje 1-wiele
+	public List<TabRzecz> getRzeczy() {
+    	return getMany(TabRzecz.class, "Miejsce_ID");
+    }
+	
     public List<TabPostac> postacie() {
         return getMany(TabPostac.class, "Miejsce_ID");
     }
@@ -45,20 +48,24 @@ public class TabMiejsce extends Model implements IfMarkierable, IfLocalizable, I
     public List<TabRod> rody() {
         return getMany(TabRod.class, "Miejsce_ID");
     }
+    
 
 	// relacje wiele-wiele
     public List<TabWydarzenie> getWydarzenia() {
     	return getRelacje(TabWydarzenie.class, TabMiejsceWydarzenie.class, "Wydarzenie_ID", "Miejsce_ID");
     }
-    public List<TabRzecz> getRzeczy() {
+/*    public List<TabRzecz> getRzeczy() {
     	return getRelacje(TabRzecz.class, TabMiejsceRzecz.class, "Rzecz_ID", "Miejsce_ID");
-    }
+    }*/
     
 	public TabMiejsce() {
 		super();
 	}
 	
 	public TabMiejsce(String nazwa, String adres, Boolean czyZespol, String dataPowstania, String projektant, String opis) {
+		
+		super();
+		
 		this.nazwa = nazwa;
 		this.adres = adres;
 		this.czyZespol = czyZespol;

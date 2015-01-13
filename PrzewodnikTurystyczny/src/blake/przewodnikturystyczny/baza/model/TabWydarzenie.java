@@ -37,7 +37,7 @@ public class TabWydarzenie extends Model implements IfSelectable {
 		return getMany(TabPostac.class, "Wydarzenie_ID");
 	}
 	
-	public List<TabRzecz> rzeczy() {
+	public List<TabRzecz> getRzeczy() {
 		return getMany(TabRzecz.class, "Wydarzenie_ID");
 	}
 
