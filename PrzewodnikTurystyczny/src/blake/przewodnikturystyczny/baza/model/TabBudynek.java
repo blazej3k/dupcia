@@ -14,9 +14,9 @@ public class TabBudynek extends Model implements IfMarkierable, IfLocalizable, I
 	private String nazwa;
 	@Column(name = "adres", unique=true, notNull=true)
 	private String adres;
-	@Column(name = "latitude", notNull=true, onNullConflict=ConflictAction.REPLACE)
+	@Column(name = "latitude", notNull=true, onNullConflict=ConflictAction.FAIL)
 	private double latitude;
-	@Column(name = "longitude", notNull=true)
+	@Column(name = "longitude", notNull=true, onNullConflict=ConflictAction.FAIL)
 	private double longitude;
 	@Column(name = "projektant")
 	private String projektant;

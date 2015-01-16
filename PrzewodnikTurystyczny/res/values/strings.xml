@@ -36,5 +36,7 @@
     <string name="lbl_dialog_pole5">Pole:</string>
     <string name="lbl_dialog_opis">Opis:</string>
     <string name="title_activity_lista_exp">ListaExp</string>
+    <string name="title_activity_wyszukiwanie">Wyszukiwanie</string>
+    <string name="tv_wybierz_kategorie">Wybierz kategorię poszukiwań:</string>
 
 </resources>

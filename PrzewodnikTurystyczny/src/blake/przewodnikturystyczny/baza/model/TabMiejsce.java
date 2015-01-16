@@ -7,6 +7,7 @@ import blake.przewodnikturystyczny.baza.model.pomocniczy.TabMiejsceWydarzenie;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.activeandroid.annotation.Column.ConflictAction;
 
 @Table(name="Miejsce")
 public class TabMiejsce extends Model implements IfMarkierable, IfLocalizable, IfSelectable {
@@ -21,9 +22,9 @@ public class TabMiejsce extends Model implements IfMarkierable, IfLocalizable, I
 	private String projektant;
 	@Column(name="opis")
 	private String opis;
-	@Column(name="latitude", notNull=true)
+	@Column(name="latitude", notNull=true, onNullConflict=ConflictAction.FAIL)
 	private double latitude;
-	@Column(name="longitude", notNull=true)
+	@Column(name="longitude", notNull=true, onNullConflict=ConflictAction.FAIL)
 	private double longitude;
 	@Column(name="czyZespol", notNull=true)
 	private Boolean czyZespol;
