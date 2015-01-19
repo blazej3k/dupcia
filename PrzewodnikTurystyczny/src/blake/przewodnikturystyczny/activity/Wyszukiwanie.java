@@ -4,17 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import blake.przewodnikturystyczny.R;
+import blake.przewodnikturystyczny.baza.model.IfSelectable;
 import blake.przewodnikturystyczny.baza.model.TabBranza;
 import blake.przewodnikturystyczny.baza.model.TabMiejsce;
 import blake.przewodnikturystyczny.baza.model.TabOkres;
@@ -23,15 +28,18 @@ import blake.przewodnikturystyczny.baza.model.TabRzecz;
 import blake.przewodnikturystyczny.baza.model.TabWydarzenie;
 import blake.przewodnikturystyczny.model.KategorieListaAdapter;
 
+import com.activeandroid.Model;
 import com.activeandroid.query.Select;
 
 public class Wyszukiwanie extends Activity {
 	
 	public static final String DEBUG_TAG = "Przewodnik";
+	private Context context;
 	
 	private ListView kategorie_lista;
 	private ListView szczegoly_lista;
 	private TextView lbl_wybierz_szczegol;
+	private Button btn_przejdz_do_zwiedzania;
 	
 //	private final String[] naglowki = { "Okresy", "Kategorie", "Budynki", "Miejsca", "Ludzie", "Wydarzenia", "Przedmioty, dzie³a sztuki, eksponaty" };
 	private final String[] naglowki = { "Okresy", "Kategorie" };
@@ -44,22 +52,28 @@ public class Wyszukiwanie extends Activity {
 	private Boolean czyOkres = false;
 	private String wybranyOkres = "";
 	private String wybranaBranza = "";
+	String wybranyElement = "";
 	private List<TabOkres> okresy;
 	private List<TabBranza> branze;
+	List<? extends Model> listaObiektow = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_wyszukiwanie);
+		context = getApplicationContext();
+		
 		
 		kategorie_lista = (ListView) findViewById(R.id.kategorieLista);
 		szczegoly_lista = (ListView) findViewById(R.id.szczegolyLista);
 		lbl_wybierz_szczegol = (TextView) findViewById(R.id.lbl_wybierz_szczegol);
+		btn_przejdz_do_zwiedzania = (Button) findViewById(R.id.btn_przejdz_do_zwiedzania);
 		
 		dane = new ArrayList<String>();
 		daneSzczegoly = new ArrayList<String>();
 		naglowkiLista = new ArrayList<String>();
 		zbudujListe();
+		initOnClickListener();
 		
 		okresy = new Select().all().from(TabOkres.class).execute();
 		branze = new Select().all().from(TabBranza.class).execute();
@@ -84,43 +98,66 @@ public class Wyszukiwanie extends Activity {
 		szczegoly_lista.setVisibility(View.VISIBLE);		// pojaw liste :)
 		lbl_wybierz_szczegol.setVisibility(View.VISIBLE);	// i label ;)
 		
+//		Class<? extends Model> tabelaKlasa = null;
+		
 		daneSzczegoly.clear();
 		
+//		if (wybranaBranza.equals("Miejsca")) {
+//			List<TabMiejsce> lista = new Select().all().from(TabMiejsce.class).execute();	
+//
+//			for (TabMiejsce x: lista) {
+//				daneSzczegoly.add(x.getNazwa());
+//			}
+//		}
+//		else if (wybranaBranza.equals("Wydarzenia")) {
+//			List<TabWydarzenie> lista = new Select().all().from(TabWydarzenie.class).execute();	
+//
+//			for (TabWydarzenie x: lista) {
+//				daneSzczegoly.add(x.getNazwa());
+//			}
+//		}
+//		else if (wybranaBranza.equals("Rzeczy")) {
+//			List<TabRzecz> lista = new Select().all().from(TabRzecz.class).execute();	
+//
+//			for (TabRzecz x: lista) {
+//				daneSzczegoly.add(x.getNazwa());
+//			}
+//		}
+//		else if (wybranaBranza.equals("Postacie")) {
+//			List<TabPostac> lista = new Select().all().from(TabPostac.class).execute();	
+//
+//			for (TabPostac x: lista) {
+//				daneSzczegoly.add(x.getNazwa());
+//			}
+//		}
+		
+		
 		if (wybranaBranza.equals("Miejsca")) {
-			List<TabMiejsce> lista = new Select().all().from(TabMiejsce.class).execute();	
-
-			for (TabMiejsce x: lista) {
-				daneSzczegoly.add(x.getNazwa());
-			}
+			listaObiektow = new Select().all().from(TabMiejsce.class).execute();
 		}
 		else if (wybranaBranza.equals("Wydarzenia")) {
-			List<TabWydarzenie> lista = new Select().all().from(TabWydarzenie.class).execute();	
-
-			for (TabWydarzenie x: lista) {
-				daneSzczegoly.add(x.getNazwa());
-			}
+			listaObiektow = new Select().all().from(TabWydarzenie.class).execute();	
 		}
 		else if (wybranaBranza.equals("Rzeczy")) {
-			List<TabRzecz> lista = new Select().all().from(TabRzecz.class).execute();	
-
-			for (TabRzecz x: lista) {
-				daneSzczegoly.add(x.getNazwa());
-			}
+			listaObiektow = new Select().all().from(TabRzecz.class).execute();	
 		}
 		else if (wybranaBranza.equals("Postacie")) {
-			List<TabPostac> lista = new Select().all().from(TabPostac.class).execute();	
+			listaObiektow = new Select().all().from(TabPostac.class).execute();	
 
-			for (TabPostac x: lista) {
-				daneSzczegoly.add(x.getNazwa());
-			}
 		}
+		
+		for (Model y: listaObiektow) {
+			daneSzczegoly.add(((IfSelectable) y).getNazwa());
+			Log.d(DEBUG_TAG, ": ID="+((IfSelectable) y).getId()+ ": " +((IfSelectable) y).getNazwa());
+		}
+		
 		
 		adapterSzczegoly.notifyDataSetChanged();
 
 	}
 	
 	private void initOnItemClickListener() {
-		OnItemClickListener listener = new OnItemClickListener() {
+		OnItemClickListener listenerKategorie = new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //				Toast.makeText(getApplicationContext(), "Klikniêto pozycjê: "+position, Toast.LENGTH_SHORT).show();
@@ -168,7 +205,30 @@ public class Wyszukiwanie extends Activity {
 			}
 		};
 
-		kategorie_lista.setOnItemClickListener(listener);
+		OnItemClickListener listenerSzczegoly = new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				wybranyElement = ((IfSelectable) listaObiektow.get(position)).getNazwa();
+				Toast.makeText(getApplicationContext(), "Klikniêto pozycjê: "+wybranyElement, Toast.LENGTH_SHORT).show();
+			}			
+		};
+		
+		kategorie_lista.setOnItemClickListener(listenerKategorie);
+		szczegoly_lista.setOnItemClickListener(listenerSzczegoly);
+	}
+	
+	private void initOnClickListener() {
+		OnClickListener listener = new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(context, Mapa.class);
+				intent.putExtra("obiekt", wybranyElement);
+				intent.putExtra("typObiektu", wybranaBranza);
+				startActivity(intent);
+			}
+		};
+		
+		btn_przejdz_do_zwiedzania.setOnClickListener(listener);
 	}
 	
 	@Override

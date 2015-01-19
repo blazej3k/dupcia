@@ -121,6 +121,10 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 		super.onCreate(savedInstanceState);
 		context = getApplicationContext();
 		actionBar();
+		
+		Bundle bondzio = getIntent().getExtras();
+		Log.d(DEBUG_TAG, "£yk³em do bazy: "+bondzio.getString("obiekt"));
+		
 
 		serwis = (LocationManager) getSystemService(LOCATION_SERVICE);
 		boolean locationEnabled = serwis
