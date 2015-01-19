@@ -1,14 +1,20 @@
 package blake.przewodnikturystyczny.mapa;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import android.util.Log;
 import blake.przewodnikturystyczny.baza.model.IfMarkierable;
 import blake.przewodnikturystyczny.baza.model.TabBudynek;
 import blake.przewodnikturystyczny.baza.model.TabMiejsce;
+import blake.przewodnikturystyczny.baza.model.TabPostac;
+import blake.przewodnikturystyczny.baza.model.TabRzecz;
+import blake.przewodnikturystyczny.baza.model.TabWydarzenie;
 
 import com.activeandroid.query.Select;
 import com.google.android.gms.maps.GoogleMap;
@@ -30,6 +36,15 @@ public class ObslugaMapy {
 		}
 	}
 	
+	private class IfMarkierableComparator implements Comparator<IfMarkierable> {
+		@Override
+		public int compare(IfMarkierable lhs, IfMarkierable rhs) {
+			String nazwa1 = lhs.getNazwa();
+			String nazwa2 = rhs.getNazwa();
+			
+			return nazwa1.compareTo(nazwa2);
+		}
+	}
 
 	public static final String DEBUG_TAG = "Przewodnik";
 	
@@ -77,7 +92,9 @@ public class ObslugaMapy {
 			return null;
 		}
 			
+		
 		for(T x: obiekty) {
+			Log.d(DEBUG_TAG, "Latitude dla: "+x.getNazwa());
 			latitude = x.getLatitude();
 			longitude = x.getLongitude();
 
@@ -106,6 +123,68 @@ public class ObslugaMapy {
 		return null;
 	}
 
+	public List<IfMarkierable> rozwiazZaleznosciSum(String nazwa, String typ, Boolean czyBudynek) {
+		Set<IfMarkierable> zaleznoscMiejsca = new TreeSet<IfMarkierable>(new IfMarkierableComparator());
+		
+		Log.d(DEBUG_TAG, "Rozwiazuje zaleznosc dla "+nazwa+" typ "+typ);
+		
+		if (typ.equals("Miejsca")) {
+			TabMiejsce obiekt = new Select().from(TabMiejsce.class).where("nazwa = ?", nazwa).executeSingle();
+			
+			if (!czyBudynek) {
+				zaleznoscMiejsca.add(obiekt);												// dodaj samego zaiteresowanego do pobrania
+				Log.d(DEBUG_TAG, "Znalazlem obiekt: "+obiekt.getNazwa());					// zespoly miejsc niezaimplementowane
+			}
+			if (czyBudynek) {
+				TabBudynek budynek = obiekt.getBudynek();
+				zaleznoscMiejsca.add(budynek);
+			}
+			
+			Log.d(DEBUG_TAG, "Wysylam "+zaleznoscMiejsca.size()+" elementow.");
+		}
+		else if (typ.equals("Wydarzenia")) {
+			TabWydarzenie obiekt = new Select().from(TabWydarzenie.class).where("nazwa = ?", nazwa).executeSingle();	
+			if (!czyBudynek) {
+				zaleznoscMiejsca.addAll(obiekt.getMiejsca());
+				Log.d(DEBUG_TAG, "Znalazlem obiekt: "+obiekt.getNazwa());
+			}
+			
+		}
+		else if (typ.equals("Rzeczy")) {
+			TabRzecz obiekt = new Select().from(TabRzecz.class).where("nazwa = ?", nazwa).executeSingle();	
+			if (!czyBudynek) {
+				zaleznoscMiejsca.add(obiekt.getMiejsce());
+				Log.d(DEBUG_TAG, "Znalazlem obiekt: "+obiekt.getNazwa());
+			}
+		}
+		else if (typ.equals("Postacie")) {
+			/*TabPostac obiekt = new Select().from(TabPostac.class).where("nazwa = ?", nazwa).executeSingle();	
+			
+			if (!czyBudynek) {
+				zaleznoscMiejsca.add(obiekt.getMiejsca());
+				Log.d(DEBUG_TAG, "Znalazlem obiekt: "+obiekt.getNazwa());
+			}*/
+			// TODO not implemented kurde yet
+		}
+		
+		return new ArrayList<IfMarkierable>(zaleznoscMiejsca);
+	}
+	
+	private List<TabMiejsce> rozwiazZaleznosciRzeczy(List<TabRzecz> rzeczy) {
+		List<TabMiejsce> listaMiejsc = new ArrayList<TabMiejsce>();
+		TabMiejsce miejsce;
+		for (TabRzecz x: rzeczy) {
+			miejsce = x.getMiejsce();
+			if (miejsce != null) listaMiejsc.add(miejsce);
+		}
+		return listaMiejsc;
+	}
+	
+	private void rozwiazZaleznosciWydarzenia(List<TabWydarzenie> wydarzenia) {
+		
+	}
+	
+	
 	public TreeMap<Marker, List<String>> generujOpakowanieOpisBudynek(List<Marker> markery, List<TabBudynek> budynki) {
 		TreeMap<Marker, List<String>> opakowanie = new TreeMap<Marker, List<String>>(new MarkerComparator());
 		List<String> dodatek;

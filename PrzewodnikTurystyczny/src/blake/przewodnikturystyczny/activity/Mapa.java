@@ -1,5 +1,6 @@
 package blake.przewodnikturystyczny.activity;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -23,6 +24,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import blake.przewodnikturystyczny.R;
+import blake.przewodnikturystyczny.baza.model.IfMarkierable;
 import blake.przewodnikturystyczny.baza.model.TabBudynek;
 import blake.przewodnikturystyczny.mapa.ObslugaMapy;
 import blake.przewodnikturystyczny.mapa.PobierzAdresAsync;
@@ -69,12 +71,12 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 			   
 			String snippet="";
 						
-			if (opakowanieBudynek.containsKey(marker)) {
+			if (opakowanieBudynek != null && opakowanieBudynek.containsKey(marker)) {
 				List<String> opis = opakowanieBudynek.get(marker);
 				snippet = opis.get(0);
 				iv_icon.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_camera));
 			}
-			else if (opakowanieMiejsce.containsKey(marker)) {
+			else if (opakowanieMiejsce != null && opakowanieMiejsce.containsKey(marker)) {
 				List<String> opis = opakowanieMiejsce.get(marker);
 				snippet = opis.get(0);
 				iv_icon.setImageDrawable(getResources().getDrawable(android.R.drawable.ic_menu_gallery));
@@ -115,6 +117,8 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 	private Marker currentMarker;
 
 	private Boolean ifZnajdz = false;
+	private Boolean ifBundle = false;
+	private Bundle bondzio;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -122,8 +126,14 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 		context = getApplicationContext();
 		actionBar();
 		
-		Bundle bondzio = getIntent().getExtras();
-		Log.d(DEBUG_TAG, "£yk³em do bazy: "+bondzio.getString("obiekt"));
+		bondzio = getIntent().getExtras();
+		
+		if (bondzio.isEmpty())
+			ifBundle = false;
+		else
+			ifBundle = true;
+		
+		Log.d(DEBUG_TAG, "£yk³em do bazy: "+bondzio.getString("obiekt")+" typu "+bondzio.getString("typObiektu"));
 		
 
 		serwis = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -157,8 +167,10 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 		btn_znajdz.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				pobierzWspolrzedne(et_podaj_adres.getText().toString());
-				ifZnajdz = true;
+				if (et_podaj_adres.getText().length() > 0) {
+					pobierzWspolrzedne(et_podaj_adres.getText().toString());
+					ifZnajdz = true;
+				}
 			}
 		});	
 	}
@@ -184,7 +196,6 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 		case (R.id.ab_wstecz): {
 	        Intent intent = new Intent(context, MainActivity.class);
 	        startActivity(intent);
-//			finish();		// niby nie polecany ale szybszy i jo³ jo³
 			break;
 		}
 		case (R.id.ab_dalej): {
@@ -277,9 +288,17 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 		this.map = map;
 		obslugaMapy = new ObslugaMapy(map);
 		domyslnaMapa(map);
-		opakowanieBudynek = obslugaMapy.dodajMarkery(obslugaMapy.pobierzBudynki()); // pobiera budynki jako liste i wywoluje generyczn¹ metode do wyswietlania budynkow
-		opakowanieMiejsce = obslugaMapy.dodajMarkery(obslugaMapy.pobierzMiejsca());	// funkcja od razu zwraca opakowania - czyli paczki dodatkowych parametrów do Markerów (na potrzeby wyœwietlenia w InfoWindow)
-
+		
+		if (ifBundle) {
+			// obsluga mapy musi miec funkcje rozwiazZaleznosci.
+			opakowanieMiejsce = obslugaMapy.dodajMarkery(obslugaMapy.rozwiazZaleznosciSum(bondzio.getString("obiekt"), bondzio.getString("typObiektu"), false));
+			opakowanieBudynek = obslugaMapy.dodajMarkery(obslugaMapy.rozwiazZaleznosciSum(bondzio.getString("obiekt"), bondzio.getString("typObiektu"), true));
+			
+		}
+		else {
+			opakowanieBudynek = obslugaMapy.dodajMarkery(obslugaMapy.pobierzBudynki()); // pobiera budynki jako liste i wywoluje generyczn¹ metode do wyswietlania budynkow
+			opakowanieMiejsce = obslugaMapy.dodajMarkery(obslugaMapy.pobierzMiejsca());	// funkcja od razu zwraca opakowania - czyli paczki dodatkowych parametrów do Markerów (na potrzeby wyœwietlenia w InfoWindow)
+		}
 		map.setInfoWindowAdapter(new MyInfoWindowAdapter()); // ustawia customowy adapter do okienek informacyjnych - tych po klikniêciu w marker
 															 // zdefiniowany jest w klasie wewnêtrznej, na górze tej klasy
 		map.setOnMapClickListener(this);
@@ -318,9 +337,9 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
     public void showSzczegolyDialog(Marker marker) {
     	DialogFragment dialog;
     	
-    	if (opakowanieBudynek.containsKey(marker))
+    	if (opakowanieBudynek != null && opakowanieBudynek.containsKey(marker))
     		dialog = new DialogSzczegolyFragment(marker.getTitle(), true);
-    	else if (opakowanieMiejsce.containsKey(marker))
+    	else if (opakowanieMiejsce != null && opakowanieMiejsce.containsKey(marker))
     		dialog = new DialogSzczegolyFragment(marker.getTitle(), false);
     	else
     		dialog = new DialogFragment();
