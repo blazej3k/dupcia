@@ -1,22 +1,176 @@
 package blake.przewodnikturystyczny.activity;
 
-import blake.przewodnikturystyczny.R;
-import blake.przewodnikturystyczny.R.id;
-import blake.przewodnikturystyczny.R.layout;
-import blake.przewodnikturystyczny.R.menu;
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+import blake.przewodnikturystyczny.R;
+import blake.przewodnikturystyczny.baza.model.TabBranza;
+import blake.przewodnikturystyczny.baza.model.TabMiejsce;
+import blake.przewodnikturystyczny.baza.model.TabOkres;
+import blake.przewodnikturystyczny.baza.model.TabPostac;
+import blake.przewodnikturystyczny.baza.model.TabRzecz;
+import blake.przewodnikturystyczny.baza.model.TabWydarzenie;
+import blake.przewodnikturystyczny.model.KategorieListaAdapter;
+
+import com.activeandroid.query.Select;
 
 public class Wyszukiwanie extends Activity {
-
+	
+	public static final String DEBUG_TAG = "Przewodnik";
+	
+	private ListView kategorie_lista;
+	private ListView szczegoly_lista;
+	private TextView lbl_wybierz_szczegol;
+	
+//	private final String[] naglowki = { "Okresy", "Kategorie", "Budynki", "Miejsca", "Ludzie", "Wydarzenia", "Przedmioty, dzie³a sztuki, eksponaty" };
+	private final String[] naglowki = { "Okresy", "Kategorie" };
+	private List<String> naglowkiLista;
+	private List<String> dane;
+	private List<String> daneSzczegoly;
+	private KategorieListaAdapter adapter;
+	private KategorieListaAdapter adapterSzczegoly;
+	private Boolean trybListy = false; 	// false gdy lista kategorii, true gdy zawartoœæ Okresu lub Bran¿y
+	private Boolean czyOkres = false;
+	private String wybranyOkres = "";
+	private String wybranaBranza = "";
+	private List<TabOkres> okresy;
+	private List<TabBranza> branze;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_wyszukiwanie);
+		
+		kategorie_lista = (ListView) findViewById(R.id.kategorieLista);
+		szczegoly_lista = (ListView) findViewById(R.id.szczegolyLista);
+		lbl_wybierz_szczegol = (TextView) findViewById(R.id.lbl_wybierz_szczegol);
+		
+		dane = new ArrayList<String>();
+		daneSzczegoly = new ArrayList<String>();
+		naglowkiLista = new ArrayList<String>();
+		zbudujListe();
+		
+		okresy = new Select().all().from(TabOkres.class).execute();
+		branze = new Select().all().from(TabBranza.class).execute();
 	}
 
+	private void zbudujListe() {
+		for (int i = 0; i < naglowki.length; i++)		// zbuduj liste naglowkow. potem nie bedzie trzeba jej budowac za kazdym razem
+			naglowkiLista.add(naglowki[i]);
+		
+		dane.addAll(naglowkiLista);
+		adapter = new KategorieListaAdapter(this, R.layout.cust_row_kategorie_lista, dane, true);
+		kategorie_lista.setAdapter(adapter);
+		
+		adapterSzczegoly = new KategorieListaAdapter(this, R.layout.cust_row_kategorie_lista, daneSzczegoly, true);
+		szczegoly_lista.setAdapter(adapterSzczegoly);
+		
+		initOnItemClickListener();
+	}
+	
+	private void budujSzczegoly() {
+		Log.d(DEBUG_TAG, "Pojawiam szczegoly");
+		szczegoly_lista.setVisibility(View.VISIBLE);		// pojaw liste :)
+		lbl_wybierz_szczegol.setVisibility(View.VISIBLE);	// i label ;)
+		
+		daneSzczegoly.clear();
+		
+		if (wybranaBranza.equals("Miejsca")) {
+			List<TabMiejsce> lista = new Select().all().from(TabMiejsce.class).execute();	
+
+			for (TabMiejsce x: lista) {
+				daneSzczegoly.add(x.getNazwa());
+			}
+		}
+		else if (wybranaBranza.equals("Wydarzenia")) {
+			List<TabWydarzenie> lista = new Select().all().from(TabWydarzenie.class).execute();	
+
+			for (TabWydarzenie x: lista) {
+				daneSzczegoly.add(x.getNazwa());
+			}
+		}
+		else if (wybranaBranza.equals("Rzeczy")) {
+			List<TabRzecz> lista = new Select().all().from(TabRzecz.class).execute();	
+
+			for (TabRzecz x: lista) {
+				daneSzczegoly.add(x.getNazwa());
+			}
+		}
+		else if (wybranaBranza.equals("Postacie")) {
+			List<TabPostac> lista = new Select().all().from(TabPostac.class).execute();	
+
+			for (TabPostac x: lista) {
+				daneSzczegoly.add(x.getNazwa());
+			}
+		}
+		
+		adapterSzczegoly.notifyDataSetChanged();
+
+	}
+	
+	private void initOnItemClickListener() {
+		OnItemClickListener listener = new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//				Toast.makeText(getApplicationContext(), "Klikniêto pozycjê: "+position, Toast.LENGTH_SHORT).show();
+
+				if (!trybListy) { 					// jesli jest w widoku kategorii, to przejdz do szczegolowego
+					switch(position) {
+					case 0:							// wybrano okres
+						dane.clear();
+						for (TabOkres okres: okresy) 
+							dane.add(okres.getNazwa());
+						
+						czyOkres = true;			// przejscie do szczegolowego - okres
+						break;
+					case 1:							// wybrano branze
+						dane.clear();
+						for (TabBranza branza: branze) 
+							dane.add(branza.getNazwa());
+						
+						czyOkres = false;			// przejscie do szczegolowego - branza
+						break;
+					}
+					
+					trybListy = true;			// oznacz przejscie do szczegolowego
+				} 
+				else if (trybListy) {					// jesli w widoku szczegolowym to wroc do kategorii
+					if (czyOkres) 
+						wybranyOkres = dane.get(position);	// bierze nazwe, spoko
+					else if(!czyOkres)
+						wybranaBranza = dane.get(position);
+
+					Toast.makeText(getApplicationContext(), "Wybrano Okres: "+wybranyOkres+" wybrana Bran¿a: "+wybranaBranza, Toast.LENGTH_SHORT).show();
+					dane.clear();
+					dane.addAll(naglowkiLista);
+
+					if ( (!wybranaBranza.equals("")) && (!wybranyOkres.equals("")) ) {
+							budujSzczegoly();
+					}
+					
+					
+					trybListy = false;
+				}
+				
+				Log.d(DEBUG_TAG, "Powiadamiam adapter.");
+				adapter.notifyDataSetChanged();
+			}
+		};
+
+		kategorie_lista.setOnItemClickListener(listener);
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.

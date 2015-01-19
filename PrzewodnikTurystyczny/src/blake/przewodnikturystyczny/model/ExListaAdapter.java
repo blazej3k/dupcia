@@ -41,7 +41,7 @@ public class ExListaAdapter extends BaseExpandableListAdapter {
 			convertView = inflater.inflate(R.layout.cust_row_ex_lista, null);
 		}
 		convertView.setClickable(false);
-		text = (TextView) convertView.findViewById(R.id.textView1);
+		text = (TextView) convertView.findViewById(R.id.tv_row_obiekt);
 		text.setText(children);
 		
 		return convertView;

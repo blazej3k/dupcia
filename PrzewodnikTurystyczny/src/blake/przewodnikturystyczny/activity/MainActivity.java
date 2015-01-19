@@ -111,8 +111,8 @@ public class MainActivity extends Activity {
 					new SuperPompeczka(51);
 					break;
 				case (R.id.btn_relacje_x):
-//					Intent intent2 = new Intent(context, ListaExp.class);
-//					startActivity(intent2);
+					Intent intent2 = new Intent(context, Wyszukiwanie.class);
+					startActivity(intent2);
 					break;
 				case (R.id.btn_count_all):
 					showDialog(1);

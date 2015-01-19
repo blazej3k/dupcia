@@ -2,18 +2,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="40dp"
-    android:clickable="true"
     android:orientation="vertical"
     android:paddingLeft="40dp"
-    tools:context=".MainActivity" >
+    tools:context=".Wyszukiwanie" >
 
     <TextView
         android:id="@+id/tv_row_obiekt"
-		style="@style/cust_row" />
+        style="@style/cust_row"
+        android:drawableLeft="@drawable/zielony" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@android:color/black" />
 
-</LinearLayout> 
+</LinearLayout>

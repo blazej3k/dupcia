@@ -431,7 +431,7 @@ public class SuperPompeczka {
 		branza = new TabBranza("Rzeczy", "Grupa zawieraj¹ca wszystkie znane aplikacji rzeczy - przedmioty namacalne.");
 		listaDoDodania.add(branza);
 		
-		branza = new TabBranza("Postaæ", "Grupa zawieraj¹ca wszystkie znane aplikacji postacie.");
+		branza = new TabBranza("Postacie", "Grupa zawieraj¹ca wszystkie znane aplikacji postacie.");
 		listaDoDodania.add(branza);
 		
 		for (TabBranza x: listaDoDodania) {
