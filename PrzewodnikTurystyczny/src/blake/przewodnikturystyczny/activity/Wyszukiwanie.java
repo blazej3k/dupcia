@@ -42,10 +42,11 @@ public class Wyszukiwanie extends Activity {
 	private Button btn_przejdz_do_zwiedzania;
 	
 //	private final String[] naglowki = { "Okresy", "Kategorie", "Budynki", "Miejsca", "Ludzie", "Wydarzenia", "Przedmioty, dzie³a sztuki, eksponaty" };
-	private final String[] naglowki = { "Okresy", "Kategorie" };
+	private final String[] naglowki = { "Okres", "Kategoria" };
 	private List<String> naglowkiLista;
 	private List<String> dane;
 	private List<String> daneSzczegoly;
+	private List<String> wybrane;
 	private KategorieListaAdapter adapter;
 	private KategorieListaAdapter adapterSzczegoly;
 	private Boolean trybListy = false; 	// false gdy lista kategorii, true gdy zawartoœæ Okresu lub Bran¿y
@@ -72,6 +73,11 @@ public class Wyszukiwanie extends Activity {
 		dane = new ArrayList<String>();
 		daneSzczegoly = new ArrayList<String>();
 		naglowkiLista = new ArrayList<String>();
+		wybrane = new ArrayList<String>();
+		
+		wybrane.add(wybranaBranza);
+		wybrane.add(wybranyOkres);
+		
 		zbudujListe();
 		initOnClickListener();
 		
@@ -84,10 +90,10 @@ public class Wyszukiwanie extends Activity {
 			naglowkiLista.add(naglowki[i]);
 		
 		dane.addAll(naglowkiLista);
-		adapter = new KategorieListaAdapter(this, R.layout.cust_row_kategorie_lista, dane, true);
+		adapter = new KategorieListaAdapter(this, R.layout.cust_row_kategorie_lista, dane, wybranyOkres, wybranaBranza, true);
 		kategorie_lista.setAdapter(adapter);
 		
-		adapterSzczegoly = new KategorieListaAdapter(this, R.layout.cust_row_kategorie_lista, daneSzczegoly, true);
+		adapterSzczegoly = new KategorieListaAdapter(this, R.layout.cust_row_kategorie_lista, daneSzczegoly, null, null, false);
 		szczegoly_lista.setAdapter(adapterSzczegoly);
 		
 		initOnItemClickListener();
@@ -131,24 +137,24 @@ public class Wyszukiwanie extends Activity {
 //			}
 //		}
 		
-		
+		TabOkres okres = new Select().from(TabOkres.class).where("nazwa = ?", wybranyOkres).executeSingle(); 
+				
 		if (wybranaBranza.equals("Miejsca")) {
-			listaObiektow = new Select().all().from(TabMiejsce.class).execute();
+			listaObiektow = new Select().from(TabMiejsce.class).where("Okres_ID = ?", okres.getId()).execute();
 		}
 		else if (wybranaBranza.equals("Wydarzenia")) {
-			listaObiektow = new Select().all().from(TabWydarzenie.class).execute();	
+			listaObiektow = new Select().from(TabWydarzenie.class).where("Okres_ID = ?", okres.getId()).execute();	
 		}
 		else if (wybranaBranza.equals("Rzeczy")) {
-			listaObiektow = new Select().all().from(TabRzecz.class).execute();	
+			listaObiektow = new Select().from(TabRzecz.class).where("Okres_ID = ?", okres.getId()).execute();	
 		}
 		else if (wybranaBranza.equals("Postacie")) {
-			listaObiektow = new Select().all().from(TabPostac.class).execute();	
-
+			listaObiektow = new Select().from(TabPostac.class).where("Okres_ID = ?", okres.getId()).execute();	
 		}
 		
 		for (Model y: listaObiektow) {
 			daneSzczegoly.add(((IfSelectable) y).getNazwa());
-			Log.d(DEBUG_TAG, ": ID="+((IfSelectable) y).getId()+ ": " +((IfSelectable) y).getNazwa());
+//			Log.d(DEBUG_TAG, ": ID="+((IfSelectable) y).getId()+ ": " +((IfSelectable) y).getNazwa());
 		}
 		
 		
@@ -183,11 +189,15 @@ public class Wyszukiwanie extends Activity {
 					trybListy = true;			// oznacz przejscie do szczegolowego
 				} 
 				else if (trybListy) {					// jesli w widoku szczegolowym to wroc do kategorii
-					if (czyOkres) 
+					if (czyOkres) { 
 						wybranyOkres = dane.get(position);	// bierze nazwe, spoko
-					else if(!czyOkres)
+						adapter.ustawWybrane(wybranyOkres, true);
+					}
+					else if(!czyOkres) {
 						wybranaBranza = dane.get(position);
-
+						adapter.ustawWybrane(wybranaBranza, false);
+					}
+					
 					Toast.makeText(getApplicationContext(), "Wybrano Okres: "+wybranyOkres+" wybrana Bran¿a: "+wybranaBranza, Toast.LENGTH_SHORT).show();
 					dane.clear();
 					dane.addAll(naglowkiLista);
@@ -195,7 +205,6 @@ public class Wyszukiwanie extends Activity {
 					if ( (!wybranaBranza.equals("")) && (!wybranyOkres.equals("")) ) {
 							budujSzczegoly();
 					}
-					
 					
 					trybListy = false;
 				}

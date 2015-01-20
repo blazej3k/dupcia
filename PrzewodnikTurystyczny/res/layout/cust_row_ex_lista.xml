@@ -9,7 +9,7 @@
 
     <TextView
         android:id="@+id/tv_row_obiekt"
-		style="@style/cust_row" />
+		style="@style/cust_row_begin" />
 
     <View
         android:layout_width="match_parent"
