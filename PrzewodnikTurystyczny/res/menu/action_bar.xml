@@ -2,19 +2,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/ab_wstecz"
+        android:id="@+id/ab_zielony"
         android:icon="@drawable/zielony"
         android:orderInCategory="100"
         android:showAsAction="always"
         android:title="@string/ab_zielony"/>
     <item
-        android:id="@+id/ab_dalej"
+        android:id="@+id/ab_niebieski"
         android:icon="@drawable/niebieski"
         android:orderInCategory="100"
         android:showAsAction="always"
         android:title="@string/ab_niebieski"/>
     <item
-        android:id="@+id/ab_pokazukryj"
+        android:id="@+id/ab_czerwony"
         android:icon="@drawable/czerwony"
         android:orderInCategory="100"
         android:showAsAction="always"

@@ -90,7 +90,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0.1"
-        android:paddingTop="10dp" >
+        android:paddingTop="10dp"
+        android:scrollbarStyle="outsideInset" >
 
     </ExpandableListView>
+
+    <Button
+        android:id="@+id/btn_pokaz_na_mapie"
+        style="@style/button_brzydki"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/btn_pokaz_na_mapie" 
+/>
+
 </LinearLayout>

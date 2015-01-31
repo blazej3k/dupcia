@@ -78,6 +78,7 @@ public class Wyszukiwanie extends Activity {
 		wybrane.add(wybranaBranza);
 		wybrane.add(wybranyOkres);
 		
+		actionBar();
 		zbudujListe();
 		initOnClickListener();
 		
@@ -162,31 +163,37 @@ public class Wyszukiwanie extends Activity {
 
 	}
 	
+	private void actionBar() {
+		getActionBar().setTitle("Rozpocznij zwiedzanie");
+//		getActionBar().setDisplayHomeAsUpEnabled(true);		// i tak go nie uzywam bo bym musial Support ladowac
+		// to ta strzalka w lewo, przy ikonce aplikacji, taki 'Wstecz'
+	}
+	
 	private void initOnItemClickListener() {
 		OnItemClickListener listenerKategorie = new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //				Toast.makeText(getApplicationContext(), "Klikniêto pozycjê: "+position, Toast.LENGTH_SHORT).show();
 
-				if (!trybListy) { 					// jesli jest w widoku kategorii, to przejdz do szczegolowego
+				if (!trybListy) { 						// jesli jest w widoku kategorii, to przejdz do szczegolowego
 					switch(position) {
-					case 0:							// wybrano okres
+					case 0:								// wybrano okres
 						dane.clear();
 						for (TabOkres okres: okresy) 
 							dane.add(okres.getNazwa());
 						
-						czyOkres = true;			// przejscie do szczegolowego - okres
+						czyOkres = true;				// przejscie do szczegolowego - okres
 						break;
-					case 1:							// wybrano branze
+					case 1:								// wybrano branze
 						dane.clear();
 						for (TabBranza branza: branze) 
 							dane.add(branza.getNazwa());
 						
-						czyOkres = false;			// przejscie do szczegolowego - branza
+						czyOkres = false;				// przejscie do szczegolowego - branza
 						break;
 					}
 					
-					trybListy = true;			// oznacz przejscie do szczegolowego
+					trybListy = true;					// oznacz przejscie do szczegolowego
 				} 
 				else if (trybListy) {					// jesli w widoku szczegolowym to wroc do kategorii
 					if (czyOkres) { 
@@ -218,7 +225,7 @@ public class Wyszukiwanie extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				wybranyElement = ((IfSelectable) listaObiektow.get(position)).getNazwa();
-				Toast.makeText(getApplicationContext(), "Klikniêto pozycjê: "+wybranyElement, Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), "Wybrano pozycjê: "+wybranyElement, Toast.LENGTH_SHORT).show();
 			}			
 		};
 		

@@ -12,11 +12,11 @@ import android.util.Log;
 import blake.przewodnikturystyczny.baza.model.IfMarkierable;
 import blake.przewodnikturystyczny.baza.model.TabBudynek;
 import blake.przewodnikturystyczny.baza.model.TabMiejsce;
-import blake.przewodnikturystyczny.baza.model.TabPostac;
 import blake.przewodnikturystyczny.baza.model.TabRzecz;
 import blake.przewodnikturystyczny.baza.model.TabWydarzenie;
 
 import com.activeandroid.query.Select;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -47,10 +47,12 @@ public class ObslugaMapy {
 	}
 
 	public static final String DEBUG_TAG = "Przewodnik";
+	static final int domyslnyZoom = 12;
 	
-	public static final float alphaBudynek = 1f;
-	public static final float alphaMiejsce = 0.99f;
+//	public static final float alphaBudynek = 1f;
+//	public static final float alphaMiejsce = 0.99f;
 	static final LatLng domyslnaPozycja = new LatLng(52.23, 21); // pozycja Warszawy
+//	static final int domyslnyZoom = 12;
 		
 	private final BitmapDescriptor colorBudynekMarker;
 	private final BitmapDescriptor colorMiejsceMarker;
@@ -75,7 +77,7 @@ public class ObslugaMapy {
 		double latitude, longitude = 0;
 		Boolean czyBudynek;		// czyBudynek - Budynek; !czyBudynek - Miejsce
 		
-		if (obiekty != null && obiekty.size() > 0)	{							// sprawdza czy lista jest niepusta
+		if (obiekty != null && obiekty.size() > 0 && obiekty.get(0) != null)	{							// sprawdza czy lista jest niepusta
 			if (obiekty.get(0).getClass().getName().contains(".TabBudynek"))	// sprawdza jakiego typu s¹ obiekty na liœcie i oznacza to przy czyBudynek
 				czyBudynek = true;
 			else if (obiekty.get(0).getClass().getName().contains(".TabMiejsce"))
@@ -184,6 +186,21 @@ public class ObslugaMapy {
 		
 	}
 	
+	private void przesunMape(LatLng pozycjaLL) {
+		map.moveCamera(CameraUpdateFactory.newLatLngZoom(pozycjaLL, domyslnyZoom));
+	}
+	
+	public void dodajMarkier(String nazwa, String typ, Boolean czyBudynek) {
+		IfMarkierable obiekt = rozwiazZaleznosciSum(nazwa, typ, czyBudynek).get(0);
+		LatLng pozycja = new LatLng(obiekt.getLatitude(), obiekt.getLongitude());
+		
+		map.addMarker(new MarkerOptions()
+		.position(pozycja)
+		.title(obiekt.getNazwa())
+		.snippet(obiekt.getAdres()));
+		
+		przesunMape(pozycja);
+	}
 	
 	public TreeMap<Marker, List<String>> generujOpakowanieOpisBudynek(List<Marker> markery, List<TabBudynek> budynki) {
 		TreeMap<Marker, List<String>> opakowanie = new TreeMap<Marker, List<String>>(new MarkerComparator());
@@ -231,5 +248,10 @@ public class ObslugaMapy {
 	public List<TabMiejsce> pobierzMiejsca() {
 		// TODO zrzuciæ do Async
 		return new Select().all().from(TabMiejsce.class).execute(); 
+	}
+
+	public LatLng zwrocOstatnia() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

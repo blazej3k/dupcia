@@ -10,8 +10,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.TextView;
@@ -21,6 +23,7 @@ import blake.przewodnikturystyczny.baza.model.TabBudynek;
 import blake.przewodnikturystyczny.baza.model.TabMiejsce;
 import blake.przewodnikturystyczny.baza.model.TabRzecz;
 import blake.przewodnikturystyczny.baza.model.TabWydarzenie;
+import blake.przewodnikturystyczny.mapa.ObslugaMapy;
 import blake.przewodnikturystyczny.model.ExListaAdapter;
 import blake.przewodnikturystyczny.model.ExListaGrupa;
 
@@ -53,6 +56,7 @@ public class DialogSzczegolyFragment extends DialogFragment {
 //	private TextView lbl_dialog_pole4;
 //	private TextView lbl_dialog_pole5;
 	private TextView lbl_dialog_opis;
+	private Button btn_pokaz_na_mapie;
 	private ExpandableListView expLista;
 	private ExListaAdapter adapter;
 	
@@ -69,13 +73,24 @@ public class DialogSzczegolyFragment extends DialogFragment {
 	List<TextView> lblLista = new ArrayList<TextView>();
 	List<TextView> tvLista = new ArrayList<TextView>();
 	
+	private ObslugaMapy obslugaMapy;
+	private String aktualnyObiekt;
+	private String aktualnyObiektTyp;
+	private Boolean aktualnyObiektCzyBudynek; 
+	
 	public DialogSzczegolyFragment() {
 		// pusty konstruktor podobno wymagany, ale dziala i bez
 	}
 	
-	public DialogSzczegolyFragment(String nazwaObiektu, Boolean czyBudynek) {
+	public DialogSzczegolyFragment(String nazwaObiektu, ObslugaMapy obslugaMapy) {
+		this.nazwaObiektu = nazwaObiektu;
+		this.obslugaMapy = obslugaMapy;
+	}
+	
+	public DialogSzczegolyFragment(String nazwaObiektu, Boolean czyBudynek, ObslugaMapy obslugaMapy) {
 		this.czyBudynek = czyBudynek;
 		this.nazwaObiektu = nazwaObiektu;
+		this.obslugaMapy = obslugaMapy;
 	}
 	
 	private void wypelnijDialog() {
@@ -273,6 +288,9 @@ public class DialogSzczegolyFragment extends DialogFragment {
 	private void pobierzMiejsce(String nazwa) {
 		Log.d(DEBUG_TAG, "Dialog: pobieram miejsce "+nazwa);
 		TabMiejsce miejsce = new Select().from(TabMiejsce.class).where("nazwa = ?", nazwa).executeSingle();
+		aktualnyObiekt = nazwa;
+		aktualnyObiektTyp = "Miejsca";
+		aktualnyObiektCzyBudynek = false;
 		
 		ustawPola(miejsce);
 		wypelnijListeMiejsce(miejsce);
@@ -331,11 +349,10 @@ public class DialogSzczegolyFragment extends DialogFragment {
 //				tv.setVisibility(View.GONE);
 //				lblLista.get(tvLista.indexOf(tv)).setVisibility(View.GONE);
 //			}
-
 		}
 	}
 
-	private void initOnClickListeners() {
+	private void initOnChildClickListeners() {
 		OnChildClickListener onChildClickListener = new OnChildClickListener() {
 			
 			@Override
@@ -374,6 +391,18 @@ public class DialogSzczegolyFragment extends DialogFragment {
 		
 		expLista.setOnChildClickListener(onChildClickListener);
 	}
+	
+	private void initOnClickListeners() {
+		OnClickListener btnListener = new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				obslugaMapy.dodajMarkier(aktualnyObiekt, aktualnyObiektTyp, aktualnyObiektCzyBudynek);
+
+			}
+		};
+		
+		btn_pokaz_na_mapie.setOnClickListener(btnListener);
+	}
     
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -384,8 +413,8 @@ public class DialogSzczegolyFragment extends DialogFragment {
 		Window window = getActivity().getWindow();
 		window.getDecorView().getWindowVisibleDisplayFrame(displayRectangle);
 
-		view.setMinimumWidth((int)(displayRectangle.width() * 0.85f));
-		view.setMinimumHeight((int)(displayRectangle.height() * 0.6f));
+		view.setMinimumWidth((int)(displayRectangle.width() * 0.99f));				// tak jest dobrze, marginesy trzymaja ten obraz w ryzach i wyglada ladnie.
+		view.setMinimumHeight((int)(displayRectangle.height() * 0.75f));
 
 		tv_dialog_nazwa = (TextView) view.findViewById(R.id.tv_dialog_nazwa);
 		tv_dialog_pole1 = (TextView) view.findViewById(R.id.tv_dialog_pole1);
@@ -401,11 +430,13 @@ public class DialogSzczegolyFragment extends DialogFragment {
 //		lbl_dialog_pole5 = (TextView) view.findViewById(R.id.lbl_dialog_pole5);
 		lbl_dialog_opis = (TextView) view.findViewById(R.id.lbl_dialog_opis);
 		expLista = (ExpandableListView) view.findViewById(R.id.ex_lista_szczegoly);
+		btn_pokaz_na_mapie = (Button) view.findViewById(R.id.btn_pokaz_na_mapie);
 
 		wypelnijDialog();
 		adapter = new ExListaAdapter(this, grupyLista);
 		expLista.setAdapter(adapter);
-
+		
+		initOnChildClickListeners();
 		initOnClickListeners();
 
 		return view;

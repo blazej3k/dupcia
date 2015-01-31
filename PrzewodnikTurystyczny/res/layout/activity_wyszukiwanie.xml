@@ -11,14 +11,19 @@
     tools:context="blake.przewodnikturystyczny.activity.Wyszukiwanie" >
 
     <TextView
+        style="@style/lbl_naglowek"
+        android:text="@string/lbl_mobilny_przewodnik" />
+    
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/lbl_wybierz_kategorie" />
 
     <ListView
         android:id="@+id/kategorieLista"
-        style="@style/lista_kategorie" 
-        android:layout_weight="0.2"/>
+        style="@style/lista_kategorie"
+        android:layout_weight="25"
+        android:minHeight="60dp" />
 
 	<TextView
 	    android:id="@+id/lbl_wybierz_szczegol"
@@ -30,7 +35,7 @@
     <ListView
         android:id="@+id/szczegolyLista"
         style="@style/lista_kategorie"
-        android:layout_weight="0.8"
+        android:layout_weight="80"
         android:visibility="gone" />
 
     <Button

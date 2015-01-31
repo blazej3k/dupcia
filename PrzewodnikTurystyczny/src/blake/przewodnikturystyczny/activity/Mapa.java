@@ -1,6 +1,5 @@
 package blake.przewodnikturystyczny.activity;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -24,7 +23,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import blake.przewodnikturystyczny.R;
-import blake.przewodnikturystyczny.baza.model.IfMarkierable;
 import blake.przewodnikturystyczny.baza.model.TabBudynek;
 import blake.przewodnikturystyczny.mapa.ObslugaMapy;
 import blake.przewodnikturystyczny.mapa.PobierzAdresAsync;
@@ -61,7 +59,7 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 		 */
 		@Override
 		public View getInfoContents(Marker marker) {		// pobierane s¹ opisy wszystkich obiektów naraz, w dwóch oddzielnych listach. Mo¿na z³¹czyæ w jedn¹ funkcjê generyczn¹, bêdzie mniej sprawdzeñ, ale nie jest to konieczne - ró¿ne pola s¹ i by³oby to niewygodne
-			currentMarker = marker;							// przypisuje marker, zeby mozna bylo jego info window chowac
+//			currentMarker = marker;							// przypisuje marker, zeby mozna bylo jego info window chowac
 			
 			TextView tvTitle = ((TextView) myContentsView
 					.findViewById(R.id.wp_title));
@@ -103,6 +101,7 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 	final int RQS_GooglePlayServices = 1;
 
 	private Context context;
+	private Intent intent;
 	private LocationManager serwis;
 	private GoogleMap map;
 	private ObslugaMapy obslugaMapy;
@@ -114,7 +113,8 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 	private Button btn_znajdz;
 	private EditText et_podaj_adres;
 	private ProgressBar mActivityIndicator;
-	private Marker currentMarker;
+//	private Marker currentMarker;
+	private Marker kontekstMarker;
 
 	private Boolean ifZnajdz = false;
 	private Boolean ifBundle = false;
@@ -128,12 +128,14 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 		
 		bondzio = getIntent().getExtras();
 		
-		if (bondzio.isEmpty())
+		if (bondzio == null)
 			ifBundle = false;
-		else
+		else {
 			ifBundle = true;
+			Log.d(DEBUG_TAG, "£yk³em do mapy: "+bondzio.getString("obiekt")+" typu "+bondzio.getString("typObiektu"));
+		}
 		
-		Log.d(DEBUG_TAG, "£yk³em do bazy: "+bondzio.getString("obiekt")+" typu "+bondzio.getString("typObiektu"));
+		
 		
 
 		serwis = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -160,6 +162,7 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 
 		Toast.makeText(
 				context, "Us³ugi GooglePlay dostêpne: "+GooglePlayServicesUtil.isGooglePlayServicesAvailable(context),Toast.LENGTH_LONG).show();
+		
 		MapFragment mapFragment = (MapFragment) getFragmentManager()
 				.findFragmentById(R.id.map);
 		mapFragment.getMapAsync(this);
@@ -177,13 +180,13 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
-    getMenuInflater().inflate(R.menu.action_bar, menu);
+		getMenuInflater().inflate(R.menu.action_bar, menu);
     
     return true;
     }
 	
 	private void actionBar() {
-		getActionBar().setTitle("Obwarzanek");
+		getActionBar().setTitle("Mapa");
 //		getActionBar().setDisplayHomeAsUpEnabled(true);		// i tak go nie uzywam bo bym musial Support ladowac
 		// to ta strzalka w lewo, przy ikonce aplikacji, taki 'Wstecz'
 	}
@@ -193,18 +196,19 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 		Toast.makeText(getApplicationContext(), "Naciœniêto: " + item.getTitle().toString(), Toast.LENGTH_SHORT).show();
 		
 		switch (item.getItemId()) {
-		case (R.id.ab_wstecz): {
-	        Intent intent = new Intent(context, MainActivity.class);
-	        startActivity(intent);
+		case (R.id.ab_zielony): {
+
 			break;
 		}
-		case (R.id.ab_dalej): {
-			
+		case (R.id.ab_niebieski): {
+			przesunMape(kontekstMarker.getPosition());
 			break;
 		}
-		case (R.id.ab_pokazukryj): {
-			if (currentMarker != null)
-				currentMarker.hideInfoWindow();
+		case (R.id.ab_czerwony): {
+			//			if (currentMarker != null)
+			//				currentMarker.hideInfoWindow();
+			intent = new Intent(context, Wyszukiwanie.class);
+			startActivity(intent);
 			break;
 		}
 //		case (android.R.id.home):		// przecie nie uzywam i wylaczony
@@ -232,7 +236,8 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 		// map.moveCamera(CameraUpdateFactory.newLatLngZoom(domyslnaPozycja, domyslnyZoom)); 	// przenosi do domyslnej lokalizacji
 		map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 		map.setMyLocationEnabled(true);
-		map.getUiSettings().setRotateGesturesEnabled(false); // blokowanie obracania gestem
+		map.setPadding(0, 55, 0, 0);							// przesuwa widok ciut w dó³, wtedy przycisk od 'moja lokalizacja' nie nachodzi na 'btnZnajdz'
+		map.getUiSettings().setRotateGesturesEnabled(false); 	// blokowanie obracania gestem
 		map.getUiSettings().setZoomControlsEnabled(true);
 		map.getUiSettings().setMapToolbarEnabled(false);
 		map.getUiSettings().setTiltGesturesEnabled(false);
@@ -289,11 +294,13 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
 		obslugaMapy = new ObslugaMapy(map);
 		domyslnaMapa(map);
 		
-		if (ifBundle) {
-			// obsluga mapy musi miec funkcje rozwiazZaleznosci.
+		if (ifBundle) {							// czyli przyszedl z listy Kategorii, a nie FullMapa
 			opakowanieMiejsce = obslugaMapy.dodajMarkery(obslugaMapy.rozwiazZaleznosciSum(bondzio.getString("obiekt"), bondzio.getString("typObiektu"), false));
 			opakowanieBudynek = obslugaMapy.dodajMarkery(obslugaMapy.rozwiazZaleznosciSum(bondzio.getString("obiekt"), bondzio.getString("typObiektu"), true));
 			
+			kontekstMarker = opakowanieMiejsce.firstKey();
+			kontekstMarker.showInfoWindow();					// pobiera pierwszy obiekt z listy, zazwyczaj jest to ten najwa¿niejszy i centruje mapke na nim
+			przesunMape(kontekstMarker.getPosition());
 		}
 		else {
 			opakowanieBudynek = obslugaMapy.dodajMarkery(obslugaMapy.pobierzBudynki()); // pobiera budynki jako liste i wywoluje generyczn¹ metode do wyswietlania budynkow
@@ -338,11 +345,11 @@ public class Mapa extends Activity implements OnMapReadyCallback, OnMapClickList
     	DialogFragment dialog;
     	
     	if (opakowanieBudynek != null && opakowanieBudynek.containsKey(marker))
-    		dialog = new DialogSzczegolyFragment(marker.getTitle(), true);
+    		dialog = new DialogSzczegolyFragment(marker.getTitle(), true, obslugaMapy);
     	else if (opakowanieMiejsce != null && opakowanieMiejsce.containsKey(marker))
-    		dialog = new DialogSzczegolyFragment(marker.getTitle(), false);
+    		dialog = new DialogSzczegolyFragment(marker.getTitle(), false, obslugaMapy);
     	else
-    		dialog = new DialogFragment();
+    		dialog = new DialogSzczegolyFragment(marker.getTitle(), obslugaMapy);
         
         dialog.show(getFragmentManager(), "DialogSzczegolyFragment");
     }

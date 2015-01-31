@@ -40,5 +40,7 @@
     <string name="lbl_wybierz_kategorie">Wybierz zakres poszukiwań:</string>
     <string name="lbl_wybierz_szczegol">Z poniższej listy wybierz interesujący Cię obiekt:</string>
     <string name="btn_przejdz_do_zwiedzania">Przejdź do Zwiedzania</string>
+    <string name="btn_pokaz_na_mapie">Pokaż na mapie</string>
+    <string name="lbl_mobilny_przewodnik">Mobilny Przewodnik Miejski</string>
 
 </resources>

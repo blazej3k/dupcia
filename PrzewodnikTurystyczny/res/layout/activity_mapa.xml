@@ -25,17 +25,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="@string/demo_str" />
-
+        android:layout_centerHorizontal="true" />
+	<!-- android:text="@string/demo_str"-->
     <TextView
         android:id="@+id/tv_lokalizacja"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="22dp"
-        android:text="@string/demo_str" />
+        android:layout_marginBottom="22dp" />
+	<!-- android:text="@string/demo_str"-->
 
     <EditText
         android:id="@+id/et_podaj_adres"
